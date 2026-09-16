@@ -3,6 +3,7 @@ package net.h3xpy.bloodbound;
 import net.h3xpy.bloodbound.client.ClientEventHandler;
 import net.h3xpy.bloodbound.client.ClientUnderTheRadar;
 import net.h3xpy.bloodbound.client.model.BarbedWireModel;
+import net.h3xpy.bloodbound.client.model.TargetFoundModel;
 import net.h3xpy.bloodbound.client.ModKeyMappings;
 import net.h3xpy.bloodbound.client.hud.EffectBarsOverlay;
 import net.h3xpy.bloodbound.client.hud.FlashedOverlay;
@@ -53,6 +54,7 @@ public class BloodBoundClient {
 
     private static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(BarbedWireModel.LAYER_LOCATION, BarbedWireModel::createBodyLayer);
+        event.registerLayerDefinition(TargetFoundModel.LAYER_LOCATION, TargetFoundModel::createBodyLayer);
     }
 
     private static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
