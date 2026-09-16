@@ -1,0 +1,567 @@
+{
+  "itemGroup.bloodbound": "BloodBound",
+
+  "item.bloodbound.soul_shard": "Éclat d'âme",
+  "block.bloodbound.perk_table": "Table de perks",
+  "container.bloodbound.perk_table": "Table de perks",
+
+  "key.categories.bloodbound": "BloodBound",
+  "key.bloodbound.activate_slot_1": "Activer le perk (emplacement 1)",
+  "key.bloodbound.activate_slot_2": "Activer le perk (emplacement 2)",
+  "key.bloodbound.activate_slot_3": "Activer le perk (emplacement 3)",
+  "key.bloodbound.activate_slot_4": "Activer le perk (emplacement 4)",
+  "key.bloodbound.heal": "Soigner un allié (maintenir)",
+  "key.bloodbound.skill_check": "QTE",
+
+  "bloodbound.tab.loadout": "Loadout",
+  "bloodbound.tab.addons": "Addons",
+  "bloodbound.tab.soulweb": "Soulweb",
+  "bloodbound.tier": "Niveau %s",
+
+  "bloodbound.loadout.learned": "Perks appris (%s)",
+  "bloodbound.loadout.slots": "Équipés %s/%s",
+  "bloodbound.loadout.empty": "Aucun perk appris pour l'instant.",
+  "bloodbound.loadout.empty_slot": "Emplacement %s",
+  "bloodbound.loadout.search": "Rechercher",
+  "bloodbound.loadout.no_match": "Aucun perk à ce nom.",
+  "bloodbound.loadout.hint_equip": "Cliquer pour équiper",
+  "bloodbound.loadout.hint_unequip": "Cliquer pour retirer",
+
+  "bloodbound.addons.owned": "Addons possédés (%s)",
+  "bloodbound.addons.empty": "Aucun addon. Achetez-en sur la soulweb.",
+  "bloodbound.addons.equipped_header": "Addons équipés",
+  "bloodbound.addons.empty_slot": "Aucun addon",
+  "bloodbound.addons.active": "Actif",
+  "bloodbound.addons.inactive": "Son perk n'est pas équipé",
+  "bloodbound.addons.no_perk": "Aucun perk dans cet emplacement",
+  "bloodbound.addons.needs_perk": "Équipez son perk pour utiliser cet addon",
+  "bloodbound.addons.hint_equip": "Cliquer pour placer dans la fente de son perk",
+  "bloodbound.addons.hint_unequip": "Cliquer pour retirer",
+  "bloodbound.addon.for_perk": "Addon de %s",
+
+  "bloodbound.addon_rarity.common": "Commun",
+  "bloodbound.addon_rarity.uncommon": "Peu commun",
+  "bloodbound.addon_rarity.rare": "Rare",
+  "bloodbound.addon_rarity.epic": "Épique",
+  "bloodbound.addon_rarity.unstable": "Instable",
+
+  "bloodbound.soulweb.level": "Niveau de la toile %s",
+  "bloodbound.soulweb.loading": "En attente de la toile...",
+  "bloodbound.soulweb.perk_node": "%s %s",
+  "bloodbound.soulweb.xp_node": "%s XP",
+  "bloodbound.soulweb.addon_rarity": "Addon - %s",
+  "bloodbound.soulweb.cost": "Coût : %s éclats d'âme",
+  "bloodbound.soulweb.purchased": "Déjà obtenu",
+  "bloodbound.soulweb.blocked": "Branche bloquée - vous avez choisi une autre branche",
+  "bloodbound.soulweb.locked": "Achetez d'abord le nœud précédent",
+  "bloodbound.soulweb.hint_buy": "Cliquer pour acheter",
+  "bloodbound.soulweb.hint_open": "Le premier achat bloque toutes les autres branches",
+  "bloodbound.soulweb.hint_committed": "Vous êtes engagé sur cette branche jusqu'au reset de la toile",
+
+  "bloodbound.rarity.common": "Commun",
+  "bloodbound.rarity.uncommon": "Peu commun",
+  "bloodbound.rarity.rare": "Rare",
+  "bloodbound.rarity.very_rare": "Très rare",
+  "bloodbound.rarity.ultra_rare": "Ultra rare",
+
+  "bloodbound.message.not_enough_shards": "Il vous faut %s éclats d'âme",
+  "bloodbound.message.perk_unlocked": "Perk appris : %s (niveau %s)",
+  "bloodbound.message.addon_unlocked": "Addon obtenu : %s",
+  "bloodbound.message.web_reset": "La toile s'est reformée",
+  "bloodbound.message.close_call_too_healthy": "Close Call ne fonctionne qu'à 5 cœurs ou moins",
+  "bloodbound.message.broken_device_armed": "Point de retour posé - %s secondes",
+  "bloodbound.message.broken_device_lapsed": "Point de retour perdu",
+  "bloodbound.message.broken_device_wrong_world": "Votre point de retour est dans un autre monde",
+  "bloodbound.message.broken_device_undo_ready": "Réappuyez dans les %s secondes pour annuler",
+  "bloodbound.message.broken_device_undone": "Téléportation annulée",
+  "bloodbound.message.broken_device_rewind_stopped": "Rewind interrompu",
+  "bloodbound.message.syringe_used": "Recharges avancées sur %s perk(s)",
+  "bloodbound.message.syringe_nothing": "Aucune recharge en cours",
+  "bloodbound.message.tinkerer_no_item": "Tenez un objet réparable en main",
+  "bloodbound.message.tinkerer_undamaged": "Cet objet est déjà intact",
+  "bloodbound.message.tinkerer_stopped": "Réparation interrompue",
+  "bloodbound.message.tinkerer_dropped": "Réparation interrompue - l'objet a quitté votre main",
+  "bloodbound.message.tinkerer_failed": "Raté ! La réparation tourne mal",
+  "bloodbound.message.tinkerer_complete": "Entièrement réparé",
+  "bloodbound.message.suture_retry": "Raté - vite, réessayez !",
+  "bloodbound.message.no_healing_ability": "Aucun perk équipé ne donne la capacité de soin",
+  "bloodbound.message.no_heal_target": "Personne d'accroupi et immobile à proximité",
+  "bloodbound.message.healing": "Soin de %s - %s/%s HP",
+  "bloodbound.message.heal_missed": "Raté ! La plaie se rouvre",
+  "bloodbound.message.heal_stopped": "Soin arrêté",
+  "bloodbound.message.heal_complete": "Soigné au maximum",
+  "bloodbound.message.patch_up_needs_crouch": "Accroupissez-vous sans bouger, puis appuyez sur la touche pour vous soigner",
+  "bloodbound.message.patch_up_full_health": "Rien à soigner",
+  "bloodbound.message.heal_interrupted": "Soin interrompu",
+  "bloodbound.message.keep_fighting_broken": "Vous êtes Broken, impossible de donner de la vie",
+  "bloodbound.message.keep_fighting_no_health": "Pas assez de vie à donner",
+  "bloodbound.message.keep_fighting_no_target": "Aucun joueur assez proche",
+
+  "perk.bloodbound.perfect_landing": "Perfect Landing",
+  "perk.bloodbound.perfect_landing.desc": "Les dégâts de chute au-delà de 3 blocs sont totalement annulés. À l'atterrissage, vous recevez Vitesse III pendant %s secondes, puis le perk entre en recharge pendant %s secondes.",
+
+  "perk.bloodbound.close_call": "Close Call",
+  "perk.bloodbound.close_call.desc": "À 5 cœurs ou moins, appuyez sur la touche d'activation pour foncer d'environ 4 blocs vers l'avant. Pendant ce dash, vous ne pouvez pas subir de dégâts. Recharge : %s secondes.",
+
+  "perk.bloodbound.low_profile": "Low Profile",
+  "perk.bloodbound.low_profile.desc": "Tant que vous êtes accroupi, vous vous déplacez comme sous Vitesse %s et bénéficiez de la vision nocturne. Les deux s'arrêtent dès que vous vous relevez.",
+
+  "perk.bloodbound.surgical_suture": "Surgical Suture",
+  "perk.bloodbound.surgical_suture.desc": "Appuyez sur la touche de l'emplacement pour déclencher un QTE difficile. Réussi, il vous soigne immédiatement de %s HP sans aucune recharge ; raté, le perk entre en recharge pendant 30 secondes. Débloque aussi la capacité de soin : en soignant un autre joueur, chaque QTE réussi le soigne de %s HP supplémentaires. La recharge ne bloque jamais le soin.",
+
+  "effect.bloodbound.broken": "Broken",
+  "effect.bloodbound.exposed": "Exposed",
+  "effect.bloodbound.aura_revealed": "Aura Revealed",
+
+  "perk.bloodbound.keep_fighting": "Keep Fighting",
+  "perk.bloodbound.keep_fighting.desc": "Appuyez sur la touche de l'emplacement près d'un autre joueur pour le soigner instantanément de %s HP, en vous retirant %s HP. Vous devenez ensuite Broken pendant %s secondes. Inutilisable si vous êtes déjà Broken ou si vous n'avez pas assez de vie à donner.",
+
+  "perk.bloodbound.lightbringer": "Lightbringer",
+  "perk.bloodbound.lightbringer.desc": "Tous les joueurs dans un rayon de 16 blocs, vous compris, récupèrent de leurs recharges et de leurs effets négatifs %s %% plus vite.",
+
+  "perk.bloodbound.caretaker": "Caretaker",
+  "perk.bloodbound.caretaker.desc": "Débloque la capacité de soin et la rend %s %% plus rapide.",
+
+  "perk.bloodbound.longshot": "Longshot",
+  "perk.bloodbound.longshot.desc": "Les flèches que vous tirez gagnent +%s dégâts par bloc parcouru avant l'impact.",
+
+  "perk.bloodbound.patch_up": "Patch Up",
+  "perk.bloodbound.patch_up.desc": "Accroupi et immobile, appuyez sur la touche du slot pour commencer à vous soigner ; appuyez à nouveau pour arrêter. Le soin utilise les mêmes QTE que le soin d'un allié, mais en plus lent : un soin complet prend %s secondes. Bouger ou vous relever l'interrompt immédiatement.",
+
+  "perk.bloodbound.we_can_do_this": "We Can Do This",
+  "perk.bloodbound.we_can_do_this.desc": "Débloque la capacité de soin. Tant que vous êtes vous-même à pleine vie, vous soignez les autres %s %% plus vite.",
+
+  "perk.bloodbound.adrenaline": "Adrenaline",
+  "perk.bloodbound.adrenaline.desc": "À 3 HP ou moins, Adrenaline se déclenche : vous êtes Broken et négligez tous les dégâts pendant %s secondes, puis le perk entre en recharge pendant 60. Un coup qui vous fait passer directement de la pleine forme à zéro vous tue sans déclencher le perk.",
+
+  "perk.bloodbound.relentless": "Relentless",
+  "perk.bloodbound.relentless.desc": "À %s cœurs ou moins, vos attaques enchaînent %s coups supplémentaires, un toutes les 0,52 seconde, infligeant 30 %%, 15 %% et 7,5 %% du coup initial. Recharge : 5 secondes.",
+
+  "perk.bloodbound.broken_movement_device": "Broken Movement Device",
+  "perk.bloodbound.broken_movement_device.desc": "Appuyez sur la touche du slot pour marquer l'endroit où vous vous trouvez et la vie qu'il vous reste. Appuyez de nouveau dans les %s secondes pour y revenir avec exactement cette vie. Si la fenêtre se referme, le point est perdu. Recharge : %s secondes, à partir du moment où le point est utilisé ou perdu.",
+
+  "perk.bloodbound.raise_the_stakes": "Raise The Stakes",
+  "perk.bloodbound.raise_the_stakes.desc": "Chaque minerai que vous minez a %s %% de chances de tomber une fois de plus, et chaque réussite relance le tirage : un filon chanceux continue de payer. Les monstres hostiles lâchent aussi un éclat d'âme supplémentaire. Silk Touch désactive tout.",
+
+  "perk.bloodbound.anti_exhaustion_syringe": "Anti-Exhaustion Syringe",
+  "perk.bloodbound.anti_exhaustion_syringe.desc": "Appuyez sur la touche de l'emplacement pour sauter %s %% du temps restant sur la recharge de tous vos autres perks. La seringue entre alors en recharge pour %s secondes.",
+
+  "perk.bloodbound.echoing_wounds": "Echoing Wounds",
+  "perk.bloodbound.echoing_wounds.desc": "Les dégâts que vous infligez rebondissent de votre cible vers l'entité vivante la plus proche dans un rayon de 5 blocs, jusqu'à %s fois, en perdant %s %% de dégâts à chaque rebond. L'écho ne revient jamais sur vous et ne touche jamais deux fois la même entité. Recharge : %s secondes, payée uniquement si l'écho a trouvé quelqu'un.",
+
+  "perk.bloodbound.tinkerer": "Tinkerer",
+  "perk.bloodbound.tinkerer.desc": "Appuyez sur la touche de l'emplacement en tenant un objet endommagé pour le réparer. Réussir le QTE rend %s %% de sa durabilité et en relance aussitôt un autre, %s %% plus petit que le précédent. Un échec coûte 12 %% de durabilité à l'objet et met fin à la réparation, tout comme changer d'objet ou réappuyer sur la touche. Recharge : %s secondes.",
+
+  "perk.bloodbound.low_cost_movement_device": "Low-Cost Movement Device",
+  "perk.bloodbound.low_cost_movement_device.desc": "Dépensez une charge pour lancer un projectile : là où il touche un bloc, vous y êtes propulsé. %1$s charges enchaînables sans attente ; seule la dernière déclenche la recharge de %6$s secondes. La propulsion tire jusqu'à %2$s à l'horizontale et %3$s vers le haut, davantage si l'impact est au-dessus de vous, et jamais vers le bas s'il est en dessous. Vitesse du projectile %4$s, gravité %5$s, portée illimitée.",
+
+  "perk.bloodbound.omniscience": "Omniscience",
+  "perk.bloodbound.omniscience.desc": "Restez immobile %s secondes et toutes les entités, coffres et minerais dans un rayon de %s blocs sont révélés à travers les murs, pour vous seul. Le niveau I ne voit ni le diamant ni les anciens débris, le niveau II ne voit pas les anciens débris. Dès que vous bougez, tout disparaît.",
+
+  "perk.bloodbound.bank_shot": "Bank Shot",
+  "perk.bloodbound.bank_shot.desc": "Dispose de 3 charges, dont une revient toutes les %s secondes. Chaque projectile que vous tirez dépense une charge pour rebondir sur le premier bloc touché, avec une légère visée automatique à la sortie.",
+
+  "perk.bloodbound.no_one_gets_away": "No One Gets Away",
+  "perk.bloodbound.no_one_gets_away.desc": "Appuyez sur la touche de l'emplacement pour tirer un projectile rapide, insensible à la gravité. Toute entité touchée est ramenée à vos pieds et reçoit Lenteur 255 et Faiblesse 255 pendant 1 seconde. Recharge : %s secondes, payée que le tir touche ou non.",
+
+  "perk.bloodbound.nasty_blade": "Nasty Blade",
+  "perk.bloodbound.nasty_blade.desc": "Vos attaques infligent 2 dégâts de moins. Chaque coup porté rapporte un jeton — au maximum un toutes les demi-secondes — et lance un compte à rebours de %s secondes, que chaque nouveau jeton réinitialise. Chaque jeton en votre possession rend 0,5 dégât à vos coups. Si le compte à rebours atteint zéro, vous perdez tous vos jetons.",
+
+  "addon.bloodbound.bandages_wrap": "Bandages Wrap",
+  "addon.bloodbound.bandages_wrap.desc": "Vous soigner est 25 %% plus rapide.",
+
+  "addon.bloodbound.clean_gloves": "Clean Gloves",
+  "addon.bloodbound.clean_gloves.desc": "Les QTE ont 20 pourcent de chances supplémentaires d'apparaître à chaque tirage.",
+
+  "addon.bloodbound.first_aid_spray_can": "First Aid Spray Can",
+  "addon.bloodbound.first_aid_spray_can.desc": "Pendant que vous vous soignez, tous les autres joueurs dans un rayon de 8 blocs se soignent aussi, à 75 %% de votre vitesse. Leur seule obligation est d'être là.",
+
+  "addon.bloodbound.knife_belt": "Knife Belt",
+  "addon.bloodbound.knife_belt.desc": "Le compte à rebours dure 2 secondes de plus entre deux coups.",
+
+  "addon.bloodbound.razor_blade": "Razor Blade",
+  "addon.bloodbound.razor_blade.desc": "Chaque jeton vaut 0,75 dégât au lieu de 0,5.",
+
+  "addon.bloodbound.anticoagulant": "Anticoagulant",
+  "addon.bloodbound.anticoagulant.desc": "Vos attaques infligent 3 dégâts de moins au lieu de 2, mais toute entité touchée reçoit Broken pour toute la durée de la série, puis 15 secondes de plus une fois celle-ci terminée.",
+
+  "addon.bloodbound.leather_glove": "Leather Glove",
+  "addon.bloodbound.leather_glove.desc": "Le dash vous emmène 40 %% plus loin.",
+
+  "addon.bloodbound.protective_glove": "Protective Glove",
+  "addon.bloodbound.protective_glove.desc": "Toute entité traversée pendant le dash est violemment projetée.",
+
+  "addon.bloodbound.fingerless_glove": "Fingerless Glove",
+  "addon.bloodbound.fingerless_glove.desc": "Après un dash, vous avez 2 secondes pour réappuyer et redasher, jusqu'à 3 d'affilée. La recharge est augmentée de 250 %% et ne démarre qu'à la fin de la série.",
+
+  "addon.bloodbound.cracked_cup": "Cracked Cup",
+  "addon.bloodbound.cracked_cup.desc": "Le Broken infligé par Keep Fighting est 25 %% plus court.",
+
+  "addon.bloodbound.rune_of_swiftness": "Rune of Swiftness",
+  "addon.bloodbound.rune_of_swiftness.desc": "Le joueur que vous soignez gagne Vitesse I tant que votre Broken dure.",
+
+  "addon.bloodbound.rune_of_stealth": "Rune of Stealth",
+  "addon.bloodbound.rune_of_stealth.desc": "Vous gagnez Invisibilité I pendant 10 secondes et Résistance I pendant 5, et toutes les autres entités dans un rayon de 16 blocs vous sont révélées pendant 10 secondes. Le Broken dure 10 %% plus longtemps.",
+
+  "addon.bloodbound.dirty_shroud": "Dirty Shroud",
+  "addon.bloodbound.dirty_shroud.desc": "L'aura porte 8 blocs plus loin.",
+
+  "addon.bloodbound.charm_of_the_faithful": "Charm of the Faithful",
+  "addon.bloodbound.charm_of_the_faithful.desc": "Chaque autre joueur présent dans votre aura ajoute 15 %% à son taux de récupération.",
+
+  "addon.bloodbound.gilded_cross": "Gilded Cross",
+  "addon.bloodbound.gilded_cross.desc": "L'aura ne vaut plus que 20/28/35 %% en compagnie — mais 80/88/95 %% si personne d'autre ne s'y trouve.",
+
+  "addon.bloodbound.wild_rose": "Wild Rose",
+  "addon.bloodbound.wild_rose.desc": "Relentless se déclenche désormais à 7/7,5/8 cœurs ou moins.",
+
+  "addon.bloodbound.wooden_sword": "Wooden Sword",
+  "addon.bloodbound.wooden_sword.desc": "Relentless est toujours actif, quelle que soit votre vie, mais la recharge est augmentée de 150 %%.",
+
+  "addon.bloodbound.bloodied_matchete": "Bloodied Matchete",
+  "addon.bloodbound.bloodied_matchete.desc": "Relentless attend 4,5/5/5,5 cœurs ou moins, et gagne un coup supplémentaire infligeant 15/7,5/3,25 %% du coup initial.",
+
+  "addon.bloodbound.rotting_rope": "Rotting Rope",
+  "addon.bloodbound.rotting_rope.desc": "L'écho se transmet 50 %% plus loin entre les cibles.",
+
+  "addon.bloodbound.hysteria": "Hysteria",
+  "addon.bloodbound.hysteria.desc": "Toute cible touchée par un écho reçoit Cécité I et Lenteur I pendant 3 secondes. La recharge est allongée d'une seconde.",
+
+  "addon.bloodbound.bloodied_letter": "Bloodied Letter",
+  "addon.bloodbound.bloodied_letter.desc": "La chaîne touche 2 cibles de plus.",
+
+  "addon.bloodbound.wrapped_glass": "Wrapped Glass",
+  "addon.bloodbound.wrapped_glass.desc": "Le premier écho ne transmet que 80 %% du coup initial, mais chaque transfert suivant inflige 120/125/130 %% du précédent au lieu de s'affaiblir.",
+
+  "addon.bloodbound.blood_thirsty_skull": "Blood Thirsty Skull",
+  "addon.bloodbound.blood_thirsty_skull.desc": "Dès que la chaîne dépasse sa première cible, chaque transfert suivant vous soigne de 2 HP.",
+
+  "addon.bloodbound.helium_inflated_balloon": "Helium Inflated Balloon",
+  "addon.bloodbound.helium_inflated_balloon.desc": "Vous tombez 35 %% plus lentement, vous dirigez 30 %% mieux dans les airs, et la recharge est réduite de 40 %%.",
+
+  "addon.bloodbound.dead_weight": "Dead Weight",
+  "addon.bloodbound.dead_weight.desc": "Vous tombez 75 %% plus vite et atterrissez avec une Vitesse un tiers plus forte, mais un tiers plus courte. Toute entité sur laquelle vous retombez subit des dégâts proportionnels à la chute, jusqu'à 30.",
+
+  "addon.bloodbound.momentum_formula": "Momentum Formula",
+  "addon.bloodbound.momentum_formula.desc": "Passé 3 blocs de chute, vous tombez 2,5 fois plus vite. Toute cette vitesse est dépensée en l'air : la Vitesse à l'atterrissage dure 40 %% de moins.",
+
+  "addon.bloodbound.gear_system": "Gear System",
+  "addon.bloodbound.gear_system.desc": "Les charges reviennent une par une, toutes les 4 secondes, au lieu de toutes d'un coup à la fin de la recharge.",
+
+  "addon.bloodbound.overclocked_module": "Overclocked Module",
+  "addon.bloodbound.overclocked_module.desc": "Chaque impulsion est 30 %% plus forte.",
+
+  "addon.bloodbound.loose_screw": "Loose Screw",
+  "addon.bloodbound.loose_screw.desc": "Le projectile vole plus lentement et rebondit sur le premier bloc touché pour un court second saut, qui vous propulse à nouveau là où il retombe.",
+
+  "addon.bloodbound.box_opener": "Box Opener",
+  "addon.bloodbound.box_opener.desc": "Une seule charge et 3 secondes de recharge en plus, mais chaque impulsion est 50 %% plus forte — et toute entité percutée en vol prend des dégâts proportionnels à la vitesse d'impact, jusqu'à 18.",
+
+  "addon.bloodbound.shiny_coin": "Shiny Coin",
+  "addon.bloodbound.shiny_coin.desc": "Les chances d'un drop supplémentaire augmentent de 7,77 points.",
+
+  "addon.bloodbound.scratched_coin": "Scratched Coin",
+  "addon.bloodbound.scratched_coin.desc": "Les chances d'un drop supplémentaire baissent de 10 points, mais les monstres hostiles lâchent 2 éclats d'âme supplémentaires au lieu d'un.",
+
+  "addon.bloodbound.tarnished_coin": "Tarnished Coin",
+  "addon.bloodbound.tarnished_coin.desc": "Miner un minerai a 4 %% de chances de lâcher en plus un bloc entier de ce minerai. L'effet de base fonctionne toujours, avec 4 points de chances en moins.",
+
+  "addon.bloodbound.shattered_coin": "Shattered Coin",
+  "addon.bloodbound.shattered_coin.desc": "Les chances d'un drop supplémentaire passent à 50/55/60 %%, mais si le premier tirage échoue, le minerai n'est pas lâché du tout.",
+
+  "addon.bloodbound.bounty_poster": "Bounty Poster",
+  "addon.bloodbound.bounty_poster.desc": "Une flèche ayant parcouru plus de 27 blocs inflige Exposed pendant 20 secondes à sa cible et vous révèle son aura pour la même durée, visible à travers les murs par vous seul.",
+
+  "addon.bloodbound.grip_wrench": "Grip Wrench",
+  "addon.bloodbound.grip_wrench.desc": "Chaque QTE réussi répare 2 %% de durabilité supplémentaire.",
+
+  "addon.bloodbound.spring_clamp": "Spring Clamp",
+  "addon.bloodbound.spring_clamp.desc": "Le QTE initial est 50 %% plus grand, et tous les suivants partent de là.",
+
+  "addon.bloodbound.automatic_screwdriver": "Automatic Screwdriver",
+  "addon.bloodbound.automatic_screwdriver.desc": "Les QTE ne descendent jamais sous 40 %% du QTE initial, et rater un QTE ne retire plus de durabilité.",
+
+  "addon.bloodbound.duct_tape": "Duct Tape",
+  "addon.bloodbound.duct_tape.desc": "Étire la réserve de durabilité de l'objet à 110 %% de sa valeur d'origine : une réparation le pousse donc au-delà de son maximum. Sans cumul : un objet déjà étiré ne l'est pas davantage.",
+
+  "addon.bloodbound.black_strap": "Black Strap",
+  "addon.bloodbound.black_strap.desc": "Le point de retour reste actif 3 secondes de plus.",
+
+  "addon.bloodbound.black_cable": "Black Cable",
+  "addon.bloodbound.black_cable.desc": "La recharge est réduite de 30 %%.",
+
+  "addon.bloodbound.diagnostic_tool_c": "Diagnostic Tool C",
+  "addon.bloodbound.diagnostic_tool_c.desc": "Après le retour, vous avez 4 secondes pour réappuyer sur la touche et annuler la téléportation : vous revenez là où vous étiez, avec la vie que vous aviez. La recharge est augmentée de 10 %%.",
+
+  "addon.bloodbound.diagnostic_tool_a": "Diagnostic Tool A",
+  "addon.bloodbound.diagnostic_tool_a.desc": "Poser un point donne Speed V pendant 1 seconde, puis Speed I pour le reste du timer, et masque entièrement les particules du perk. Si le timer expire sans téléportation, vous récoltez Slowness III pendant 2 secondes.",
+
+  "addon.bloodbound.diagnostic_tool_b": "Diagnostic Tool B",
+  "addon.bloodbound.diagnostic_tool_b.desc": "Le retour rembobine vos derniers déplacements jusqu'au point au lieu de vous y téléporter d'un coup, en 3 secondes, et seulement tant que vous maintenez la touche. Relâchez et vous restez où le rewind en était, le perk en recharge.",
+
+  "addon.bloodbound.boots_of_speed": "Boots of Speed",
+  "addon.bloodbound.boots_of_speed.desc": "Low Profile ne donne plus la vision nocturne, mais la vitesse accroupie est 75 % plus rapide, en plus de son bonus habituel.",
+
+  "addon.bloodbound.steel_toe_boot": "Steel Toe Boot",
+  "addon.bloodbound.steel_toe_boot.desc": "Tous les 5 blocs parcourus accroupi, vous récupérez 1 HP.",
+
+  "addon.bloodbound.taped_flashlight": "Taped Flashlight",
+  "addon.bloodbound.taped_flashlight.desc": "Longshot gagne 0,05 dégât par bloc de plus. Les flèches émettent aussi de la lumière (niveau 10) jusqu'à ce qu'elles disparaissent ou soient ramassées.",
+
+  "addon.bloodbound.gunpowder": "Gunpowder",
+  "addon.bloodbound.gunpowder.desc": "Les flèches ne sont plus affectées par la gravité.",
+
+  "addon.bloodbound.point_blank": "Point Blank",
+  "addon.bloodbound.point_blank.desc": "Toucher un joueur ou un mob à la tête inflige 1,75x plus de dégâts, en tenant compte des dégâts additionnels de Longshot.",
+
+  "addon.bloodbound.needle_and_thread": "Needle And Thread",
+  "addon.bloodbound.needle_and_thread.desc": "Les zones de réussite des QTE sont 50 % plus grandes, mais le soin de Surgical Suture est réduit de moitié.",
+
+  "addon.bloodbound.sterilizer": "Sterilizer",
+  "addon.bloodbound.sterilizer.desc": "Rater le QTE vous laisse 3 secondes pour réessayer au lieu d'entrer directement en recharge. Réussir ce second QTE vous soigne et raccourcit la recharge de moitié. Le rater, ou laisser passer la fenêtre, allonge la recharge de 30 %.",
+
+  "addon.bloodbound.gel_dressing": "Gel Dressing",
+  "addon.bloodbound.gel_dressing.desc": "Utilisé à pleine vie, un QTE réussi octroie un cœur jaune au lieu de soigner, jusqu'à 3. Retirer cet addon ou son perk les enlève immédiatement.",
+
+  "effect.bloodbound.flashed": "Aveuglé",
+
+  "bloodbound.message.guardian_angel_saved": "Sauvé - %s QTE pour le rester",
+  "bloodbound.message.guardian_angel_progress": "%s / %s",
+  "bloodbound.message.guardian_angel_survived": "Vous vivez",
+  "bloodbound.message.guardian_angel_failed": "Raté - le coup vous rattrape",
+  "bloodbound.message.engraved_tablet_kept": "La tablette vous a gardé %s points d'expérience",
+  "bloodbound.message.green_herbs_gained": "Green Herbs - vous vous soignez plus vite pendant %s secondes",
+  "bloodbound.message.green_herbs_shared": "%s se soigne plus vite désormais",
+  "bloodbound.message.green_herbs_faded": "L'effet des herbes se dissipe",
+
+  "perk.bloodbound.guardian_angel": "Guardian Angel",
+  "perk.bloodbound.guardian_angel.desc": "Un coup qui devrait vous tuer vous laisse à %1$s %% de vie, auréolé d'or aux yeux de tous. Entre %2$s et %3$s secondes plus tard, une série de QTE commence : réussissez-en %4$s et vous repartez, recharge %5$s secondes. Ratez-en un seul et le coup vous rattrape.",
+
+  "perk.bloodbound.flashbang": "Flashbang",
+  "perk.bloodbound.flashbang.desc": "Appuyez sur la touche du slot pour lancer une grenade. Elle rebondit une fois et explose 2 secondes plus tard, en bipant de plus en plus vite. Tout ce qui regarde l'explosion est Aveuglé 4 secondes, une seconde de moins tous les 10 blocs de distance. Un mur, ou simplement tourner le dos, suffit à s'en protéger. Recharge %s secondes.",
+
+  "perk.bloodbound.green_herbs": "Green Herbs",
+  "perk.bloodbound.green_herbs.desc": "Débloque le soin. Votre régénération naturelle est %1$s fois plus rapide. Rendez %2$s HP à un autre joueur et il régénère de la même façon pendant %3$s secondes, sauf s'il possède déjà ce perk.",
+
+  "perk.bloodbound.from_the_dark": "From The Dark",
+  "perk.bloodbound.from_the_dark.desc": "Vous voyez dans le noir en permanence. Sprinter sous une luminosité de 3 ou moins vous donne Vitesse III pendant 2 secondes, puis une recharge de %s secondes. Le prix : l'effet Aveuglé dure deux fois plus longtemps sur vous.",
+
+  "addon.bloodbound.blood_stained_book": "Blood Stained Book",
+  "addon.bloodbound.blood_stained_book.desc": "Vous disposez de 10 secondes de plus avant le début des QTE.",
+
+  "addon.bloodbound.believers_eye": "Believer's Eye",
+  "addon.bloodbound.believers_eye.desc": "Il faut 2 QTE réussis de moins pour survivre.",
+
+  "addon.bloodbound.engraved_tablet": "Engraved Tablet",
+  "addon.bloodbound.engraved_tablet.desc": "Chaque QTE réussi sous l'œil de l'ange vous rapporte un jeton. À votre prochaine mort, vous conservez 12 %% de votre expérience par jeton, jusqu'à la totalité.",
+
+  "bloodbound.message.amd_too_low": "Charge insuffisante - il en faut au moins %s pour tirer",
+
+  "perk.bloodbound.advanced_movement_device": "Advanced Movement Device",
+  "perk.bloodbound.advanced_movement_device.desc": "Appuyez sur la touche du slot pour tirer un projectile ; quand il s'arrête, vous êtes téléporté à sa position. Il rebondit sur le premier mur et s'arrête au second. Chaque tir puise dans une réserve de %1$s charges qui se recharge seule, et ne peut en dépenser plus de %2$s. Vitesse %3$s.",
+
+  "perk.bloodbound.beware_the_power_of_an_angel": "Beware The Power Of An Angel",
+  "perk.bloodbound.beware_the_power_of_an_angel.desc": "Appuyez sur la touche du slot pour déployer vos ailes et voler, à 3 charges par seconde ; appuyez à nouveau pour les replier. Vous possédez %s charges, qui se consomment jusqu'à ce que vous touchiez le sol et ne reviennent qu'au sol - une toutes les 2 secondes.",
+
+  "perk.bloodbound.catching_up": "Catching Up",
+  "perk.bloodbound.catching_up.desc": "Vous voyez les marques laissées au sol. Marcher sur des marques qui ne sont pas les vôtres octroie Vitesse I, et l'effet persiste %1$s secondes après la fin de la piste. Par ailleurs vous marchez %2$s %% plus vite, tant que vous ne sprintez pas et n'êtes pas accroupi.",
+
+  "perk.bloodbound.hunters_instinct": "Hunter's Instinct",
+  "perk.bloodbound.hunters_instinct.desc": "Vous voyez les marques laissées au sol. Dès qu'une entité dans un rayon de %s blocs perd de la vie à cause d'autre chose que vous, son aura vous est révélée pendant 7 secondes.",
+
+  "addon.bloodbound.wire_spool": "Wire Spool",
+  "addon.bloodbound.wire_spool.desc": "La réserve se remplit 75 %% plus vite.",
+
+  "addon.bloodbound.scraps": "Scraps",
+  "addon.bloodbound.scraps.desc": "La réserve et le budget d'un projectile sont 20 %% plus grands, et le projectile va 40 %% plus vite.",
+
+  "addon.bloodbound.primer_bulb": "Primer Bulb",
+  "addon.bloodbound.primer_bulb.desc": "La réserve se remplit 150 %% plus vite mais contient 8 %% de moins. Se téléporter soigne entre 0 et 4 HP.",
+
+  "addon.bloodbound.tension_spring": "Tension Spring",
+  "addon.bloodbound.tension_spring.desc": "Le projectile est tenu en laisse : maintenez la touche pendant son vol, et la relâcher vous téléporte là où il en est. Cette téléportation met l'appareil en recharge pendant 1 seconde.",
+
+  "addon.bloodbound.field_recorder": "Field Recorder",
+  "addon.bloodbound.field_recorder.desc": "Le projectile ne rebondit plus - le premier bloc touché est votre destination. En vol, il dérive fortement vers ce que vous visez, et chaque bloc parcouru coûte 50 %% de charges en plus.",
+
+  "addon.bloodbound.bright_feather": "Bright Feather",
+  "addon.bloodbound.bright_feather.desc": "Une charge revient toutes les 1,25 secondes au lieu de 2.",
+
+  "addon.bloodbound.belt_pendant": "Belt Pendant",
+  "addon.bloodbound.belt_pendant.desc": "Vous volez 75 %% plus vite, à 4 charges par seconde au lieu de 3.",
+
+  "addon.bloodbound.golden_crown": "Golden Crown",
+  "addon.bloodbound.golden_crown.desc": "Vous possédez 25 %% de charges en plus, mais une seule revient toutes les 2,25 secondes.",
+
+  "addon.bloodbound.gabriels_bow": "Gabriel's Bow",
+  "addon.bloodbound.gabriels_bow.desc": "En vol, arcs et arbalètes se chargent 75 %% plus vite et les flèches partent 150 %% plus vite. Cette vitesse n'apporte aucun dégât supplémentaire.",
+
+  "addon.bloodbound.mark_of_the_banished": "Mark Of The Banished",
+  "addon.bloodbound.mark_of_the_banished.desc": "Vous possédez 400 %% de charges en plus, mais vous êtes Exposed tant que vous êtes en l'air. L'effet s'arrête dès que vous touchez le sol.",
+
+  "effect.bloodbound.bleeding": "Hémorragie",
+  "effect.bloodbound.exhausted": "Épuisé",
+
+  "entity.bloodbound.barbed_wire": "Barbed Wire",
+
+  "bloodbound.message.bleeding_dressing": "Pansement en cours - encore %s secondes",
+  "bloodbound.message.bleeding_started": "Vous saignez - maintenez %s pour panser la blessure",
+  "bloodbound.message.bleeding_paused": "Pansement en pause - maintenez à nouveau la touche pour reprendre où vous en étiez",
+  "bloodbound.hud.bleeding_hint": "Maintenez %s pour panser la blessure",
+  "bloodbound.message.under_the_radar_hidden": "Under The Radar vous a gardé caché",
+  "bloodbound.message.bleeding_dressed": "L'hémorragie s'arrête",
+  "bloodbound.message.bleeding_interrupted": "Pansement interrompu",
+  "bloodbound.message.barbed_wire_setting": "Pose du piège - %s secondes, ne bougez pas",
+  "bloodbound.message.barbed_wire_placed": "Piège posé (%s / %s)",
+  "bloodbound.message.barbed_wire_moved": "Vous avez bougé - le piège est abandonné",
+  "bloodbound.message.barbed_wire_stopped": "Pose annulée",
+  "bloodbound.message.barbed_wire_triggered": "%s s'est pris dans votre piège",
+  "bloodbound.message.team_spirit_gained": "Team Spirit - restez à proximité",
+  "bloodbound.message.team_spirit_leaving": "Trop loin - revenez ou vous perdez l'effet",
+  "bloodbound.message.team_spirit_lost": "Hors de portée - Team Spirit est perdu",
+  "bloodbound.message.team_spirit_faded": "Team Spirit se dissipe",
+
+  "perk.bloodbound.barbed_wire": "Barbed Wire",
+  "perk.bloodbound.barbed_wire.desc": "Maintenez la touche du slot pendant %1$s secondes sans bouger pour poser un piège, affiché à %2$s %% d'opacité. Vous pouvez en avoir %3$s posés à la fois ; un quatrième supprime le plus ancien. La première entité qui marche dedans subit %5$s dégâts et reçoit Hémorragie à %6$s charges, et le piège disparaît - vous en êtes averti et son aura vous est révélée pendant 3 secondes. Une flèche, ou un objet jeté dedans, désamorce le piège. Retirer le perk de votre loadout supprime tous vos pièges. Recharge %4$s secondes, payée uniquement pour un piège réellement posé.",
+
+  "perk.bloodbound.panic_attack": "Panic Attack",
+  "perk.bloodbound.panic_attack.desc": "Frappez un joueur et ses mains ne se stabilisent plus : tous ses QTE sont %1$s %% plus petits et tournent %2$s %% plus vite. Aucun minuteur - l'effet tient tant que vous restez dans un rayon de %3$s blocs autour de lui. S'il en sort, l'effet est perdu jusqu'à votre prochain coup.",
+
+  "perk.bloodbound.out_of_breath": "Out Of Breath",
+  "perk.bloodbound.out_of_breath.desc": "Appuyez sur la touche du slot pour lancer une charge. Les murs ne font que la dévier ; elle explose au contact du sol, dans un rayon de %1$s blocs. Toute entité prise dedans reçoit Épuisé %2$s pendant %3$s secondes. Recharge %4$s secondes.",
+
+  "perk.bloodbound.team_spirit": "Team Spirit",
+  "perk.bloodbound.team_spirit.desc": "Débloque le soin. Rendez ne serait-ce qu'un point de vie à un joueur et il gagne Hâte %1$s et Force I pendant %2$s secondes - mais seulement tant qu'il reste dans un rayon de %3$s blocs autour de vous. S'il en sort, il a 3 secondes pour revenir ; passé ce délai les effets sont définitivement perdus et doivent être regagnés.",
+
+  "perk.bloodbound.beyond_vision": "Beyond Vision",
+  "perk.bloodbound.beyond_vision.desc": "Tous les effets négatifs qui vous touchent sont réduits de %s %%, et l'aura de ce qui a tenté de vous l'infliger vous est révélée pour la durée initiale de l'effet. Vous avez 8 cœurs au lieu de 10.",
+
+  "perk.bloodbound.healing_runes": "Healing Runes",
+  "perk.bloodbound.healing_runes.desc": "Appuyez sur la touche du slot pour tirer une rune lente insensible à la gravité. La première entité touchée est soignée de %1$s HP. Le perk possède %2$s runes, une revenant toutes les %3$s secondes.",
+
+  "addon.bloodbound.empty_shotgun_shell": "Empty Shotgun Shell",
+  "addon.bloodbound.empty_shotgun_shell.desc": "La portée est augmentée de 25 %%.",
+
+  "addon.bloodbound.bounty_hunter_license": "Bounty Hunter License",
+  "addon.bloodbound.bounty_hunter_license.desc": "Une aura révélée ne se dissipe pas tant que vous regardez droit dans sa direction.",
+
+  "addon.bloodbound.light_steel": "Light Steel",
+  "addon.bloodbound.light_steel.desc": "La recharge est réduite de 30 %%.",
+
+  "addon.bloodbound.fast_fuse": "Fast Fuse",
+  "addon.bloodbound.fast_fuse.desc": "La grenade explose 75 %% plus vite.",
+
+  "addon.bloodbound.worn_satchel": "Worn Satchel",
+  "addon.bloodbound.worn_satchel.desc": "Vous pouvez lancer 2 grenades avant que la recharge ne s'enclenche.",
+
+  "addon.bloodbound.pulled_pin": "Pulled Pin",
+  "addon.bloodbound.pulled_pin.desc": "La grenade est lancée au relâchement de la touche, et plus vous l'avez maintenue plus elle part fort - jusqu'à 200 %% plus loin après 4 secondes.",
+
+  "addon.bloodbound.slime_goo": "Slime Goo",
+  "addon.bloodbound.slime_goo.desc": "Les charges reviennent 25 %% plus vite.",
+
+  "addon.bloodbound.broken_arrow": "Broken Arrow",
+  "addon.bloodbound.broken_arrow.desc": "Le cône de visée automatique après un rebond est 35 %% plus large.",
+
+  "addon.bloodbound.jagged_head": "Jagged Head",
+  "addon.bloodbound.jagged_head.desc": "Un projectile qui touche une entité après un rebond a 50 %% de chances d'infliger Hémorragie à 15 charges.",
+
+  "addon.bloodbound.paper_fan": "Paper Fan",
+  "addon.bloodbound.paper_fan.desc": "Après le rebond, le projectile n'est plus soumis à la gravité et dévie fortement vers votre viseur. Ce qu'il touche après le rebond voit son aura révélée pendant 10 secondes, et toucher une cible déjà révélée inflige 50 %% de dégâts en plus.",
+
+  "addon.bloodbound.origami_crane": "Origami Crane",
+  "addon.bloodbound.origami_crane.desc": "Les charges ne sont plus limitées et chaque projectile rebondit, jusqu'à 5 fois, chaque rebond ajoutant 10 %% de dégâts. Plus rien n'est visé pour vous : la visée automatique est désactivée.",
+
+  "addon.bloodbound.metal_syringe": "Metal Syringe",
+  "addon.bloodbound.metal_syringe.desc": "L'injection recharge également entièrement toutes vos charges, quel que soit le perk. La recharge est allongée de 10 %%.",
+
+  "addon.bloodbound.diluted_serum": "Diluted Serum",
+  "addon.bloodbound.diluted_serum.desc": "Vous disposez de 2 doses avant la recharge, mais chacune est 35 %% moins puissante.",
+
+  "addon.bloodbound.inhalator": "Inhalator",
+  "addon.bloodbound.inhalator.desc": "La dose est 75 %% moins puissante et la recharge 75 %% plus courte, et tous vos effets négatifs sont retirés.",
+
+  "entity.bloodbound.target_found": "Fil de détection",
+
+  "bloodbound.message.target_found_setting": "Pose du fil - %s secondes, ne bougez pas",
+  "bloodbound.message.target_found_placed": "Fil posé (%s / %s)",
+  "bloodbound.message.target_found_moved": "Vous avez bougé - le fil est abandonné",
+  "bloodbound.message.target_found_stopped": "Pose annulée",
+  "bloodbound.message.target_found_triggered": "%1$s a franchi votre fil - vous pourrez le rejoindre dans %2$s secondes",
+  "bloodbound.message.target_found_far": "%s a franchi un fil trop loin pour être rejoint",
+  "bloodbound.message.target_found_window": "Appuyez sur la touche du slot pour y aller - %s secondes",
+  "bloodbound.message.target_found_missed": "La fenêtre s'est fermée - le fil a disparu",
+  "bloodbound.message.target_found_arrived": "Vous avez rejoint le fil",
+
+  "perk.bloodbound.target_found": "Target Found",
+  "perk.bloodbound.target_found.desc": "Maintenez la touche du slot pendant %1$s secondes sans bouger pour poser un fil, affiché à %2$s %% d'opacité. Vous pouvez en avoir %3$s posés ; un de plus supprime le plus ancien. Quand quelque chose le franchit alors que vous êtes à moins de 128 blocs, vous êtes averti et son aura vous est révélée, puis %5$s secondes plus tard une fenêtre de 4 secondes s'ouvre : appuyez sur la touche du slot pour être téléporté au fil. Le fil disparaît à la fermeture de la fenêtre, utilisée ou non. Plus loin, vous êtes seulement averti et le fil est détruit. Recharge %4$s secondes après la pose.",
+
+  "perk.bloodbound.under_the_radar": "Under The Radar",
+  "perk.bloodbound.under_the_radar.desc": "Votre nametag est caché et tous les sons que vous produisez sont supprimés, sous-titres compris. La première fois que votre aura devrait être révélée, c'est bloqué, ainsi que tout le reste pendant les %1$s secondes suivantes ; le perk passe ensuite en recharge pendant %2$s secondes.",
+
+  "perk.bloodbound.final_blow": "Final Blow",
+  "perk.bloodbound.final_blow.desc": "Vous voyez les marques de tout joueur ou entité sous %1$s %% de sa vie. Marcher dessus inflige Broken à leur propriétaire, tant que vous restez sur la piste et %2$s secondes après. S'il repasse au-dessus du seuil, ses marques disparaissent immédiatement.",
+
+  "perk.bloodbound.full_extraction": "Full Extraction",
+  "perk.bloodbound.full_extraction.desc": "Les minerais sortent déjà cuits, avec la roche dans laquelle ils se trouvaient, et ont %s %% de chances de donner une Soul Shard - relancé après chaque réussite. Silk Touch désactive le perk.",
+
+  "perk.bloodbound.fragnade": "Frag' Nade",
+  "perk.bloodbound.fragnade.desc": "Maintenez la touche du slot pour armer le lancer - plus vous maintenez, plus il est fort, jusqu'à 3 secondes - puis relâchez pour lancer. La grenade rebondit sur les murs et s'arrête au sol, où elle bipe 0,75 seconde si elle a rebondi et 1,5 seconde sinon. Elle explose ensuite deux fois à une seconde d'intervalle : %1$s blocs de rayon, puis %2$s blocs avec un fort recul. Chaque explosion inflige %3$s dégâts ignorant l'armure, vous compris. Recharge %4$s secondes.",
+
+  "addon.bloodbound.fragstone_shard": "Fragstone Shard",
+  "addon.bloodbound.fragstone_shard.desc": "Les deux explosions sont 15 %% plus grandes.",
+
+  "addon.bloodbound.raw_ore": "Raw Ore",
+  "addon.bloodbound.raw_ore.desc": "La grenade explose 30 %% plus vite après avoir touché le sol.",
+
+  "addon.bloodbound.star_medal": "Star Medal",
+  "addon.bloodbound.star_medal.desc": "Pendant que vous armez le lancer, des particules visibles par vous seul montrent la trajectoire et la taille des deux explosions.",
+
+  "addon.bloodbound.powdered_crystal": "Powdered Crystal",
+  "addon.bloodbound.powdered_crystal.desc": "L'intervalle entre les explosions est 80 %% plus long, mais la seconde est 40 %% plus grande et inflige Broken pendant 6 secondes.",
+
+  "addon.bloodbound.quartz_pendant": "Quartz Pendant",
+  "addon.bloodbound.quartz_pendant.desc": "La première explosion est 150 %% plus grande mais inflige 70 %% de dégâts en moins, et applique Lenteur I pendant 4 secondes. La seconde inflige 40 %% de dégâts en plus.",
+  "addon.bloodbound.pure_topaz": "Pure Topaz",
+  "addon.bloodbound.pure_topaz.desc": "La seconde explosion ne vous inflige plus de dégâts et projette 2,5 fois plus fort, et vous ne subissez aucun dégât de chute jusqu'à 2 secondes après avoir touché le sol.",
+
+  "addon.bloodbound.enhanced_gauntlet": "Enhanced Gauntlet",
+  "addon.bloodbound.enhanced_gauntlet.desc": "Le projectile va 50 %% plus vite.",
+
+  "addon.bloodbound.tracking_head": "Tracking Head",
+  "addon.bloodbound.tracking_head.desc": "Le projectile dévie légèrement vers ce qui est le plus proche de sa trajectoire.",
+
+  "addon.bloodbound.heavy_hook": "Heavy Hook",
+  "addon.bloodbound.heavy_hook.desc": "C'est vous qui êtes ramené à la cible, et non l'inverse. Elle reçoit quand même Lenteur et Faiblesse.",
+
+  "addon.bloodbound.soul_chain": "Soul Chain",
+  "addon.bloodbound.soul_chain.desc": "Le projectile traverse les blocs et va 15 %% moins vite. Toute entité à moins de 2 blocs de lui voit son aura révélée pendant 3 secondes, et un tir raté ne coûte que la moitié de la recharge.",
+
+  "addon.bloodbound.odd_arrow": "Odd Arrow",
+  "addon.bloodbound.odd_arrow.desc": "Les flèches ignorent la gravité et suivent une trajectoire en S. Elles partent 60 %% moins vite mais accélèrent au lieu de ralentir, et arcs et arbalètes se chargent deux fois plus vite.",
+
+  "addon.bloodbound.cursed_riser": "Cursed Riser",
+  "addon.bloodbound.cursed_riser.desc": "Les flèches dévient légèrement vers leur cible, et tout ce qu'elles touchent reçoit Hémorragie à 18 charges.",
+
+  "bloodbound.command.perk_granted": "%2$s (niveau %3$s) accordé à %1$s joueur(s)",
+  "bloodbound.command.perk_revoked": "%2$s retiré à %1$s joueur(s)",
+  "bloodbound.command.perks_unlocked": "Tous les perks débloqués au niveau max pour %1$s joueur(s)",
+  "bloodbound.command.addon_granted": "Addon %2$s accordé à %1$s joueur(s)",
+  "bloodbound.command.addon_revoked": "Addon %2$s retiré à %1$s joueur(s)",
+  "bloodbound.command.addons_unlocked": "Tous les addons débloqués pour %1$s joueur(s)",
+  "bloodbound.command.shards_given": "%2$s éclats d'âme donnés à %1$s joueur(s)",
+  "bloodbound.command.web_rerolled": "Soulweb régénérée pour %1$s joueur(s)",
+  "bloodbound.command.web_level": "Niveau de soulweb réglé sur %2$s pour %1$s joueur(s)",
+  "bloodbound.command.cooldowns_cleared": "Recharges réinitialisées pour %1$s joueur(s)",
+  "bloodbound.command.reset": "Progression BloodBound effacée pour %1$s joueur(s)",
+  "bloodbound.command.unknown_perk": "Perk inconnu : %s",
+  "bloodbound.command.unknown_addon": "Addon inconnu : %s",
+  "bloodbound.command.info_header": "BloodBound - %s",
+  "bloodbound.command.info_web": "Toile niveau %s, %s éclats d'âme en poche",
+  "bloodbound.command.info_perk": "%3$s %1$s niveau %2$s - addon : %4$s",
+  "bloodbound.command.info_addons": "Addons possédés : %s",
+
+  "bloodbound.configuration.title": "BloodBound",
+  "bloodbound.configuration.hud": "ATH",
+  "bloodbound.configuration.hudScale": "Taille du HUD de perks"
+}

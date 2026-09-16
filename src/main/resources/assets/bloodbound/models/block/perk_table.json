@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "bloodbound:block/perk_table_top",
+    "side": "bloodbound:block/perk_table_side",
+    "bottom": "bloodbound:block/perk_table_bottom"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "item": "minecraft:crafting_table" },
+    { "item": "bloodbound:soul_shard" }
+  ],
+  "result": {
+    "id": "bloodbound:perk_table",
+    "count": 1
+  }
+}

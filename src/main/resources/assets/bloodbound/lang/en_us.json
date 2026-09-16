@@ -1,0 +1,567 @@
+{
+  "itemGroup.bloodbound": "BloodBound",
+
+  "item.bloodbound.soul_shard": "Soul Shard",
+  "block.bloodbound.perk_table": "Perk Table",
+  "container.bloodbound.perk_table": "Perk Table",
+
+  "key.categories.bloodbound": "BloodBound",
+  "key.bloodbound.activate_slot_1": "Activate Perk in Slot 1",
+  "key.bloodbound.activate_slot_2": "Activate Perk in Slot 2",
+  "key.bloodbound.activate_slot_3": "Activate Perk in Slot 3",
+  "key.bloodbound.activate_slot_4": "Activate Perk in Slot 4",
+  "key.bloodbound.heal": "Heal Teammate (hold)",
+  "key.bloodbound.skill_check": "Skill Check",
+
+  "bloodbound.tab.loadout": "Loadout",
+  "bloodbound.tab.addons": "Addons",
+  "bloodbound.tab.soulweb": "Soulweb",
+  "bloodbound.tier": "Tier %s",
+
+  "bloodbound.loadout.learned": "Learned perks (%s)",
+  "bloodbound.loadout.slots": "Equipped %s/%s",
+  "bloodbound.loadout.empty": "No perks learned yet.",
+  "bloodbound.loadout.empty_slot": "Slot %s",
+  "bloodbound.loadout.search": "Search",
+  "bloodbound.loadout.no_match": "No perk by that name.",
+  "bloodbound.loadout.hint_equip": "Click to equip",
+  "bloodbound.loadout.hint_unequip": "Click to unequip",
+
+  "bloodbound.addons.owned": "Addons owned (%s)",
+  "bloodbound.addons.empty": "No addons yet. Buy them on the soulweb.",
+  "bloodbound.addons.equipped_header": "Equipped addons",
+  "bloodbound.addons.empty_slot": "No addon equipped",
+  "bloodbound.addons.active": "Active",
+  "bloodbound.addons.inactive": "Its perk is not equipped",
+  "bloodbound.addons.hint_equip": "Click to fit into its perk slot",
+  "bloodbound.addons.no_perk": "No perk in this slot",
+  "bloodbound.addons.needs_perk": "Equip its perk to use this addon",
+  "bloodbound.addons.hint_unequip": "Click to unequip",
+  "bloodbound.addon.for_perk": "Addon for %s",
+
+  "bloodbound.addon_rarity.common": "Common",
+  "bloodbound.addon_rarity.uncommon": "Uncommon",
+  "bloodbound.addon_rarity.rare": "Rare",
+  "bloodbound.addon_rarity.epic": "Epic",
+  "bloodbound.addon_rarity.unstable": "Unstable",
+
+  "bloodbound.soulweb.level": "Web level %s",
+  "bloodbound.soulweb.loading": "Waiting for the web...",
+  "bloodbound.soulweb.perk_node": "%s %s",
+  "bloodbound.soulweb.xp_node": "%s XP",
+  "bloodbound.soulweb.addon_rarity": "Addon - %s",
+  "bloodbound.soulweb.cost": "Cost: %s soul shards",
+  "bloodbound.soulweb.purchased": "Already claimed",
+  "bloodbound.soulweb.blocked": "Branch locked - you committed elsewhere",
+  "bloodbound.soulweb.locked": "Buy the node before it first",
+  "bloodbound.soulweb.hint_buy": "Click to buy",
+  "bloodbound.soulweb.hint_open": "Buying anything locks every other branch",
+  "bloodbound.soulweb.hint_committed": "You are committed to this branch until the web resets",
+
+  "bloodbound.rarity.common": "Common",
+  "bloodbound.rarity.uncommon": "Uncommon",
+  "bloodbound.rarity.rare": "Rare",
+  "bloodbound.rarity.very_rare": "Very Rare",
+  "bloodbound.rarity.ultra_rare": "Ultra Rare",
+
+  "bloodbound.message.not_enough_shards": "You need %s soul shards",
+  "bloodbound.message.perk_unlocked": "Perk learned: %s (tier %s)",
+  "bloodbound.message.addon_unlocked": "Addon acquired: %s",
+  "bloodbound.message.web_reset": "The web has been rebuilt",
+  "bloodbound.message.close_call_too_healthy": "Close Call only works at 5 hearts or less",
+  "bloodbound.message.broken_device_armed": "Return point set - %s seconds",
+  "bloodbound.message.broken_device_lapsed": "Return point lost",
+  "bloodbound.message.broken_device_wrong_world": "Your return point is in another world",
+  "bloodbound.message.broken_device_undo_ready": "Press again within %s seconds to take it back",
+  "bloodbound.message.broken_device_undone": "Return undone",
+  "bloodbound.message.broken_device_rewind_stopped": "Rewind cut short",
+  "bloodbound.message.syringe_used": "Cooldowns pushed forward on %s perk(s)",
+  "bloodbound.message.syringe_nothing": "Nothing is on cooldown",
+  "bloodbound.message.tinkerer_no_item": "Hold a repairable item to tinker with",
+  "bloodbound.message.tinkerer_undamaged": "That item is already whole",
+  "bloodbound.message.tinkerer_stopped": "Tinkering stopped",
+  "bloodbound.message.tinkerer_dropped": "Tinkering stopped - the item left your hand",
+  "bloodbound.message.tinkerer_failed": "Slipped! The repair goes wrong",
+  "bloodbound.message.tinkerer_complete": "Fully repaired",
+  "bloodbound.message.suture_retry": "Missed - try again, quickly!",
+  "bloodbound.message.no_healing_ability": "No equipped perk grants healing",
+  "bloodbound.message.no_heal_target": "Nobody nearby is crouched and holding still",
+  "bloodbound.message.healing": "Healing %s - %s/%s HP",
+  "bloodbound.message.heal_missed": "Missed! The wound reopens",
+  "bloodbound.message.heal_stopped": "Healing stopped",
+  "bloodbound.message.heal_complete": "Fully healed",
+  "bloodbound.message.patch_up_needs_crouch": "Crouch still, then press the key to patch yourself up",
+  "bloodbound.message.patch_up_full_health": "Nothing to patch up",
+  "bloodbound.message.heal_interrupted": "Healing interrupted",
+  "bloodbound.message.keep_fighting_broken": "You are Broken and cannot give health",
+  "bloodbound.message.keep_fighting_no_health": "Not enough health to give",
+  "bloodbound.message.keep_fighting_no_target": "No player close enough",
+
+  "perk.bloodbound.perfect_landing": "Perfect Landing",
+  "perk.bloodbound.perfect_landing.desc": "Fall damage from more than 3 blocks is negated entirely. On landing you gain Speed III for %s seconds, then the perk goes on cooldown for %s seconds.",
+
+  "perk.bloodbound.close_call": "Close Call",
+  "perk.bloodbound.close_call.desc": "At 5 hearts or less, press the activation key to dash roughly 4 blocks forward. You take no damage during the dash. Cooldown: %s seconds.",
+
+  "perk.bloodbound.low_profile": "Low Profile",
+  "perk.bloodbound.low_profile.desc": "While sneaking you move as if under Speed %s and gain night vision. Both end the instant you stand up.",
+
+  "perk.bloodbound.surgical_suture": "Surgical Suture",
+  "perk.bloodbound.surgical_suture.desc": "Press the slot key to trigger a hard skill check. Land it and you heal %s HP on the spot, with no cooldown at all; miss it and the perk goes on cooldown for 30 seconds. Also unlocks healing: while healing another player, every skill check you land heals them %s HP extra. Being on cooldown never blocks healing.",
+
+  "effect.bloodbound.broken": "Broken",
+  "effect.bloodbound.exposed": "Exposed",
+  "effect.bloodbound.aura_revealed": "Aura Revealed",
+
+  "perk.bloodbound.keep_fighting": "Keep Fighting",
+  "perk.bloodbound.keep_fighting.desc": "Press the slot key next to another player to instantly heal them %s HP, at the cost of %s of your own. You are then Broken for %s seconds. Unusable while Broken, or without enough health to spare.",
+
+  "perk.bloodbound.lightbringer": "Lightbringer",
+  "perk.bloodbound.lightbringer.desc": "Every player within 16 blocks, you included, recovers from cooldowns and negative effects %s%% faster.",
+
+  "perk.bloodbound.caretaker": "Caretaker",
+  "perk.bloodbound.caretaker.desc": "Unlocks healing, and makes it %s%% faster.",
+
+  "perk.bloodbound.longshot": "Longshot",
+  "perk.bloodbound.longshot.desc": "Arrows you fire gain +%s damage for every block they travel before impact.",
+
+  "perk.bloodbound.patch_up": "Patch Up",
+  "perk.bloodbound.patch_up.desc": "Crouch still and press the slot key to start mending yourself; press it again to stop. It runs on the same skill checks as healing someone else, only slower: a full heal takes %s seconds. Moving or standing up stops it at once.",
+
+  "perk.bloodbound.we_can_do_this": "We Can Do This",
+  "perk.bloodbound.we_can_do_this.desc": "Unlocks healing. While you are at full health yourself, you heal others %s%% faster.",
+
+  "perk.bloodbound.adrenaline": "Adrenaline",
+  "perk.bloodbound.adrenaline.desc": "At 3 HP or less, Adrenaline fires: you are Broken and ignore all damage for %s seconds, then the perk goes on cooldown for 60. A blow that takes you straight from healthy to nothing kills you before it can trigger.",
+
+  "perk.bloodbound.relentless": "Relentless",
+  "perk.bloodbound.relentless.desc": "At %s hearts or less, your attacks chain into %s follow-up blows, one every 0.52 seconds, dealing 30%%, 15%% and 7.5%% of the opening hit. Cooldown 5 seconds.",
+
+  "perk.bloodbound.broken_movement_device": "Broken Movement Device",
+  "perk.bloodbound.broken_movement_device.desc": "Press the slot key to pin down where you stand and the health you have. Press it again within %s seconds to snap back to that spot with exactly that health. Let the window close and the point is wasted. Cooldown %s seconds, counted from the moment the point is spent or lost.",
+
+  "perk.bloodbound.raise_the_stakes": "Raise The Stakes",
+  "perk.bloodbound.raise_the_stakes.desc": "Every ore you mine has a %s%% chance of dropping one more time, and every success rolls again, so a lucky vein keeps paying. Hostile mobs also give up one extra soul shard. Silk Touch turns the whole thing off.",
+
+  "perk.bloodbound.anti_exhaustion_syringe": "Anti-Exhaustion Syringe",
+  "perk.bloodbound.anti_exhaustion_syringe.desc": "Press the slot key to skip %s%% of what is left on every other perk's cooldown. The syringe itself then goes on cooldown for %s seconds.",
+
+  "perk.bloodbound.echoing_wounds": "Echoing Wounds",
+  "perk.bloodbound.echoing_wounds.desc": "Damage you deal jumps from what you hit to the nearest living thing within 5 blocks, up to %s times, losing %s%% of its damage on every jump. It never comes back to you and never hits the same thing twice. Cooldown %s seconds, paid only when the echo actually finds somebody.",
+
+  "perk.bloodbound.tinkerer": "Tinkerer",
+  "perk.bloodbound.tinkerer.desc": "Press the slot key while holding a damaged item to start mending it. Land the skill check to restore %s%% of its durability and get another one straight away, %s%% tighter than the last. A miss costs the item 12%% of its durability and ends the run, as does the item leaving your hand or a second press. Cooldown %s seconds.",
+
+  "perk.bloodbound.low_cost_movement_device": "Low-Cost Movement Device",
+  "perk.bloodbound.low_cost_movement_device.desc": "Spend a charge on a falling shot, and wherever it hits a block, it throws you there. %1$s charges with no wait between them; only the last one starts the %6$s second cooldown. The throw pulls up to %2$s across and %3$s up, more again when the shot lands above you and never down when it lands below. Shot speed %4$s, gravity %5$s, no range limit.",
+
+  "perk.bloodbound.omniscience": "Omniscience",
+  "perk.bloodbound.omniscience.desc": "Stand still for %s seconds and every entity, chest and ore within %s blocks is outlined through the walls, for you alone. Tier I is blind to diamond and ancient debris, tier II to ancient debris. The moment you move, it all goes away.",
+
+  "perk.bloodbound.bank_shot": "Bank Shot",
+  "perk.bloodbound.bank_shot.desc": "Holds 3 charges, one coming back every %s seconds. Every projectile you fire spends one to bounce off the first block it hits, with a slight auto-aim on the way out.",
+
+  "perk.bloodbound.no_one_gets_away": "No One Gets Away",
+  "perk.bloodbound.no_one_gets_away.desc": "Press the slot key to fire a fast, flat shot. Whatever it catches is dragged back to your feet and left barely able to move or fight for a second. Cooldown %s seconds, paid whether it lands or not.",
+
+  "perk.bloodbound.nasty_blade": "Nasty Blade",
+  "perk.bloodbound.nasty_blade.desc": "Your attacks deal 2 less damage. Every hit that lands banks a token — at most one every half second — and starts a %s second clock, which each new token resets. Each token you hold puts 0.5 damage back onto your swings. Let the clock run out and the whole streak is gone.",
+
+  "addon.bloodbound.bandages_wrap": "Bandages Wrap",
+  "addon.bloodbound.bandages_wrap.desc": "Mending yourself runs 25%% quicker.",
+
+  "addon.bloodbound.clean_gloves": "Clean Gloves",
+  "addon.bloodbound.clean_gloves.desc": "Skill checks are 20 percent more likely to turn up on each roll.",
+
+  "addon.bloodbound.first_aid_spray_can": "First Aid Spray Can",
+  "addon.bloodbound.first_aid_spray_can.desc": "While you mend yourself, every other player within 8 blocks mends too, at 75%% of your rate. They only have to be there.",
+
+  "addon.bloodbound.knife_belt": "Knife Belt",
+  "addon.bloodbound.knife_belt.desc": "The streak survives 2 seconds longer between hits.",
+
+  "addon.bloodbound.razor_blade": "Razor Blade",
+  "addon.bloodbound.razor_blade.desc": "Every token is worth 0.75 damage instead of 0.5.",
+
+  "addon.bloodbound.anticoagulant": "Anticoagulant",
+  "addon.bloodbound.anticoagulant.desc": "Your attacks deal 3 less damage instead of 2, but everything you hit is left Broken for as long as the streak lasts, and for 15 seconds after it ends.",
+
+  "addon.bloodbound.leather_glove": "Leather Glove",
+  "addon.bloodbound.leather_glove.desc": "The dash carries you 40%% further.",
+
+  "addon.bloodbound.protective_glove": "Protective Glove",
+  "addon.bloodbound.protective_glove.desc": "Anything you run through during the dash is thrown clear of it.",
+
+  "addon.bloodbound.fingerless_glove": "Fingerless Glove",
+  "addon.bloodbound.fingerless_glove.desc": "After a dash you have 2 seconds to press again and dash once more, up to 3 in a row. The cooldown is 250%% longer, and only lands once the run is over.",
+
+  "addon.bloodbound.cracked_cup": "Cracked Cup",
+  "addon.bloodbound.cracked_cup.desc": "The Broken you take from Keep Fighting is 25%% shorter.",
+
+  "addon.bloodbound.rune_of_swiftness": "Rune of Swiftness",
+  "addon.bloodbound.rune_of_swiftness.desc": "The player you heal gains Speed I for as long as your Broken lasts.",
+
+  "addon.bloodbound.rune_of_stealth": "Rune of Stealth",
+  "addon.bloodbound.rune_of_stealth.desc": "You gain Invisibility I for 10 seconds and Resistance I for 5, and every other entity within 16 blocks has its aura revealed to you for 10 seconds. The Broken lasts 10%% longer.",
+
+  "addon.bloodbound.dirty_shroud": "Dirty Shroud",
+  "addon.bloodbound.dirty_shroud.desc": "The aura reaches 8 blocks further.",
+
+  "addon.bloodbound.charm_of_the_faithful": "Charm of the Faithful",
+  "addon.bloodbound.charm_of_the_faithful.desc": "Every other player standing in your aura adds 15%% to its recovery rate.",
+
+  "addon.bloodbound.gilded_cross": "Gilded Cross",
+  "addon.bloodbound.gilded_cross.desc": "The aura is worth only 20/28/35%% in company — but 80/88/95%% when there is nobody else inside it.",
+
+  "addon.bloodbound.wild_rose": "Wild Rose",
+  "addon.bloodbound.wild_rose.desc": "Relentless now starts at 7/7.5/8 hearts or less.",
+
+  "addon.bloodbound.wooden_sword": "Wooden Sword",
+  "addon.bloodbound.wooden_sword.desc": "Relentless is always on, whatever your health, but the cooldown is 150%% longer.",
+
+  "addon.bloodbound.bloodied_matchete": "Bloodied Matchete",
+  "addon.bloodbound.bloodied_matchete.desc": "Relentless holds off until 4.5/5/5.5 hearts or less, and lands one more blow for 15/7.5/3.25%% of the opening hit.",
+
+  "addon.bloodbound.rotting_rope": "Rotting Rope",
+  "addon.bloodbound.rotting_rope.desc": "The echo reaches 50%% further between victims.",
+
+  "addon.bloodbound.hysteria": "Hysteria",
+  "addon.bloodbound.hysteria.desc": "Everything the echo touches is left with Blindness I and Slowness I for 3 seconds. The cooldown is 1 second longer.",
+
+  "addon.bloodbound.bloodied_letter": "Bloodied Letter",
+  "addon.bloodbound.bloodied_letter.desc": "The chain reaches 2 more victims.",
+
+  "addon.bloodbound.wrapped_glass": "Wrapped Glass",
+  "addon.bloodbound.wrapped_glass.desc": "The first echo carries only 80%% of the opening blow, but every jump after it hits for 120/125/130%% of the one before instead of fading.",
+
+  "addon.bloodbound.blood_thirsty_skull": "Blood Thirsty Skull",
+  "addon.bloodbound.blood_thirsty_skull.desc": "Once the chain carries past its first victim, every jump after that heals you 2 HP.",
+
+  "addon.bloodbound.helium_inflated_balloon": "Helium Inflated Balloon",
+  "addon.bloodbound.helium_inflated_balloon.desc": "You fall 35%% slower, steer 30%% better in the air, and the cooldown is 40%% shorter.",
+
+  "addon.bloodbound.dead_weight": "Dead Weight",
+  "addon.bloodbound.dead_weight.desc": "You fall 75%% faster and land with a Speed a third stronger, but a third shorter. Anything you land on takes damage from the drop, up to 30.",
+
+  "addon.bloodbound.momentum_formula": "Momentum Formula",
+  "addon.bloodbound.momentum_formula.desc": "Once 3 blocks are behind you, you fall 2.5 times as fast. All that speed is spent on the way down: the Speed you land with lasts 40%% less.",
+
+  "addon.bloodbound.gear_system": "Gear System",
+  "addon.bloodbound.gear_system.desc": "Charges come back one at a time, every 4 seconds, instead of all at once when the cooldown ends.",
+
+  "addon.bloodbound.overclocked_module": "Overclocked Module",
+  "addon.bloodbound.overclocked_module.desc": "Every throw is 30%% harder.",
+
+  "addon.bloodbound.loose_screw": "Loose Screw",
+  "addon.bloodbound.loose_screw.desc": "The shot flies slower and bounces off the first block it hits for a short second hop, throwing you again where it lands.",
+
+  "addon.bloodbound.box_opener": "Box Opener",
+  "addon.bloodbound.box_opener.desc": "One charge only and 3 seconds more cooldown, but every throw is 50%% harder — and anything you crash into while flying takes damage from the impact, up to 18.",
+
+  "addon.bloodbound.shiny_coin": "Shiny Coin",
+  "addon.bloodbound.shiny_coin.desc": "The chance of another ore drop goes up by 7.77 points.",
+
+  "addon.bloodbound.scratched_coin": "Scratched Coin",
+  "addon.bloodbound.scratched_coin.desc": "The chance of another ore drop goes down by 10 points, but hostile mobs give up 2 extra soul shards instead of 1.",
+
+  "addon.bloodbound.tarnished_coin": "Tarnished Coin",
+  "addon.bloodbound.tarnished_coin.desc": "Mining an ore has a 4%% chance of also dropping a whole storage block of it. The reroll still works, with its chance 4 points lower.",
+
+  "addon.bloodbound.shattered_coin": "Shattered Coin",
+  "addon.bloodbound.shattered_coin.desc": "The chance of another drop jumps to 50/55/60%%, but a failed first roll costs you the ore itself.",
+
+  "addon.bloodbound.bounty_poster": "Bounty Poster",
+  "addon.bloodbound.bounty_poster.desc": "An arrow that has flown more than 27 blocks leaves its target Exposed for 20 seconds and reveals their aura to you for the same, seen through walls by you alone.",
+
+  "addon.bloodbound.grip_wrench": "Grip Wrench",
+  "addon.bloodbound.grip_wrench.desc": "Every landed check repairs a further 2%% of the item's durability.",
+
+  "addon.bloodbound.spring_clamp": "Spring Clamp",
+  "addon.bloodbound.spring_clamp.desc": "The opening skill check is 50%% wider, and every check after it starts from there.",
+
+  "addon.bloodbound.automatic_screwdriver": "Automatic Screwdriver",
+  "addon.bloodbound.automatic_screwdriver.desc": "The checks never tighten below 40%% of the opening one, and a missed check no longer costs the item any durability.",
+
+  "addon.bloodbound.duct_tape": "Duct Tape",
+  "addon.bloodbound.duct_tape.desc": "Stretches the item's durability pool to 110%% of what it was built with, so a run mends it past its own maximum. Never compounds: a tool already stretched stays where it is.",
+
+  "addon.bloodbound.black_strap": "Black Strap",
+  "addon.bloodbound.black_strap.desc": "The return point stays up 3 seconds longer.",
+
+  "addon.bloodbound.black_cable": "Black Cable",
+  "addon.bloodbound.black_cable.desc": "The cooldown is 30%% shorter.",
+
+  "addon.bloodbound.diagnostic_tool_c": "Diagnostic Tool C",
+  "addon.bloodbound.diagnostic_tool_c.desc": "After returning you have 4 seconds to press the key again and take the return back, landing where you were and with the health you had. The cooldown is 10%% longer.",
+
+  "addon.bloodbound.diagnostic_tool_a": "Diagnostic Tool A",
+  "addon.bloodbound.diagnostic_tool_a.desc": "Setting a point grants Speed V for 1 second, then Speed I for the rest of the window, and hides the device's particles entirely. Waste the window and you are left with Slowness III for 2 seconds.",
+
+  "addon.bloodbound.diagnostic_tool_b": "Diagnostic Tool B",
+  "addon.bloodbound.diagnostic_tool_b.desc": "The return rewinds you back along the path you walked instead of jumping straight there, over 3 seconds, and only while you hold the key. Let go and you stop where the rewind had reached, with the perk on cooldown.",
+
+  "addon.bloodbound.boots_of_speed": "Boots of Speed",
+  "addon.bloodbound.boots_of_speed.desc": "Low Profile no longer grants night vision, but crouching is 75% faster on top of its usual bonus.",
+
+  "addon.bloodbound.steel_toe_boot": "Steel Toe Boot",
+  "addon.bloodbound.steel_toe_boot.desc": "Every 5 blocks walked while crouched heals you 1 HP.",
+
+  "addon.bloodbound.taped_flashlight": "Taped Flashlight",
+  "addon.bloodbound.taped_flashlight.desc": "Longshot gains another 0.05 damage per block. Arrows also give off light (level 10) until they despawn or are picked up.",
+
+  "addon.bloodbound.gunpowder": "Gunpowder",
+  "addon.bloodbound.gunpowder.desc": "Arrows are no longer affected by gravity.",
+
+  "addon.bloodbound.point_blank": "Point Blank",
+  "addon.bloodbound.point_blank.desc": "Hitting a player or mob in the head deals 1.75x damage, applied to Longshot's distance bonus as well.",
+
+  "addon.bloodbound.needle_and_thread": "Needle And Thread",
+  "addon.bloodbound.needle_and_thread.desc": "Skill check success zones are 50% wider, but Surgical Suture heals half as much.",
+
+  "addon.bloodbound.sterilizer": "Sterilizer",
+  "addon.bloodbound.sterilizer.desc": "Missing the skill check gives you 3 seconds to try again instead of going straight on cooldown. Land the retry and you are healed, with the cooldown cut in half. Miss it, or let the window lapse, and the cooldown is 30% longer.",
+
+  "addon.bloodbound.gel_dressing": "Gel Dressing",
+  "addon.bloodbound.gel_dressing.desc": "Used at full health, a landed skill check grants a yellow heart instead of healing, up to 3. Unequipping this addon or its perk takes them away at once.",
+
+  "effect.bloodbound.flashed": "Flashed",
+
+  "bloodbound.message.guardian_angel_saved": "Saved - %s skill checks to hold onto it",
+  "bloodbound.message.guardian_angel_progress": "%s / %s",
+  "bloodbound.message.guardian_angel_survived": "You live",
+  "bloodbound.message.guardian_angel_failed": "Missed - the blow catches up",
+  "bloodbound.message.engraved_tablet_kept": "The tablet kept %s experience for you",
+  "bloodbound.message.green_herbs_gained": "Green Herbs - you mend faster for %s seconds",
+  "bloodbound.message.green_herbs_shared": "%s mends faster now",
+  "bloodbound.message.green_herbs_faded": "The herbs wear off",
+
+  "perk.bloodbound.guardian_angel": "Guardian Angel",
+  "perk.bloodbound.guardian_angel.desc": "A blow that would kill you instead leaves you at %1$s%% health, glowing gold for everyone to see. Somewhere between %2$s and %3$s seconds later a run of skill checks begins: land %4$s of them and you walk away, cooldown %5$s seconds. Miss one and the blow catches up with you.",
+
+  "perk.bloodbound.flashbang": "Flashbang",
+  "perk.bloodbound.flashbang.desc": "Press the slot key to throw a grenade. It comes off one wall and goes off 2 seconds later, beeping faster as it goes. Anything looking at the blast is Flashed for 4 seconds, a second less for every 10 blocks away. A wall, or a turned back, is all the cover anyone needs. Cooldown %s seconds.",
+
+  "perk.bloodbound.green_herbs": "Green Herbs",
+  "perk.bloodbound.green_herbs.desc": "Unlocks healing. You mend on your own %1$s times as fast as anyone else. Put %2$s HP into another player and they mend that way too for %3$s seconds, unless they already carry this perk.",
+
+  "perk.bloodbound.from_the_dark": "From The Dark",
+  "perk.bloodbound.from_the_dark.desc": "You see in the dark, always. Sprinting in light level 3 or lower puts you under Speed III for 2 seconds, then a %s second cooldown. The price: being Flashed lasts twice as long on you.",
+
+  "addon.bloodbound.blood_stained_book": "Blood Stained Book",
+  "addon.bloodbound.blood_stained_book.desc": "You get 10 more seconds before the skill checks begin.",
+
+  "addon.bloodbound.believers_eye": "Believer's Eye",
+  "addon.bloodbound.believers_eye.desc": "Two fewer skill checks are needed to survive.",
+
+  "addon.bloodbound.engraved_tablet": "Engraved Tablet",
+  "addon.bloodbound.engraved_tablet.desc": "Every skill check you land under the angel's eye banks a token. When you next die you keep 12%% of your experience per token, up to all of it.",
+
+  "bloodbound.message.amd_too_low": "Not enough charge - %s is the least it will fire on",
+
+  "perk.bloodbound.advanced_movement_device": "Advanced Movement Device",
+  "perk.bloodbound.advanced_movement_device.desc": "Press the slot key to fire a shot; when it stops, you are teleported to it. It comes off the first wall and stops at the second. Every shot draws on a reserve of %1$s charges that refills on its own, and can spend at most %2$s of them. Shot speed %3$s.",
+
+  "perk.bloodbound.beware_the_power_of_an_angel": "Beware The Power Of An Angel",
+  "perk.bloodbound.beware_the_power_of_an_angel.desc": "Press the slot key to spread your wings and fly, at 3 charges a second; press it again to fold them. You hold %s charges, which drain until your feet are back on the ground and only come back there - one every 2 seconds.",
+
+  "perk.bloodbound.catching_up": "Catching Up",
+  "perk.bloodbound.catching_up.desc": "You can see the marks left on the ground. Stepping on marks that are not yours grants Speed I, and it stays with you for %1$s seconds after the trail runs out. Apart from that you walk %2$s%% faster, as long as you are neither sprinting nor crouched.",
+
+  "perk.bloodbound.hunters_instinct": "Hunter's Instinct",
+  "perk.bloodbound.hunters_instinct.desc": "You can see the marks left on the ground. Whenever something within %s blocks loses health to anything but you, its aura is revealed to you for 7 seconds.",
+
+  "addon.bloodbound.wire_spool": "Wire Spool",
+  "addon.bloodbound.wire_spool.desc": "The reserve fills 75%% faster.",
+
+  "addon.bloodbound.scraps": "Scraps",
+  "addon.bloodbound.scraps.desc": "The reserve and one shot's budget are both 20%% larger, and the shot flies 40%% faster.",
+
+  "addon.bloodbound.primer_bulb": "Primer Bulb",
+  "addon.bloodbound.primer_bulb.desc": "The reserve fills 150%% faster but holds 8%% less. Arriving mends anything from 0 to 4 HP.",
+
+  "addon.bloodbound.tension_spring": "Tension Spring",
+  "addon.bloodbound.tension_spring.desc": "The shot is on a leash: hold the key while it flies, and letting go puts you wherever it has got to. Being pulled there puts the device on a 1 second cooldown.",
+
+  "addon.bloodbound.field_recorder": "Field Recorder",
+  "addon.bloodbound.field_recorder.desc": "The shot no longer bounces - the first wall is where you land. In flight it pulls hard onto whatever you are looking at, and every block flown costs 50%% more charges.",
+
+  "addon.bloodbound.bright_feather": "Bright Feather",
+  "addon.bloodbound.bright_feather.desc": "A charge comes back every 1.25 seconds instead of every 2.",
+
+  "addon.bloodbound.belt_pendant": "Belt Pendant",
+  "addon.bloodbound.belt_pendant.desc": "You fly 75%% faster, at 4 charges a second instead of 3.",
+
+  "addon.bloodbound.golden_crown": "Golden Crown",
+  "addon.bloodbound.golden_crown.desc": "You hold 25%% more charges, but one only comes back every 2.25 seconds.",
+
+  "addon.bloodbound.gabriels_bow": "Gabriel's Bow",
+  "addon.bloodbound.gabriels_bow.desc": "While you fly, bows and crossbows draw 75%% faster and arrows leave 150%% faster. The speed buys no extra damage.",
+
+  "addon.bloodbound.mark_of_the_banished": "Mark Of The Banished",
+  "addon.bloodbound.mark_of_the_banished.desc": "You hold 400%% more charges, but you are Exposed for as long as you are in the air. It ends the moment you land.",
+
+  "effect.bloodbound.bleeding": "Bleeding",
+  "effect.bloodbound.exhausted": "Exhausted",
+
+  "entity.bloodbound.barbed_wire": "Barbed Wire",
+
+  "bloodbound.message.bleeding_dressing": "Dressing the wound - %s seconds left",
+  "bloodbound.message.bleeding_started": "You are bleeding - hold %s to dress the wound",
+  "bloodbound.message.bleeding_paused": "Dressing paused - hold the key again to carry on where you left off",
+  "bloodbound.hud.bleeding_hint": "Hold %s to dress the wound",
+  "bloodbound.message.under_the_radar_hidden": "Under The Radar kept you hidden",
+  "bloodbound.message.bleeding_dressed": "The bleeding stops",
+  "bloodbound.message.bleeding_interrupted": "Dressing interrupted",
+  "bloodbound.message.barbed_wire_setting": "Laying wire - %s seconds, hold still",
+  "bloodbound.message.barbed_wire_placed": "Wire laid (%s / %s)",
+  "bloodbound.message.barbed_wire_moved": "You moved - the wire is dropped",
+  "bloodbound.message.barbed_wire_stopped": "Wire abandoned",
+  "bloodbound.message.barbed_wire_triggered": "%s is caught in your wire",
+  "bloodbound.message.team_spirit_gained": "Team Spirit - stay close",
+  "bloodbound.message.team_spirit_leaving": "Too far - get back or lose it",
+  "bloodbound.message.team_spirit_lost": "Out of range - Team Spirit is gone",
+  "bloodbound.message.team_spirit_faded": "Team Spirit runs out",
+
+  "perk.bloodbound.barbed_wire": "Barbed Wire",
+  "perk.bloodbound.barbed_wire.desc": "Hold the slot key for %1$s seconds without moving to lay a coil of wire, drawn at %2$s%% opacity. You may have %3$s out at once; a fourth takes the oldest with it. The first thing that walks in takes %5$s damage and starts Bleeding on %6$s charges, and the coil is gone - you are told who it was and shown their aura for 3 seconds. An arrow, or an item thrown into it, takes the coil apart. Taking the perk out of your loadout takes every coil with it. Cooldown %4$s seconds, paid only on a coil actually laid.",
+
+  "perk.bloodbound.panic_attack": "Panic Attack",
+  "perk.bloodbound.panic_attack.desc": "Hit a player and their hands stop steadying: every skill check they are asked for is %1$s%% smaller and sweeps %2$s%% faster. There is no timer on it - it holds for as long as you stay within %3$s blocks of them. Let them out of that and it is gone until you land another blow.",
+
+  "perk.bloodbound.out_of_breath": "Out Of Breath",
+  "perk.bloodbound.out_of_breath.desc": "Press the slot key to lob a charge. Walls only turn it; it goes off when it finds the floor, in a %1$s block blast. Anything caught is left Exhausted %2$s for %3$s seconds. Cooldown %4$s seconds.",
+
+  "perk.bloodbound.team_spirit": "Team Spirit",
+  "perk.bloodbound.team_spirit.desc": "Unlocks healing. Put a single point of health into a player and they gain Haste %1$s and Strength I for %2$s seconds - but only while they stay within %3$s blocks of you. Step outside it and there are 3 seconds to come back; after that the boons are gone for good and have to be earned again.",
+
+  "perk.bloodbound.beyond_vision": "Beyond Vision",
+  "perk.bloodbound.beyond_vision.desc": "Every harmful effect that lands on you is cut to %s%% shorter, and whatever cast it has its aura revealed to you for as long as the effect was meant to have lasted. You have 8 hearts instead of 10.",
+
+  "perk.bloodbound.healing_runes": "Healing Runes",
+  "perk.bloodbound.healing_runes.desc": "Press the slot key to fire a slow rune that ignores gravity. The first living thing it touches is healed %1$s HP. Holds %2$s runes, one coming back every %3$s seconds.",
+
+  "addon.bloodbound.empty_shotgun_shell": "Empty Shotgun Shell",
+  "addon.bloodbound.empty_shotgun_shell.desc": "The range is 25%% further.",
+
+  "addon.bloodbound.bounty_hunter_license": "Bounty Hunter License",
+  "addon.bloodbound.bounty_hunter_license.desc": "A revealed aura does not fade while you keep looking straight at it.",
+
+  "addon.bloodbound.light_steel": "Light Steel",
+  "addon.bloodbound.light_steel.desc": "The cooldown is 30%% shorter.",
+
+  "addon.bloodbound.fast_fuse": "Fast Fuse",
+  "addon.bloodbound.fast_fuse.desc": "The grenade goes off 75%% sooner.",
+
+  "addon.bloodbound.worn_satchel": "Worn Satchel",
+  "addon.bloodbound.worn_satchel.desc": "You may throw 2 grenades before the cooldown lands.",
+
+  "addon.bloodbound.pulled_pin": "Pulled Pin",
+  "addon.bloodbound.pulled_pin.desc": "The grenade is thrown on the key coming up, and the longer you held it the harder it goes - up to 200%% further after 4 seconds.",
+
+  "addon.bloodbound.slime_goo": "Slime Goo",
+  "addon.bloodbound.slime_goo.desc": "Charges come back 25%% sooner.",
+
+  "addon.bloodbound.broken_arrow": "Broken Arrow",
+  "addon.bloodbound.broken_arrow.desc": "The cone the shot looks down coming off a wall is 35%% wider.",
+
+  "addon.bloodbound.jagged_head": "Jagged Head",
+  "addon.bloodbound.jagged_head.desc": "A shot that hits something after a bounce has a 50%% chance to start Bleeding on 15 charges.",
+
+  "addon.bloodbound.paper_fan": "Paper Fan",
+  "addon.bloodbound.paper_fan.desc": "Once off the wall the shot ignores gravity and bends hard towards your crosshair. Whatever it hits after the bounce has its aura revealed to you for 10 seconds, and hitting something already revealed deals 50%% more damage.",
+
+  "addon.bloodbound.origami_crane": "Origami Crane",
+  "addon.bloodbound.origami_crane.desc": "Charges no longer run out and every shot bounces, up to 5 times, each wall adding 10%% to the damage. Nothing is aimed for you: the auto-aim is gone.",
+
+  "addon.bloodbound.metal_syringe": "Metal Syringe",
+  "addon.bloodbound.metal_syringe.desc": "The shot also refills every charge you hold, on any perk. The cooldown is 10%% longer.",
+
+  "addon.bloodbound.diluted_serum": "Diluted Serum",
+  "addon.bloodbound.diluted_serum.desc": "You get 2 doses before the cooldown lands, but each one is 35%% weaker.",
+
+  "addon.bloodbound.inhalator": "Inhalator",
+  "addon.bloodbound.inhalator.desc": "The dose is 75%% weaker and the cooldown 75%% shorter, and every harmful effect on you is cleared outright.",
+
+  "entity.bloodbound.target_found": "Tripwire",
+
+  "bloodbound.message.target_found_setting": "Laying a tripwire - %s seconds, hold still",
+  "bloodbound.message.target_found_placed": "Tripwire laid (%s / %s)",
+  "bloodbound.message.target_found_moved": "You moved - the tripwire is dropped",
+  "bloodbound.message.target_found_stopped": "Tripwire abandoned",
+  "bloodbound.message.target_found_triggered": "%1$s crossed your tripwire - you can follow in %2$s seconds",
+  "bloodbound.message.target_found_far": "%s crossed a tripwire too far away to follow",
+  "bloodbound.message.target_found_window": "Press the slot key to follow - %s seconds",
+  "bloodbound.message.target_found_missed": "The window closed - the tripwire is gone",
+  "bloodbound.message.target_found_arrived": "You followed the tripwire",
+
+  "perk.bloodbound.target_found": "Target Found",
+  "perk.bloodbound.target_found.desc": "Hold the slot key for %1$s seconds without moving to lay a tripwire, drawn at %2$s%% opacity. You may have %3$s out at once; one more takes the oldest. When something crosses one while you are within 128 blocks, you are told who and shown their aura, and %5$s seconds later a 4 second window opens: press the slot key to be taken to the wire. The wire is gone once the window closes, used or not. Further away, you only get the warning and the wire is spent. Cooldown %4$s seconds after laying one.",
+
+  "perk.bloodbound.under_the_radar": "Under The Radar",
+  "perk.bloodbound.under_the_radar.desc": "Your nametag is hidden and every sound you make is silenced, subtitles included. The first time something would reveal your aura it is blocked, and so is everything else for the next %1$s seconds; then the perk is on cooldown for %2$s seconds.",
+
+  "perk.bloodbound.final_blow": "Final Blow",
+  "perk.bloodbound.final_blow.desc": "You see the marks of any player or creature below %1$s%% of its health. Walking on them leaves their owner Broken, for as long as you stay on the trail and %2$s seconds after. Should they heal back over the line, their marks vanish at once.",
+
+  "perk.bloodbound.full_extraction": "Full Extraction",
+  "perk.bloodbound.full_extraction.desc": "Ores come out already smelted, along with the rock they sat in, with a %s%% chance of a soul shard - rolled again after every success. Silk Touch turns the perk off.",
+
+  "perk.bloodbound.fragnade": "Frag' Nade",
+  "perk.bloodbound.fragnade.desc": "Hold the slot key to wind up a throw - harder the longer you hold, up to 3 seconds - and let go to throw. The grenade comes off walls and stops on the floor, where it beeps for 0.75 seconds if it bounced on the way and 1.5 if it did not. Then it goes off twice, a second apart: a %1$s block blast, then a %2$s block one that throws everything clear. Each deals %3$s damage that ignores armour, and you are not spared. Cooldown %4$s seconds.",
+
+  "addon.bloodbound.fragstone_shard": "Fragstone Shard",
+  "addon.bloodbound.fragstone_shard.desc": "Both blasts are 15%% wider.",
+
+  "addon.bloodbound.raw_ore": "Raw Ore",
+  "addon.bloodbound.raw_ore.desc": "The grenade goes off 30%% sooner once it lands.",
+
+  "addon.bloodbound.star_medal": "Star Medal",
+  "addon.bloodbound.star_medal.desc": "While you wind up a throw, particles only you can see trace where it will go and how wide both blasts will be.",
+
+  "addon.bloodbound.powdered_crystal": "Powdered Crystal",
+  "addon.bloodbound.powdered_crystal.desc": "The wait between the blasts is 80%% longer, but the second is 40%% wider and leaves everything it hits Broken for 6 seconds.",
+
+  "addon.bloodbound.quartz_pendant": "Quartz Pendant",
+  "addon.bloodbound.quartz_pendant.desc": "The first blast is 150%% wider but deals 70%% less damage, and leaves everything it hits Slowed for 4 seconds. The second blast deals 40%% more damage.",
+  "addon.bloodbound.pure_topaz": "Pure Topaz",
+  "addon.bloodbound.pure_topaz.desc": "The second blast no longer hurts you and throws 2.5 times harder, and you take no fall damage until 2 seconds after you next land.",
+
+  "addon.bloodbound.enhanced_gauntlet": "Enhanced Gauntlet",
+  "addon.bloodbound.enhanced_gauntlet.desc": "The shot flies 50%% faster.",
+
+  "addon.bloodbound.tracking_head": "Tracking Head",
+  "addon.bloodbound.tracking_head.desc": "The shot bends slightly towards whatever is closest to its line.",
+
+  "addon.bloodbound.heavy_hook": "Heavy Hook",
+  "addon.bloodbound.heavy_hook.desc": "You are dragged to what you catch, instead of it to you. It still gets the Slowness and Weakness.",
+
+  "addon.bloodbound.soul_chain": "Soul Chain",
+  "addon.bloodbound.soul_chain.desc": "The shot passes through blocks and flies 15%% slower. Anything within 2 blocks of it has its aura revealed to you for 3 seconds, and a shot that catches nothing leaves only half the cooldown.",
+
+  "addon.bloodbound.odd_arrow": "Odd Arrow",
+  "addon.bloodbound.odd_arrow.desc": "Arrows ignore gravity and weave in an S. They leave 60%% slower but speed up instead of slowing down, and bows and crossbows draw twice as fast.",
+
+  "addon.bloodbound.cursed_riser": "Cursed Riser",
+  "addon.bloodbound.cursed_riser.desc": "Arrows bend slightly towards their target, and anything they hit starts Bleeding on 18 charges.",
+
+  "bloodbound.command.perk_granted": "Granted %2$s (tier %3$s) to %1$s player(s)",
+  "bloodbound.command.perk_revoked": "Revoked %2$s from %1$s player(s)",
+  "bloodbound.command.perks_unlocked": "Unlocked every perk at max tier for %1$s player(s)",
+  "bloodbound.command.addon_granted": "Granted addon %2$s to %1$s player(s)",
+  "bloodbound.command.addon_revoked": "Revoked addon %2$s from %1$s player(s)",
+  "bloodbound.command.addons_unlocked": "Unlocked every addon for %1$s player(s)",
+  "bloodbound.command.shards_given": "Gave %2$s soul shards to %1$s player(s)",
+  "bloodbound.command.web_rerolled": "Rerolled the soulweb of %1$s player(s)",
+  "bloodbound.command.web_level": "Set the soulweb level to %2$s for %1$s player(s)",
+  "bloodbound.command.cooldowns_cleared": "Cleared cooldowns for %1$s player(s)",
+  "bloodbound.command.reset": "Wiped all BloodBound progress for %1$s player(s)",
+  "bloodbound.command.unknown_perk": "Unknown perk: %s",
+  "bloodbound.command.unknown_addon": "Unknown addon: %s",
+  "bloodbound.command.info_header": "BloodBound - %s",
+  "bloodbound.command.info_web": "Web level %s, carrying %s soul shards",
+  "bloodbound.command.info_perk": "%3$s %1$s tier %2$s - addon: %4$s",
+  "bloodbound.command.info_addons": "Addons owned: %s",
+
+  "bloodbound.configuration.title": "BloodBound",
+  "bloodbound.configuration.hud": "HUD",
+  "bloodbound.configuration.hudScale": "Perk HUD size"
+}
