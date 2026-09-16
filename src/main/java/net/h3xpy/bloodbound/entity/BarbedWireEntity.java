@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.effect.BleedingHandler;
 import net.h3xpy.bloodbound.event.AuraRevealHandler;
 import net.h3xpy.bloodbound.perk.ModPerks;
@@ -115,7 +116,7 @@ public class BarbedWireEntity extends Entity {
         DamageSource source = owner != null
                 ? level.damageSources().playerAttack(owner)
                 : level.damageSources().generic();
-        victim.hurt(source, damage);
+        victim.hurt(PerkDamageSource.of(source, "barbed_wire"), damage);
 
         BleedingHandler.apply(victim, ModPerks.BARBED_WIRE.intValue(ModPerks.BARBED_BLEED, tier));
 

@@ -4,33 +4,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.h3xpy.bloodbound.BloodBound;
+import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
-import net.h3xpy.bloodbound.heal.HealManager;
-import net.h3xpy.bloodbound.perk.ModAddons;
-import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.effect.BleedingHandler;
 import net.h3xpy.bloodbound.effect.EffectDurations;
 import net.h3xpy.bloodbound.effect.MovementTracker;
+import net.h3xpy.bloodbound.heal.HealManager;
 import net.h3xpy.bloodbound.mark.MarkManager;
+import net.h3xpy.bloodbound.perk.ModAddons;
+import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.perk.impl.AdvancedMovementDevice;
-import net.h3xpy.bloodbound.perk.impl.BewareThePowerOfAnAngel;
-import net.h3xpy.bloodbound.perk.impl.BrokenMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.AntiExhaustionSyringe;
 import net.h3xpy.bloodbound.perk.impl.BarbedWire;
+import net.h3xpy.bloodbound.perk.impl.BewareThePowerOfAnAngel;
+import net.h3xpy.bloodbound.perk.impl.BrokenMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.CatchingUp;
-import net.h3xpy.bloodbound.perk.impl.FragNade;
-import net.h3xpy.bloodbound.perk.impl.TargetFound;
-import net.h3xpy.bloodbound.perk.impl.HealingRunes;
-import net.h3xpy.bloodbound.perk.impl.OutOfBreath;
-import net.h3xpy.bloodbound.perk.impl.TeamSpirit;
 import net.h3xpy.bloodbound.perk.impl.Flashbang;
+import net.h3xpy.bloodbound.perk.impl.FragNade;
 import net.h3xpy.bloodbound.perk.impl.FromTheDark;
 import net.h3xpy.bloodbound.perk.impl.GreenHerbs;
+import net.h3xpy.bloodbound.perk.impl.HealingRunes;
 import net.h3xpy.bloodbound.perk.impl.LowCostMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.NoOneGetsAway;
 import net.h3xpy.bloodbound.perk.impl.Omniscience;
+import net.h3xpy.bloodbound.perk.impl.OutOfBreath;
 import net.h3xpy.bloodbound.perk.impl.SurgicalSuture;
+import net.h3xpy.bloodbound.perk.impl.TargetFound;
+import net.h3xpy.bloodbound.perk.impl.TeamSpirit;
 import net.h3xpy.bloodbound.perk.impl.Tinkerer;
 import net.h3xpy.bloodbound.registry.ModEffects;
 import net.h3xpy.bloodbound.skillcheck.SkillCheckManager;
@@ -155,7 +156,7 @@ public final class PerkEventHandler {
             if (victim == player || !victim.isAlive()) {
                 continue;
             }
-            victim.hurt(player.damageSources().playerAttack(player), damage);
+            victim.hurt(PerkDamageSource.of(player.damageSources().playerAttack(player), "dead_weight"), damage);
             hit = true;
         }
 

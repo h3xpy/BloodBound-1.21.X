@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModAddons;
@@ -193,7 +194,7 @@ public final class GuardianAngelHandler {
                 .withStyle(ChatFormatting.DARK_RED), true);
         player.level().playSound(null, player.blockPosition(), SoundEvents.TOTEM_USE,
                 SoundSource.PLAYERS, 1.0F, 0.5F);
-        player.hurt(player.damageSources().genericKill(), Float.MAX_VALUE);
+        player.hurt(PerkDamageSource.of(player.damageSources().genericKill(), "guardian_angel"), Float.MAX_VALUE);
     }
 
     // --- Engraved Tablet ---

@@ -77,8 +77,8 @@ public final class PlayerSyncHandler {
     @SubscribeEvent
     public static void onDeath(LivingDeathEvent event) {
         // Bleeding and Exhausted follow mobs too, so their bookkeeping goes on any death.
-        BleedingHandler.clear(event.getEntity().getUUID());
-        ExhaustedHandler.clear(event.getEntity().getUUID());
+        BleedingHandler.onDeath(event.getEntity());
+        ExhaustedHandler.onDeath(event.getEntity());
         MarkManager.clear(event.getEntity().getUUID());
 
         if (event.getEntity() instanceof ServerPlayer player) {

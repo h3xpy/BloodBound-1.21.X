@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.event.BankShotHandler;
@@ -282,7 +283,7 @@ public final class FragNade {
             // Magic damage is what vanilla already treats as ignoring armour. The thrower is not
             // spared — except by Pure Topaz, and only from the second blast.
             if (!(isOwner && !first && grenade.topaz)) {
-                victim.hurt(source, damage);
+                victim.hurt(PerkDamageSource.of(source, "frag_nade"), damage);
             }
 
             if (first) {

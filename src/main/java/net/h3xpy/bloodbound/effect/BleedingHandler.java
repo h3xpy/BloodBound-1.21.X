@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import net.h3xpy.bloodbound.BloodBound;
+import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.heal.HealManager;
 import net.h3xpy.bloodbound.mark.MarkManager;
 import net.h3xpy.bloodbound.network.EffectChargesPayload;
@@ -156,7 +157,7 @@ public final class BleedingHandler {
                 sendCure(player, CURE_PROGRESS.getOrDefault(player.getUUID(), 0), needed(player, wound));
             }
         } else if (entity.tickCount % 20 == 0) {
-            entity.hurt(entity.damageSources().generic(), MOB_DAMAGE_PER_SECOND);
+            entity.hurt(PerkDamageSource.of(entity.damageSources().generic(), "bleeding"), MOB_DAMAGE_PER_SECOND);
         }
     }
 
@@ -182,7 +183,7 @@ public final class BleedingHandler {
             player.playNotifySound(SoundEvents.PLAYER_HURT, SoundSource.PLAYERS, 0.3F, 0.7F);
             return;
         }
-        player.hurt(player.damageSources().generic(), EMPTY_RUN_DAMAGE);
+        player.hurt(PerkDamageSource.of(player.damageSources().generic(), "bleeding"), EMPTY_RUN_DAMAGE);
     }
 
     /**
@@ -273,6 +274,18 @@ public final class BleedingHandler {
 
     private static void sendCure(ServerPlayer player, int progress, int needed) {
         PacketDistributor.sendToPlayer(player, new EffectChargesPayload(CURE_BAR_ID, progress, needed));
+    }
+
+    /**
+     * A death ends the wound. The effect itself lingers on the corpse until respawn, so nothing
+     * else would take the bars off the screen: they are emptied here before the state goes.
+     */
+    public static void onDeath(LivingEntity entity) {
+        clear(entity.getUUID());
+        send(entity);
+        if (entity instanceof ServerPlayer player) {
+            sendCure(player, 0, 0);
+        }
     }
 
     /** Forgets an entity entirely, on logout or death. */

@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModAddons;
@@ -161,7 +162,7 @@ public final class EchoingWoundsHandler {
             // The echo lands inside the invulnerability window the original blow opened, so without
             // clearing the timer it would be swallowed whole.
             victim.invulnerableTime = 0;
-            victim.hurt(player.damageSources().playerAttack(player), jump.damage());
+            victim.hurt(PerkDamageSource.of(player.damageSources().playerAttack(player), "echoing_wounds"), jump.damage());
         } finally {
             echoing = false;
         }

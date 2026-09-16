@@ -192,6 +192,12 @@ public final class ExhaustedHandler {
                 ModEffects.EXHAUSTED.getKey().location(), charges, reportedMax));
     }
 
+    /** A death ends the exhaustion, and takes its bar off the screen with it. */
+    public static void onDeath(LivingEntity entity) {
+        clear(entity.getUUID());
+        send(entity, null, 0);
+    }
+
     /** Forgets an entity entirely, on logout or death. */
     public static void clear(UUID entityId) {
         STAMINA.remove(entityId);

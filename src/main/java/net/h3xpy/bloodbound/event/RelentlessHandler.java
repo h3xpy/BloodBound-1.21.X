@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModAddons;
@@ -138,7 +139,7 @@ public final class RelentlessHandler {
             // Follow-ups land inside the invulnerability window the opening blow opened, and they
             // are weaker than it, so without clearing the timer they would be swallowed whole.
             victim.invulnerableTime = 0;
-            victim.hurt(player.damageSources().playerAttack(player), hit.damage());
+            victim.hurt(PerkDamageSource.of(player.damageSources().playerAttack(player), "relentless"), hit.damage());
         } finally {
             firingChain = false;
         }

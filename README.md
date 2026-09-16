@@ -130,6 +130,14 @@ Blade streak — counts that window down in cyan over its slot instead, so the n
 always the one that matters right now. Low-Cost Movement Device charges show as pips along the
 bottom of the slot; Nasty Blade tokens as a gold count in its corner.
 
+## Death messages
+
+Every perk that can kill says so in chat: Barbed Wire, Echoing Wounds, Relentless, Frag' Nade, Dead
+Weight, Box Opener, Bleeding and a failed Guardian Angel. Each has three versions — nobody to blame,
+killed by another player (or bled out after fighting one), and killed by your own perk — under
+`death.attack.bloodbound.<name>`, `.player` and `.self`. Only the message changes; the damage stays
+the vanilla type it always was, so nothing that reacts to player attacks behaves differently.
+
 ## Activation keys
 
 Each of the four loadout slots has **its own rebindable key**, listed under a *BloodBound* category
