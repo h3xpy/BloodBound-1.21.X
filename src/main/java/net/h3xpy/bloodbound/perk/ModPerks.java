@@ -592,6 +592,172 @@ public final class ModPerks {
             .cooldown(3)
             .build());
 
+    /**
+     * Turn a blow aside and the one who threw it is left staring at the sun.
+     * <p>Scaling: [0] seconds of Flashed, [1] cooldown in seconds.
+     */
+    public static final Perk CRIME_AND_PUNISHMENT = PerkRegistry.register(Perk.builder("crime_and_punishment")
+            .type(PerkType.PASSIVE)
+            .scaling(2.5, 3, 3.5)
+            .scaling(25, 23, 21)
+            .cooldown(1)
+            .build());
+
+    /**
+     * Every aura you read, you read from further away.
+     * <p>Scaling: [0] blocks added to the reach of anything that reveals an aura.
+     */
+    public static final Perk ENHANCED_PERCEPTION = PerkRegistry.register(Perk.builder("enhanced_perception")
+            .type(PerkType.PASSIVE)
+            .scaling(10, 15, 20)
+            .build());
+
+    /**
+     * A kill of yours lights up everything standing round the body.
+     * <p>Scaling: [0] radius round the dead, in blocks.
+     */
+    public static final Perk CALL_OF_DEATH = PerkRegistry.register(Perk.builder("call_of_death")
+            .type(PerkType.PASSIVE)
+            .scaling(16, 20, 24)
+            .build());
+
+    /**
+     * Seal yourself in ice: nothing can touch you, and you can do nothing but mend.
+     * <p>Scaling: [0] seconds in the ice, [1] cooldown in seconds.
+     */
+    public static final Perk ICE_BLOCK = PerkRegistry.register(Perk.builder("ice_block")
+            .type(PerkType.ACTIVE)
+            .scaling(7, 10, 13)
+            .scaling(30, 27, 24)
+            .cooldown(1)
+            .build());
+
+    /**
+     * A ritual that mends everything standing in it.
+     * <p>Scaling: [0] radius in blocks.
+     */
+    public static final Perk BLESSING_OF_LIFE = PerkRegistry.register(Perk.builder("blessing_of_life")
+            .type(PerkType.ACTIVE)
+            .scaling(18, 22, 26)
+            .flatCooldown(180)
+            .build());
+
+    /**
+     * A trap that watches a stretch of the world for you.
+     * <p>Scaling: [0] seconds of laying it, [1] cooldown in seconds, [2] what it watches, in blocks.
+     */
+    public static final Perk EAVESDROP = PerkRegistry.register(Perk.builder("eavesdrop")
+            .type(PerkType.ACTIVE)
+            .scaling(4, 3.5, 3)
+            .scaling(80, 70, 60)
+            .scaling(20, 24, 28)
+            .cooldown(1)
+            .build());
+
+    /**
+     * A ritual that holds whoever walks into it at death's door for as long as it lasts.
+     * <p>Scaling: [0] seconds of laying it, [1] charges it holds, [2] radius in blocks, [3] charges
+     * won back per second while no circle is drawn. No cooldown: the reserve is the cooldown.
+     */
+    public static final Perk INEVITABLE_DEATH = PerkRegistry.register(Perk.builder("inevitable_death")
+            .type(PerkType.ACTIVE)
+            .scaling(12, 11, 10)
+            .scaling(300, 400, 500)
+            .scaling(12, 14, 16)
+            .scaling(3, 4, 5)
+            .build());
+
+    /**
+     * A ritual that takes the eyes of anything bleeding inside it.
+     * <p>Scaling: [0] radius in blocks.
+     */
+    public static final Perk SIN_OF_OBLIVIOUSNESS = PerkRegistry.register(Perk.builder("sin_of_obliviousness")
+            .type(PerkType.ACTIVE)
+            .scaling(12, 16, 20)
+            .flatCooldown(180)
+            .build());
+
+    // --- Sin Of Obliviousness tuning ---
+    public static final int SIN_RADIUS = 0;
+    /** Seconds of standing still it takes to lay. */
+    public static final int SIN_SETUP_TICKS = 100;
+    /** How far it can be seen from at first, how far it grows to, and how fast. */
+    public static final double SIN_REVEAL_START = 4.0D;
+    public static final double SIN_REVEAL_MAX = 24.0D;
+    public static final int SIN_REVEAL_GROW_TICKS = 60;
+    public static final int SIN_REVEAL_TICKS = 40;
+    /**
+     * A slice of Blindness, refreshed while the ritual stands. Long enough that nothing flickers,
+     * short enough that breaking the ritual gives the eyes back quickly.
+     */
+    public static final int SIN_BLINDNESS_TICKS = 60;
+
+    // --- Blessing Of Life tuning ---
+    public static final int BLESSING_RADIUS = 0;
+    /** Seconds of standing still it takes to lay. */
+    public static final int BLESSING_SETUP_TICKS = 100;
+    /** Regeneration granted inside, as a level, and how long each slice lasts. */
+    public static final int BLESSING_REGEN_LEVEL = 1;
+    public static final int BLESSING_REGEN_TICKS = 60;
+    /** What standing in it is worth to a medic: 150% on top of everything else. */
+    public static final double BLESSING_HEAL_BONUS = 1.5D;
+    /** Consecutive ticks inside before the ritual shows itself, and how long it then stays lit. */
+    public static final int BLESSING_REVEAL_AFTER_TICKS = 400;
+    public static final int BLESSING_REVEAL_TICKS = 60;
+
+    // --- Eavesdrop tuning ---
+    public static final int EAVESDROP_SETUP = 0;
+    public static final int EAVESDROP_COOLDOWN = 1;
+    public static final int EAVESDROP_RADIUS = 2;
+    /** How far the owner may stray before the trap stops reporting. */
+    public static final double EAVESDROP_OWNER_RANGE = 100.0D;
+    /** How often it sweeps, and how far something must shift in that time to count as moving. */
+    public static final int EAVESDROP_SWEEP_INTERVAL = 10;
+    public static final double EAVESDROP_MOVED = 0.05D;
+    /** Ticks inside, all told, before the trap gives itself away, and how long it then stays lit. */
+    public static final int EAVESDROP_REVEAL_AFTER_TICKS = 600;
+    public static final int EAVESDROP_REVEAL_TICKS = 60;
+    /** How close something has to come to tread on it. */
+    public static final double EAVESDROP_TRIP_RADIUS = 1.0D;
+
+    // --- Inevitable Death tuning ---
+    public static final int INEVITABLE_SETUP = 0;
+    public static final int INEVITABLE_CHARGES = 1;
+    public static final int INEVITABLE_RADIUS = 2;
+    /** Charges the reserve wins back each second, while no circle is drawn. */
+    public static final int INEVITABLE_REGEN = 3;
+    /** Charges one trespasser costs it per second. */
+    public static final float INEVITABLE_DRAIN_PER_SECOND = 15.0F;
+    /** How long each slice of Exposed lasts, refreshed while they stay inside. */
+    public static final int INEVITABLE_EXPOSED_TICKS = 40;
+    /** How far it can be seen from at first, how far it grows to, and how fast. */
+    public static final double INEVITABLE_REVEAL_START = 4.0D;
+    public static final double INEVITABLE_REVEAL_MAX = 12.0D;
+    public static final int INEVITABLE_REVEAL_GROW_TICKS = 80;
+    public static final int INEVITABLE_REVEAL_TICKS = 40;
+
+    // --- Crime And Punishment tuning ---
+    public static final int CRIME_FLASH_SECONDS = 0;
+    public static final int CRIME_COOLDOWN = 1;
+
+    // --- Enhanced Perception tuning ---
+    public static final int PERCEPTION_BONUS_BLOCKS = 0;
+
+    // --- Call Of Death tuning ---
+    public static final int CALL_OF_DEATH_RADIUS = 0;
+    /** How long the bodies round a kill stay lit up. */
+    public static final int CALL_OF_DEATH_REVEAL_TICKS = 160;
+
+    // --- Ice Block tuning ---
+    public static final int ICE_BLOCK_SECONDS = 0;
+    public static final int ICE_BLOCK_COOLDOWN = 1;
+    /** Regeneration granted while sealed in, as a level (I). */
+    public static final int ICE_BLOCK_REGEN_LEVEL = 1;
+    /** How far a shattered block throws whatever is standing round it, and how hard. */
+    public static final double ICE_BLOCK_SHATTER_RADIUS = 5.0D;
+    public static final double ICE_BLOCK_KNOCKBACK = 1.1D;
+    public static final double ICE_BLOCK_KNOCKBACK_LIFT = 0.35D;
+
     // --- Target Found tuning ---
     public static final int TARGET_SETUP = 0;
     public static final int TARGET_OPACITY = 1;
@@ -848,7 +1014,12 @@ public final class ModPerks {
     public static final double FLASHBANG_FALLOFF_PER_BLOCK = 1.0D / 10.0D;
     /** Half-angle of what counts as looking at the blast, in degrees. */
     public static final double FLASHBANG_VIEW_DEGREES = 60.0D;
-    public static final double FLASHBANG_RANGE = FLASHBANG_BASE_SECONDS / FLASHBANG_FALLOFF_PER_BLOCK;
+    /**
+     * How far the blast is looked at for victims. Kept on its own rather than worked out from the
+     * two numbers above, so changing how long the blind lasts never quietly changes the reach: with
+     * the falloff as it stands, anything past {@code base / falloff} blocks is out of it anyway.
+     */
+    public static final double FLASHBANG_RANGE = 40.0D;
 
     // --- Green Herbs tuning ---
     public static final int GREEN_HERBS_REGEN = 0;

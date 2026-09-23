@@ -36,7 +36,7 @@ import org.joml.Vector3f;
  * one per second of running and pays in blood once the bar is empty; the only way out is to hold
  * the heal key, and the emptier the bar the longer that takes. Dressing the wound can be put down
  * and picked up again without losing what was done. A mob has no bar to manage and simply bleeds
- * out, two health a second for as many seconds as it had charges.
+ * out, half a health a second for as many seconds as it had charges.
  */
 public final class BleedingHandler {
 
@@ -49,7 +49,7 @@ public final class BleedingHandler {
     /** Health a running player loses per second once the bar is empty. */
     private static final float EMPTY_RUN_DAMAGE = 5.0F;
     /** Health a bleeding mob loses per second. */
-    private static final float MOB_DAMAGE_PER_SECOND = 2.0F;
+    private static final float MOB_DAMAGE_PER_SECOND = 0.5F;
     /** Ticks of running that cost one charge. */
     private static final int RUN_TICKS_PER_CHARGE = 20;
 
@@ -226,7 +226,8 @@ public final class BleedingHandler {
     /** Ticks the dressing takes. The deeper the wound, the longer; the medic perks shorten it. */
     private static int needed(ServerPlayer player, Wound wound) {
         int seconds = Math.max(1, CURE_BASE_SECONDS - wound.charges());
-        return Math.max(1, (int) Math.round(seconds * 20.0D / (1.0D + HealManager.healSpeedBonus(player))));
+        return Math.max(1, (int) Math.round(seconds * 20.0D
+                / (HealManager.GLOBAL_SPEED * (1.0D + HealManager.healSpeedBonus(player)))));
     }
 
     /** Advances a dressing in progress. Called once a tick per player. */

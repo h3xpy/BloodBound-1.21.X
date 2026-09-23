@@ -17,6 +17,9 @@ import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.perk.impl.AdvancedMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.AntiExhaustionSyringe;
 import net.h3xpy.bloodbound.perk.impl.BarbedWire;
+import net.h3xpy.bloodbound.perk.impl.BlessingOfLife;
+import net.h3xpy.bloodbound.perk.impl.Eavesdrop;
+import net.h3xpy.bloodbound.perk.impl.InevitableDeath;
 import net.h3xpy.bloodbound.perk.impl.BewareThePowerOfAnAngel;
 import net.h3xpy.bloodbound.perk.impl.BrokenMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.CatchingUp;
@@ -25,16 +28,20 @@ import net.h3xpy.bloodbound.perk.impl.FragNade;
 import net.h3xpy.bloodbound.perk.impl.FromTheDark;
 import net.h3xpy.bloodbound.perk.impl.GreenHerbs;
 import net.h3xpy.bloodbound.perk.impl.HealingRunes;
+import net.h3xpy.bloodbound.perk.impl.IceBlock;
 import net.h3xpy.bloodbound.perk.impl.LowCostMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.NoOneGetsAway;
 import net.h3xpy.bloodbound.perk.impl.Omniscience;
 import net.h3xpy.bloodbound.perk.impl.OutOfBreath;
+import net.h3xpy.bloodbound.perk.impl.SinOfObliviousness;
 import net.h3xpy.bloodbound.perk.impl.SurgicalSuture;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
 import net.h3xpy.bloodbound.perk.impl.TeamSpirit;
 import net.h3xpy.bloodbound.perk.impl.Tinkerer;
 import net.h3xpy.bloodbound.registry.ModEffects;
+import net.h3xpy.bloodbound.ritual.RitualManager;
 import net.h3xpy.bloodbound.skillcheck.SkillCheckManager;
+import net.h3xpy.bloodbound.stats.PerkUsageStats;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -49,6 +56,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -166,6 +174,14 @@ public final class PerkEventHandler {
         }
     }
 
+    /** Sin Of Obliviousness: anything hurt inside somebody's circle loses its eyes to it. */
+    @SubscribeEvent
+    public static void onDamageTaken(LivingDamageEvent.Post event) {
+        if (!event.getEntity().level().isClientSide) {
+            SinOfObliviousness.onDamaged(event.getEntity());
+        }
+    }
+
     // --- Close Call: damage immunity during the dash ---
 
     @SubscribeEvent
@@ -177,7 +193,13 @@ public final class PerkEventHandler {
         if (event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return;
         }
-        if (PerkDataManager.get(player).isDamageImmune(player.level().getGameTime())) {
+        long gameTime = player.level().getGameTime();
+        // Ice Block: the ice takes the blow, and breaks doing it.
+        if (IceBlock.absorbDamage(player, gameTime)) {
+            event.setCanceled(true);
+            return;
+        }
+        if (PerkDataManager.get(player).isDamageImmune(gameTime)) {
             event.setCanceled(true);
         }
     }
@@ -211,6 +233,11 @@ public final class PerkEventHandler {
         TeamSpirit.tick(player, data, gameTime);
         HealingRunes.tick(player, data, gameTime);
         BeyondVisionHandler.tick(player, data);
+        IceBlock.tick(player, data, gameTime);
+        BlessingOfLife.tick(player, data, gameTime);
+        Eavesdrop.tick(player, data, gameTime);
+        InevitableDeath.tick(player, data, gameTime);
+        SinOfObliviousness.tick(player, data, gameTime);
         BleedingHandler.tickCure(player, gameTime);
         HuntersInstinctHandler.tick(player, data);
         Flashbang.tick(player, data, gameTime);
@@ -251,6 +278,13 @@ public final class PerkEventHandler {
         HealingRunes.tickRunes(event.getServer());
         FragNade.tickGrenades(event.getServer());
         UnderTheRadarHandler.tick(event.getServer());
+        RitualManager.tick(event.getServer());
+        long ritualTime = event.getServer().overworld().getGameTime();
+        BlessingOfLife.tickRituals(event.getServer(), ritualTime);
+        Eavesdrop.tickTraps(event.getServer(), ritualTime);
+        InevitableDeath.tickRituals(event.getServer(), ritualTime);
+        SinOfObliviousness.tickRituals(event.getServer(), ritualTime);
+        PerkUsageStats.sample(event.getServer(), ritualTime);
     }
 
     /**

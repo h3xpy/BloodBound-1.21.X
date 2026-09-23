@@ -10,6 +10,8 @@ import net.h3xpy.bloodbound.event.LongshotHandler;
 import net.h3xpy.bloodbound.event.PerkEventHandler;
 import net.h3xpy.bloodbound.event.AuraRevealHandler;
 import net.h3xpy.bloodbound.event.BankShotHandler;
+import net.h3xpy.bloodbound.event.CallOfDeathHandler;
+import net.h3xpy.bloodbound.event.CrimeAndPunishmentHandler;
 import net.h3xpy.bloodbound.event.EchoingWoundsHandler;
 import net.h3xpy.bloodbound.effect.BleedingHandler;
 import net.h3xpy.bloodbound.effect.ExhaustedHandler;
@@ -85,6 +87,8 @@ public class BloodBound {
         NeoForge.EVENT_BUS.register(ExhaustedHandler.class);
         NeoForge.EVENT_BUS.register(FullExtractionHandler.class);
         NeoForge.EVENT_BUS.register(FragNade.class);
+        NeoForge.EVENT_BUS.register(CrimeAndPunishmentHandler.class);
+        NeoForge.EVENT_BUS.register(CallOfDeathHandler.class);
         NeoForge.EVENT_BUS.addListener(BloodBoundCommand::register);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);

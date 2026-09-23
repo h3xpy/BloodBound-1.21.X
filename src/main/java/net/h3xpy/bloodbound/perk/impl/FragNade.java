@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.damage.ModDamageTypes;
 import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
@@ -265,9 +266,9 @@ public final class FragNade {
                 SoundSource.PLAYERS, first ? 0.9F : 1.4F, first ? 1.5F : 1.0F);
 
         ServerPlayer owner = level.getServer().getPlayerList().getPlayer(grenade.ownerId);
-        DamageSource source = owner != null
-                ? level.damageSources().indirectMagic(owner, owner)
-                : level.damageSources().magic();
+        // Its own damage type, in the armour and enchantment bypass tags: a blast is worth what it
+        // is worth, whatever the victim happens to be wearing.
+        DamageSource source = level.damageSources().source(ModDamageTypes.FRAG_NADE, owner, owner);
 
         for (LivingEntity victim : level.getEntitiesOfClass(LivingEntity.class,
                 AABB.ofSize(blast, radius * 2, radius * 2, radius * 2))) {

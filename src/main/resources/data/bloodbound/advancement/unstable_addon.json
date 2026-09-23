@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:first_addon",
+  "display": {
+    "icon": { "id": "minecraft:nether_star" },
+    "title": { "translate": "advancement.bloodbound.unstable_addon.title" },
+    "description": { "translate": "advancement.bloodbound.unstable_addon.description" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

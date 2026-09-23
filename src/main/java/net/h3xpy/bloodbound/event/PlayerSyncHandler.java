@@ -17,8 +17,15 @@ import net.h3xpy.bloodbound.perk.impl.HealingRunes;
 import net.h3xpy.bloodbound.perk.impl.OutOfBreath;
 import net.h3xpy.bloodbound.perk.impl.TeamSpirit;
 import net.h3xpy.bloodbound.perk.impl.GreenHerbs;
+import net.h3xpy.bloodbound.perk.impl.BlessingOfLife;
+import net.h3xpy.bloodbound.perk.impl.Eavesdrop;
+import net.h3xpy.bloodbound.perk.impl.IceBlock;
+import net.h3xpy.bloodbound.perk.impl.InevitableDeath;
 import net.h3xpy.bloodbound.perk.impl.NoOneGetsAway;
+import net.h3xpy.bloodbound.perk.impl.Omniscience;
+import net.h3xpy.bloodbound.perk.impl.SinOfObliviousness;
 import net.h3xpy.bloodbound.perk.impl.Tinkerer;
+import net.h3xpy.bloodbound.ritual.RitualManager;
 import net.h3xpy.bloodbound.skillcheck.SkillCheckManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -68,9 +75,15 @@ public final class PlayerSyncHandler {
             ExhaustedHandler.clear(player.getUUID());
             Flashbang.clearWinding(player.getUUID());
             TargetFound.clear(player.getUUID());
+            IceBlock.release(player);
+            BlessingOfLife.clear(player);
+            Eavesdrop.clear(player);
+            InevitableDeath.clear(player);
+            SinOfObliviousness.clear(player);
             FragNade.clear(player.getUUID());
             UnderTheRadarHandler.clear(player.getUUID());
             MovementTracker.clear(player.getUUID());
+            Omniscience.clear(player.getUUID());
         }
     }
 
@@ -87,6 +100,11 @@ public final class PlayerSyncHandler {
             Tinkerer.clear(player);
             GreenHerbs.clear(player.getUUID());
             AdvancedMovementDevice.clear(player.getUUID());
+            IceBlock.release(player);
+            BlessingOfLife.clear(player);
+            Eavesdrop.clear(player);
+            InevitableDeath.clear(player);
+            SinOfObliviousness.clear(player);
             BewareThePowerOfAnAngel.clear(player);
         }
     }
@@ -105,6 +123,7 @@ public final class PlayerSyncHandler {
     public static void onServerStopping(ServerStoppingEvent event) {
         MarkManager.clear();
         UnderTheRadarHandler.clear();
+        RitualManager.clear();
     }
 
     @SubscribeEvent

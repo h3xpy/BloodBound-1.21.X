@@ -4,6 +4,8 @@ import java.util.function.Supplier;
 
 import net.h3xpy.bloodbound.BloodBound;
 import net.h3xpy.bloodbound.entity.BarbedWireEntity;
+import net.h3xpy.bloodbound.entity.IceShellEntity;
+import net.h3xpy.bloodbound.entity.RitualEntity;
 import net.h3xpy.bloodbound.entity.TargetFoundEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
@@ -34,6 +36,30 @@ public final class ModEntities {
                     .updateInterval(20)
                     .noSummon()
                     .build("target_found"));
+
+    /**
+     * A ritual, or an Eavesdrop trap, standing on the ground. Tracked far further than the traps:
+     * Eavesdrop watches its own from up to a hundred blocks away, and an entity nobody is tracking
+     * cannot be lit up for them.
+     */
+    public static final Supplier<EntityType<RitualEntity>> RITUAL =
+            ENTITY_TYPES.register("ritual", () -> EntityType.Builder
+                    .<RitualEntity>of(RitualEntity::new, MobCategory.MISC)
+                    .sized(1.0F, 0.2F)
+                    .clientTrackingRange(10)
+                    .updateInterval(20)
+                    .noSummon()
+                    .build("ritual"));
+
+    /** The block of ice Ice Block seals its owner in. */
+    public static final Supplier<EntityType<IceShellEntity>> ICE_SHELL =
+            ENTITY_TYPES.register("ice_shell", () -> EntityType.Builder
+                    .<IceShellEntity>of(IceShellEntity::new, MobCategory.MISC)
+                    .sized(1.3F, 2.2F)
+                    .clientTrackingRange(8)
+                    .updateInterval(20)
+                    .noSummon()
+                    .build("ice_shell"));
 
     private ModEntities() {}
 

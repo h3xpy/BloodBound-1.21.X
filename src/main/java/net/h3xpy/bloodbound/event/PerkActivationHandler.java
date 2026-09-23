@@ -12,16 +12,21 @@ import net.h3xpy.bloodbound.perk.PerkType;
 import net.h3xpy.bloodbound.perk.impl.AdvancedMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.AntiExhaustionSyringe;
 import net.h3xpy.bloodbound.perk.impl.BarbedWire;
+import net.h3xpy.bloodbound.perk.impl.BlessingOfLife;
+import net.h3xpy.bloodbound.perk.impl.Eavesdrop;
+import net.h3xpy.bloodbound.perk.impl.InevitableDeath;
 import net.h3xpy.bloodbound.perk.impl.BewareThePowerOfAnAngel;
 import net.h3xpy.bloodbound.perk.impl.BrokenMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.Flashbang;
 import net.h3xpy.bloodbound.perk.impl.FragNade;
+import net.h3xpy.bloodbound.perk.impl.IceBlock;
 import net.h3xpy.bloodbound.perk.impl.KeepFighting;
 import net.h3xpy.bloodbound.perk.impl.LowCostMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.NoOneGetsAway;
 import net.h3xpy.bloodbound.perk.impl.HealingRunes;
 import net.h3xpy.bloodbound.perk.impl.OutOfBreath;
 import net.h3xpy.bloodbound.perk.impl.PatchUp;
+import net.h3xpy.bloodbound.perk.impl.SinOfObliviousness;
 import net.h3xpy.bloodbound.perk.impl.SurgicalSuture;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
 import net.h3xpy.bloodbound.perk.impl.Tinkerer;
@@ -71,7 +76,12 @@ public final class PerkActivationHandler {
             Map.entry(ModPerks.OUT_OF_BREATH.id(), OutOfBreath::activate),
             Map.entry(ModPerks.HEALING_RUNES.id(), HealingRunes::activate),
             Map.entry(ModPerks.TARGET_FOUND.id(), TargetFound::activate),
-            Map.entry(ModPerks.FRAGNADE.id(), FragNade::activate));
+            Map.entry(ModPerks.FRAGNADE.id(), FragNade::activate),
+            Map.entry(ModPerks.ICE_BLOCK.id(), IceBlock::activate),
+            Map.entry(ModPerks.BLESSING_OF_LIFE.id(), BlessingOfLife::activate),
+            Map.entry(ModPerks.EAVESDROP.id(), Eavesdrop::activate),
+            Map.entry(ModPerks.INEVITABLE_DEATH.id(), InevitableDeath::activate),
+            Map.entry(ModPerks.SIN_OF_OBLIVIOUSNESS.id(), SinOfObliviousness::activate));
 
     private PerkActivationHandler() {}
 
@@ -157,6 +167,15 @@ public final class PerkActivationHandler {
             Flashbang.setHolding(player, holding, player.level().getGameTime());
         } else if (perk.id().equals(ModPerks.TARGET_FOUND.id())) {
             TargetFound.setHolding(player, holding);
+        } else if (perk.id().equals(ModPerks.BLESSING_OF_LIFE.id())) {
+            // Laying a ritual is seconds of holding still with the key down.
+            BlessingOfLife.setHolding(player, holding);
+        } else if (perk.id().equals(ModPerks.EAVESDROP.id())) {
+            Eavesdrop.setHolding(player, holding);
+        } else if (perk.id().equals(ModPerks.INEVITABLE_DEATH.id())) {
+            InevitableDeath.setHolding(player, holding);
+        } else if (perk.id().equals(ModPerks.SIN_OF_OBLIVIOUSNESS.id())) {
+            SinOfObliviousness.setHolding(player, holding);
         } else if (perk.id().equals(ModPerks.FRAGNADE.id())) {
             // Wound up while the key is down, thrown when it comes up.
             FragNade.setHolding(player, holding, player.level().getGameTime());

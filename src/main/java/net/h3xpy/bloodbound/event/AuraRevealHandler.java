@@ -7,6 +7,7 @@ import java.util.UUID;
 import net.h3xpy.bloodbound.effect.EffectDurations;
 import net.h3xpy.bloodbound.effect.MovementTracker;
 import net.h3xpy.bloodbound.network.AuraRevealPayload;
+import net.h3xpy.bloodbound.perk.impl.EnhancedPerception;
 import net.h3xpy.bloodbound.registry.ModEffects;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -36,13 +37,28 @@ public final class AuraRevealHandler {
         if (target instanceof ServerPlayer hidden && UnderTheRadarHandler.blocksReveal(hidden)) {
             return;
         }
-        target.addEffect(new MobEffectInstance(ModEffects.AURA_REVEALED, durationTicks, 0, false, true, true));
+        // Every reveal in the mod comes through here, so this is where Enhanced Perception's addons
+        // belong: they then cover any perk that reveals an aura, including ones not written yet.
+        int ticks = EnhancedPerception.revealTicks(viewer, durationTicks);
+        target.addEffect(new MobEffectInstance(ModEffects.AURA_REVEALED, ticks, 0, false, true, true));
         // Only track it if the effect actually took: something immune would leave a stale watcher.
         if (!target.hasEffect(ModEffects.AURA_REVEALED)) {
             return;
         }
         WATCHERS.put(target.getUUID(), viewer.getUUID());
-        PacketDistributor.sendToPlayer(viewer, new AuraRevealPayload(target.getId(), durationTicks));
+        PacketDistributor.sendToPlayer(viewer, new AuraRevealPayload(target.getId(), ticks));
+        EnhancedPerception.onRevealed(viewer, target);
+    }
+
+    /**
+     * Shows something that is not alive — a ritual, a trap — to one player.
+     * <p>
+     * No effect and no watcher: Aura Revealed lives on a status effect, which only a living thing
+     * can carry, so the glow is sent straight to the one client and left to run its own clock out.
+     */
+    public static void revealMarker(ServerPlayer viewer, Entity marker, int ticks) {
+        PacketDistributor.sendToPlayer(viewer, new AuraRevealPayload(marker.getId(),
+                EnhancedPerception.revealTicks(viewer, ticks)));
     }
 
     /**

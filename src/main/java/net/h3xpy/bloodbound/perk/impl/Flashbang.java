@@ -1,5 +1,7 @@
 package net.h3xpy.bloodbound.perk.impl;
 
+import javax.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -269,6 +271,7 @@ public final class Flashbang {
         level.playSound(null, blast.x, blast.y, blast.z, SoundEvents.FIREWORK_ROCKET_BLAST,
                 SoundSource.PLAYERS, 2.0F, 1.6F);
 
+        ServerPlayer owner = level.getServer().getPlayerList().getPlayer(grenade.ownerId);
         double range = ModPerks.FLASHBANG_RANGE;
         for (LivingEntity victim : level.getEntitiesOfClass(LivingEntity.class,
                 AABB.ofSize(blast, range * 2, range * 2, range * 2))) {
@@ -283,7 +286,7 @@ public final class Flashbang {
             double seconds = ModPerks.FLASHBANG_BASE_SECONDS - distance * ModPerks.FLASHBANG_FALLOFF_PER_BLOCK;
             int ticks = (int) Math.round(seconds * 20.0D);
             if (ticks > 0) {
-                blind(victim, ticks);
+                blind(owner, victim, ticks);
             }
         }
     }
@@ -293,18 +296,31 @@ public final class Flashbang {
      * come back.
      */
     public static void blind(LivingEntity victim, int ticks) {
+        blind(null, victim, ticks);
+    }
+
+    /**
+     * The same, with whoever is responsible. Every flash in the mod comes through here, so Weighing
+     * Scale only has to be written once to cover them all.
+     */
+    public static void blind(@Nullable ServerPlayer source, LivingEntity victim, int ticks) {
         if (victim instanceof ServerPlayer player
                 && PerkDataManager.get(player).getActiveTier(ModPerks.FROM_THE_DARK) > 0) {
             ticks *= ModPerks.FROM_THE_DARK_FLASH_MULTIPLIER;
         }
         victim.addEffect(new MobEffectInstance(ModEffects.FLASHED, ticks, 0, false, true, true));
+
+        if (source != null && PerkDataManager.get(source).isAddonActive(ModAddons.WEIGHING_SCALE)) {
+            victim.addEffect(new MobEffectInstance(ModEffects.BROKEN, ModAddons.WEIGHING_SCALE_BROKEN_TICKS,
+                    0, false, true, true));
+        }
     }
 
     /**
      * The blast has to be on screen, not merely in the room: a grenade behind you is one you never
      * saw, and turning away in time is the whole skill of dodging it.
      */
-    private static boolean isLookingAt(LivingEntity victim, Vec3 blast) {
+    public static boolean isLookingAt(LivingEntity victim, Vec3 blast) {
         Vec3 toBlast = blast.subtract(victim.getEyePosition());
         if (toBlast.lengthSqr() < 1.0E-6D) {
             return true;
@@ -321,7 +337,7 @@ public final class Flashbang {
      * transparent here, and only a block that truly hides what is behind it is cover. The shape is
      * still consulted, so grazing the corner of a wall is not the same as running into it.
      */
-    private static boolean canSee(ServerLevel level, Vec3 blast, LivingEntity victim) {
+    public static boolean canSee(ServerLevel level, Vec3 blast, LivingEntity victim) {
         Vec3 eyes = victim.getEyePosition();
         Boolean clear = BlockGetter.traverseBlocks(blast, eyes, Unit.INSTANCE, (unit, pos) -> {
             BlockState state = level.getBlockState(pos);

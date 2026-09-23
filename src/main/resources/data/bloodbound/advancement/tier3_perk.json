@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:tier2_perk",
+  "display": {
+    "icon": { "id": "minecraft:amethyst_shard" },
+    "title": { "translate": "advancement.bloodbound.tier3_perk.title" },
+    "description": { "translate": "advancement.bloodbound.tier3_perk.description" },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

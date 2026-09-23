@@ -2,9 +2,7 @@ package net.h3xpy.bloodbound.data;
 
 import javax.annotation.Nullable;
 
-import net.h3xpy.bloodbound.soulweb.Soulweb;
-import net.h3xpy.bloodbound.soulweb.SoulwebNode;
-import net.h3xpy.bloodbound.soulweb.NodeReward;
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.menu.PerkTableMenu;
 import net.h3xpy.bloodbound.network.SyncPerkDataPayload;
 import net.h3xpy.bloodbound.perk.Addon;
@@ -13,6 +11,9 @@ import net.h3xpy.bloodbound.perk.Perk;
 import net.h3xpy.bloodbound.perk.PerkRegistry;
 import net.h3xpy.bloodbound.registry.ModAttachments;
 import net.h3xpy.bloodbound.registry.ModItems;
+import net.h3xpy.bloodbound.soulweb.NodeReward;
+import net.h3xpy.bloodbound.soulweb.Soulweb;
+import net.h3xpy.bloodbound.soulweb.SoulwebNode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -79,12 +80,24 @@ public final class PerkDataManager {
         }
         inventory.setChanged();
 
-        // The perk table menu has no slots, so nothing would otherwise tell the client its
-        // inventory changed and the shard counter on screen would sit at a stale number.
         if (player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.inventoryMenu.broadcastChanges();
+            syncInventory(serverPlayer);
         }
         return true;
+    }
+
+    /**
+     * Pushes the player's whole inventory to their client.
+     * <p>
+     * A single changed slot is not enough here. While any menu other than the inventory is open,
+     * the client throws away slot updates for the player's own inventory unless they land on the
+     * hotbar — so shards spent at the table stayed on screen, whole stacks of them, until something
+     * else made the client look at that slot again. The full contents packet is honoured whatever
+     * is open, so that is what goes out.
+     */
+    public static void syncInventory(ServerPlayer player) {
+        player.inventoryMenu.broadcastChanges();
+        player.inventoryMenu.sendAllDataToRemote();
     }
 
     // --- loadout ---
@@ -156,10 +169,9 @@ public final class PerkDataManager {
         web.markPurchased(index);
         grantReward(player, data, node.reward());
 
-        // The perk table menu has no slots of its own, so the server never broadcasts the player's
-        // inventory while it is open. The shards came off inside consumeShards; this covers an item
-        // reward going in, which would otherwise stay invisible until the screen was closed.
-        player.inventoryMenu.broadcastChanges();
+        // The shards came off inside consumeShards; this covers an item reward going in, which
+        // would otherwise stay invisible until the screen was closed.
+        syncInventory(player);
 
         player.level().playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP,
                 SoundSource.PLAYERS, 0.7F, 1.2F);
@@ -184,6 +196,7 @@ public final class PerkDataManager {
             }
             boolean wasUnknown = !data.isUnlocked(perkReward.perkId());
             data.unlock(perkReward.perkId(), perkReward.tier());
+            ModAdvancements.onPerkBought(player, perkReward.tier());
 
             // Equipping a brand new perk straight away saves a trip through the loadout tab.
             if (wasUnknown) {
@@ -207,6 +220,7 @@ public final class PerkDataManager {
             }
             boolean wasUnknown = !data.isAddonUnlocked(addon.id());
             data.unlockAddon(addon.id());
+            ModAdvancements.onAddonBought(player, addon);
 
             // Fit it straight away if this perk's addon slot is still empty.
             if (wasUnknown && data.equippedAddon(addon.perkId()) == null) {

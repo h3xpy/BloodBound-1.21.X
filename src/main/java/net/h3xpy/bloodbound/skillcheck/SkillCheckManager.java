@@ -134,9 +134,14 @@ public final class SkillCheckManager {
         }
     }
 
-    /** Forgets a player entirely, on logout or dimension change. */
+    /**
+     * Forgets a player entirely, on death, logout or dimension change.
+     * <p>
+     * The client is told as well: the dial is drawn from state the client keeps on its own, and a
+     * player who died mid-check came back to a dial still sweeping over a fresh life.
+     */
     public static void clear(ServerPlayer player) {
-        ACTIVE.remove(player.getUUID());
+        cancel(player);
     }
 
     private static void resolve(ServerPlayer player, ActiveSkillCheck check, boolean success) {

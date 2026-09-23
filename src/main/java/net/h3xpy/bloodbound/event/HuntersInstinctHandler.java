@@ -4,6 +4,7 @@ import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.perk.impl.EnhancedPerception;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -50,7 +51,8 @@ public final class HuntersInstinctHandler {
                 continue;
             }
 
-            double radius = ModPerks.HUNTERS_INSTINCT.value(ModPerks.HUNTERS_INSTINCT_RADIUS, tier);
+            double radius = EnhancedPerception.radius(hunter,
+                    ModPerks.HUNTERS_INSTINCT.value(ModPerks.HUNTERS_INSTINCT_RADIUS, tier));
             if (PerkDataManager.get(hunter).isAddonActive(ModAddons.EMPTY_SHOTGUN_SHELL)) {
                 radius *= ModAddons.EMPTY_SHELL_RANGE;
             }

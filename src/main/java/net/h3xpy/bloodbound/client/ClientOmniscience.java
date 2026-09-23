@@ -1,6 +1,8 @@
 package net.h3xpy.bloodbound.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -38,6 +40,12 @@ public final class ClientOmniscience {
     /** Boxes are grown a hair so they do not fight the block's own faces for pixels. */
     private static final double INFLATE = 0.002D;
 
+    /** What one perk is showing. */
+    private record Reveal(List<BlockPos> ores, List<BlockPos> containers, List<Integer> entities) {}
+
+    /** Per source, so Omniscience and an Eavesdrop trap can both be showing things at once. */
+    private static final Map<Integer, Reveal> REVEALS = new HashMap<>();
+
     private static List<BlockPos> ores = List.of();
     private static List<BlockPos> containers = List.of();
     private static List<Integer> entities = List.of();
@@ -47,10 +55,33 @@ public final class ClientOmniscience {
     public static void accept(OmnisciencePayload payload) {
         // Whatever was glowing before is not necessarily in the new sweep.
         clearGlow();
-        ores = payload.ores();
-        containers = payload.containers();
-        entities = payload.entities();
+        if (payload.ores().isEmpty() && payload.containers().isEmpty() && payload.entities().isEmpty()) {
+            REVEALS.remove(payload.source());
+        } else {
+            REVEALS.put(payload.source(),
+                    new Reveal(payload.ores(), payload.containers(), payload.entities()));
+        }
+        rebuild();
         applyGlow();
+    }
+
+    /** Flattens every source into the three lists the glow and the outlines actually read. */
+    private static void rebuild() {
+        List<BlockPos> allOres = new ArrayList<>();
+        List<BlockPos> allContainers = new ArrayList<>();
+        List<Integer> allEntities = new ArrayList<>();
+        for (Reveal reveal : REVEALS.values()) {
+            allOres.addAll(reveal.ores());
+            allContainers.addAll(reveal.containers());
+            for (int id : reveal.entities()) {
+                if (!allEntities.contains(id)) {
+                    allEntities.add(id);
+                }
+            }
+        }
+        ores = allOres;
+        containers = allContainers;
+        entities = allEntities;
     }
 
     public static boolean isRevealed(int entityId) {
@@ -69,6 +100,7 @@ public final class ClientOmniscience {
 
     public static void reset() {
         clearGlow();
+        REVEALS.clear();
         ores = List.of();
         containers = List.of();
         entities = List.of();

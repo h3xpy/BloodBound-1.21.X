@@ -2,6 +2,7 @@ package net.h3xpy.bloodbound.registry;
 
 import net.h3xpy.bloodbound.BloodBound;
 import net.h3xpy.bloodbound.block.PerkTableBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -22,6 +23,20 @@ public final class ModBlocks {
                     .requiresCorrectToolForDrops()
                     .sound(SoundType.STONE)
                     .lightLevel(state -> 5));
+
+    /**
+     * The ritual laid on the ground. Registered only so its model is loaded and baked — nothing ever
+     * puts one in the world; the marker entity draws this state where the ritual stands.
+     */
+    public static final DeferredBlock<Block> RITUAL = BLOCKS.registerBlock(
+            "ritual",
+            Block::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BLACK)
+                    .noCollission()
+                    .noOcclusion()
+                    .instabreak()
+                    .sound(SoundType.WOOL));
 
     private ModBlocks() {}
 

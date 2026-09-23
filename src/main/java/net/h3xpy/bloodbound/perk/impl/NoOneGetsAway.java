@@ -218,7 +218,7 @@ public final class NoOneGetsAway {
 
     /** Soul Chain: everything it passes close to shows up for a moment. */
     private static void revealAround(ServerLevel level, Shot shot, ServerPlayer owner) {
-        double radius = ModAddons.SOUL_CHAIN_REVEAL_RADIUS;
+        double radius = EnhancedPerception.radius(owner, ModAddons.SOUL_CHAIN_REVEAL_RADIUS);
         for (LivingEntity nearby : level.getEntitiesOfClass(LivingEntity.class,
                 AABB.ofSize(shot.position, radius * 2, radius * 2, radius * 2))) {
             if (nearby == owner || !nearby.isAlive() || nearby.distanceToSqr(shot.position) > radius * radius) {

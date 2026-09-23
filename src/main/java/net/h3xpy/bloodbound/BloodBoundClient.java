@@ -3,6 +3,7 @@ package net.h3xpy.bloodbound;
 import net.h3xpy.bloodbound.client.ClientEventHandler;
 import net.h3xpy.bloodbound.client.ClientUnderTheRadar;
 import net.h3xpy.bloodbound.client.model.BarbedWireModel;
+import net.h3xpy.bloodbound.client.model.IceShellModel;
 import net.h3xpy.bloodbound.client.model.TargetFoundModel;
 import net.h3xpy.bloodbound.client.ModKeyMappings;
 import net.h3xpy.bloodbound.client.hud.EffectBarsOverlay;
@@ -11,6 +12,8 @@ import net.h3xpy.bloodbound.client.hud.PerkHudLayer;
 import net.h3xpy.bloodbound.client.hud.SkillCheckOverlay;
 import net.h3xpy.bloodbound.client.screen.PerkTableScreen;
 import net.h3xpy.bloodbound.client.render.BarbedWireRenderer;
+import net.h3xpy.bloodbound.client.render.IceShellRenderer;
+import net.h3xpy.bloodbound.client.render.RitualRenderer;
 import net.h3xpy.bloodbound.client.render.TargetFoundRenderer;
 import net.h3xpy.bloodbound.registry.ModEntities;
 import net.h3xpy.bloodbound.registry.ModMenus;
@@ -55,11 +58,14 @@ public class BloodBoundClient {
     private static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(BarbedWireModel.LAYER_LOCATION, BarbedWireModel::createBodyLayer);
         event.registerLayerDefinition(TargetFoundModel.LAYER_LOCATION, TargetFoundModel::createBodyLayer);
+        event.registerLayerDefinition(IceShellModel.LAYER_LOCATION, IceShellModel::createBodyLayer);
     }
 
     private static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.BARBED_WIRE.get(), BarbedWireRenderer::new);
         event.registerEntityRenderer(ModEntities.TARGET_FOUND.get(), TargetFoundRenderer::new);
+        event.registerEntityRenderer(ModEntities.RITUAL.get(), RitualRenderer::new);
+        event.registerEntityRenderer(ModEntities.ICE_SHELL.get(), IceShellRenderer::new);
     }
 
     private static void registerGuiLayers(RegisterGuiLayersEvent event) {

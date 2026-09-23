@@ -77,30 +77,30 @@ public final class LootPools {
             LootEntry.xp(24, 48, 3));
 
     public static final List<LootEntry> RARE = List.of(
-            LootEntry.of(Items.DIAMOND, 1, 2, 10),
-            LootEntry.of(Items.EMERALD, 3, 7, 8),
+            LootEntry.of(Items.DIAMOND, 1, 2, 9),
+            LootEntry.of(Items.EMERALD, 3, 7, 7),
             LootEntry.of(Items.GOLD_INGOT, 4, 8, 7),
             LootEntry.of(Items.IRON_INGOT, 6, 10, 6),
-            LootEntry.of(Items.GOLDEN_APPLE, 1, 1, 9),
+            LootEntry.of(Items.GOLDEN_APPLE, 1, 1, 8),
             LootEntry.of(Items.ENDER_PEARL, 1, 2, 7),
             LootEntry.of(Items.BLAZE_ROD, 1, 2, 8),
-            LootEntry.of(Items.GHAST_TEAR, 1, 1, 9),
+            LootEntry.of(Items.GHAST_TEAR, 1, 1, 8),
             LootEntry.of(Items.EXPERIENCE_BOTTLE, 2, 4, 7),
-            LootEntry.of(Items.DIAMOND_SWORD, 1, 1, 12),
-            LootEntry.of(Items.DIAMOND_PICKAXE, 1, 1, 12),
+            LootEntry.of(Items.DIAMOND_SWORD, 1, 1, 10),
+            LootEntry.of(Items.DIAMOND_PICKAXE, 1, 1, 10),
             LootEntry.xp(80, 140, 8),
 
             // Equipment, rolled with enchantments. A plain book becomes an enchanted book.
-            LootEntry.enchanted(Items.IRON_SWORD, 9),
-            LootEntry.enchanted(Items.IRON_PICKAXE, 9),
-            LootEntry.enchanted(Items.DIAMOND_AXE, 12),
-            LootEntry.enchanted(Items.DIAMOND_SHOVEL, 11),
-            LootEntry.enchanted(Items.BOW, 9),
-            LootEntry.enchanted(Items.CROSSBOW, 10),
-            LootEntry.enchanted(Items.IRON_CHESTPLATE, 9),
-            LootEntry.enchanted(Items.DIAMOND_HELMET, 12),
-            LootEntry.enchanted(Items.DIAMOND_BOOTS, 12),
-            LootEntry.enchanted(Items.BOOK, 10));
+            LootEntry.enchanted(Items.IRON_SWORD, 7),
+            LootEntry.enchanted(Items.IRON_PICKAXE, 7),
+            LootEntry.enchanted(Items.DIAMOND_AXE, 10),
+            LootEntry.enchanted(Items.DIAMOND_SHOVEL, 9),
+            LootEntry.enchanted(Items.BOW, 7),
+            LootEntry.enchanted(Items.CROSSBOW, 8),
+            LootEntry.enchanted(Items.IRON_CHESTPLATE, 7),
+            LootEntry.enchanted(Items.DIAMOND_HELMET, 10),
+            LootEntry.enchanted(Items.DIAMOND_BOOTS, 10),
+            LootEntry.enchanted(Items.BOOK, 8));
 
     private LootPools() {}
 

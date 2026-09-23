@@ -101,20 +101,15 @@ public class PerkTableScreen extends AbstractContainerScreen<PerkTableMenu> {
         return imageHeight - HEADER_HEIGHT - TAB_HEIGHT - 14;
     }
 
-    /** How many soul shards the player is carrying, read straight from the client inventory. */
+    /**
+     * How many soul shards the player is carrying, as the menu was last told.
+     * <p>
+     * Counted on the server and sent with the menu rather than read from the client's inventory:
+     * while a menu is open the server sends no inventory updates, so a count taken here went stale
+     * until something else forced the slot across.
+     */
     int shardCount() {
-        if (minecraft == null || minecraft.player == null) {
-            return 0;
-        }
-        int total = 0;
-        Inventory inventory = minecraft.player.getInventory();
-        for (int i = 0; i < inventory.getContainerSize(); i++) {
-            ItemStack stack = inventory.getItem(i);
-            if (stack.is(ModItems.SOUL_SHARD.get())) {
-                total += stack.getCount();
-            }
-        }
-        return total;
+        return menu.shardCount();
     }
 
     // --- rendering ---

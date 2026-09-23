@@ -13,6 +13,7 @@ import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.effect.BleedingHandler;
 import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.perk.impl.BlessingOfLife;
 import net.h3xpy.bloodbound.perk.impl.GreenHerbs;
 import net.h3xpy.bloodbound.perk.impl.TeamSpirit;
 import net.h3xpy.bloodbound.skillcheck.SkillCheckContext;
@@ -37,6 +38,12 @@ public final class HealManager {
     public static final double HEAL_RANGE = 3.0D;
     /** A full 20 HP heal takes 30 seconds, so one point every 1.5 seconds. */
     public static final int TICKS_PER_POINT = 30;
+    /**
+     * Every kind of mending in the mod runs this many times faster than its written rate: co-op
+     * healing, Patch Up and dressing a Bleeding wound alike. One knob rather than three, so the
+     * numbers the perks advertise keep their proportions.
+     */
+    public static final double GLOBAL_SPEED = 2.0D;
     /** Skill checks are rolled once a second. */
     private static final int CHECK_INTERVAL = 20;
     /** Odds of a skill check on each roll. */
@@ -84,7 +91,8 @@ public final class HealManager {
             return;
         }
         PlayerPerkData data = PerkDataManager.get(healer);
-        if (!data.hasHealingAbility()) {
+        // Standing in a Blessing Of Life is a licence to heal in itself, perk or no perk.
+        if (!data.hasHealingAbility() && !BlessingOfLife.isBlessed(healer)) {
             healer.displayClientMessage(Component.translatable("bloodbound.message.no_healing_ability")
                     .withStyle(ChatFormatting.DARK_GRAY), true);
             return;
@@ -302,7 +310,7 @@ public final class HealManager {
         if (session.isSelfHeal()) {
             int patchUp = data.getActiveTier(ModPerks.PATCH_UP);
             if (patchUp <= 0) {
-                return TICKS_PER_POINT;
+                return Math.max(1, (int) Math.round(TICKS_PER_POINT / GLOBAL_SPEED));
             }
             double seconds = ModPerks.PATCH_UP.value(ModPerks.PATCH_UP_FULL_HEAL_SECONDS, patchUp);
             if (data.isAddonActive(ModAddons.BANDAGES_WRAP)) {
@@ -310,13 +318,13 @@ public final class HealManager {
             }
             // The medic perks make you a faster medic on yourself too: Caretaker and We Can Do This
             // speed Patch Up up exactly as they speed a co-op heal.
-            seconds /= 1.0D + healSpeedBonus(healer);
+            seconds /= GLOBAL_SPEED * (1.0D + healSpeedBonus(healer));
             return Math.max(1, (int) Math.round(seconds * 20.0D / healer.getMaxHealth()));
         }
 
         // We Can Do This only pays out while the healer themselves is untouched, which healSpeedBonus
         // settles along with everything else.
-        return Math.max(1, (int) Math.round(TICKS_PER_POINT / (1.0D + healSpeedBonus(healer))));
+        return Math.max(1, (int) Math.round(TICKS_PER_POINT / (GLOBAL_SPEED * (1.0D + healSpeedBonus(healer)))));
     }
 
     /**
@@ -334,6 +342,10 @@ public final class HealManager {
         int weCanDoThis = data.getActiveTier(ModPerks.WE_CAN_DO_THIS);
         if (weCanDoThis > 0 && healer.getHealth() >= healer.getMaxHealth()) {
             bonus += ModPerks.WE_CAN_DO_THIS.value(ModPerks.WE_CAN_DO_THIS_BONUS, weCanDoThis) / 100.0D;
+        }
+        // Whose ritual it is makes no difference: what counts is standing in one.
+        if (BlessingOfLife.isBlessed(healer)) {
+            bonus += ModPerks.BLESSING_HEAL_BONUS;
         }
         return bonus;
     }

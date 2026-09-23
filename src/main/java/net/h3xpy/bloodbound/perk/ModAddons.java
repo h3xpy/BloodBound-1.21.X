@@ -486,6 +486,92 @@ public final class ModAddons {
     public static final Addon CURSED_RISER = AddonRegistry.register(
             Addon.of("cursed_riser", ModPerks.LONGSHOT, AddonRarity.EPIC));
 
+    // --- Enhanced Perception ---
+
+    /** A few more blocks of reach. */
+    public static final Addon ADWARE = AddonRegistry.register(
+            Addon.of("adware", ModPerks.ENHANCED_PERCEPTION, AddonRarity.COMMON));
+
+    /** Auras linger. */
+    public static final Addon SPYWARE = AddonRegistry.register(
+            Addon.of("spyware", ModPerks.ENHANCED_PERCEPTION, AddonRarity.UNCOMMON));
+
+    /** Being seen is tiring. */
+    public static final Addon RANSOMWARE = AddonRegistry.register(
+            Addon.of("ransomware", ModPerks.ENHANCED_PERCEPTION, AddonRarity.EPIC));
+
+    // --- Crime And Punishment ---
+
+    /** Blows parried during the wait bring the next punishment closer. */
+    public static final Addon TORN_PAGE = AddonRegistry.register(
+            Addon.of("torn_page", ModPerks.CRIME_AND_PUNISHMENT, AddonRarity.RARE));
+
+    /** A shorter flash, lengthened by whatever the blow was worth. */
+    public static final Addon DAMNED_SOUL = AddonRegistry.register(
+            Addon.of("damned_soul", ModPerks.CRIME_AND_PUNISHMENT, AddonRarity.EPIC));
+
+    /** Everything you blind is broken with it. */
+    public static final Addon WEIGHING_SCALE = AddonRegistry.register(
+            Addon.of("weighing_scale", ModPerks.CRIME_AND_PUNISHMENT, AddonRarity.UNSTABLE));
+
+    // --- Ice Block ---
+
+    /** A little mending as the ice closes. */
+    public static final Addon BLOODIED_BANDAGES = AddonRegistry.register(
+            Addon.of("bloodied_bandages", ModPerks.ICE_BLOCK, AddonRarity.COMMON));
+
+    /** Come out of it moving. */
+    public static final Addon SHATTERED_MASK = AddonRegistry.register(
+            Addon.of("shattered_mask", ModPerks.ICE_BLOCK, AddonRarity.RARE));
+
+    /** Break it for them and the light blinds them. */
+    public static final Addon GABRIELS_RING = AddonRegistry.register(
+            Addon.of("gabriels_ring", ModPerks.ICE_BLOCK, AddonRarity.EPIC));
+
+    // --- Adware tuning ---
+    public static final double ADWARE_BONUS_BLOCKS = 4.0D;
+
+    // --- Spyware tuning ---
+    public static final int SPYWARE_EXTRA_TICKS = 60;
+
+    // --- Ransomware tuning ---
+    /** How long a revealed target is winded, and at what level. */
+    public static final int RANSOMWARE_EXHAUST_TICKS = 160;
+    public static final int RANSOMWARE_EXHAUST_LEVEL = 1;
+
+    // --- Torn Page tuning ---
+    /** Share of the wait a parry takes off while the perk is on cooldown. */
+    public static final double TORN_PAGE_CUT = 0.20D;
+
+    // --- Damned Soul tuning ---
+    /** Seconds off the flash, and seconds added per point of damage the blow carried. */
+    public static final double DAMNED_SOUL_PENALTY_SECONDS = 2.0D;
+    public static final double DAMNED_SOUL_SECONDS_PER_DAMAGE = 0.25D;
+
+    // --- Weighing Scale tuning ---
+    public static final int WEIGHING_SCALE_BROKEN_TICKS = 200;
+
+    // --- Bloodied Bandages tuning ---
+    public static final float BLOODIED_BANDAGES_HEAL = 3.0F;
+
+    // --- Shattered Mask tuning ---
+    /** Roughly how many blocks the dash out of the ice covers. */
+    public static final double SHATTERED_MASK_DASH = 7.0D;
+    /**
+     * The kick upwards that comes with it, worth about two blocks of height — vanilla's own jump is
+     * 0.42 and clears one and a quarter.
+     */
+    public static final double SHATTERED_MASK_LIFT = 0.56D;
+
+    // --- Gabriel's Ring tuning ---
+    /** How far the light reaches, and the flash it gives: {@code 4 - distance / 8} seconds. */
+    public static final double GABRIELS_RING_RANGE = 16.0D;
+    public static final double GABRIELS_RING_BASE_SECONDS = 4.0D;
+    public static final double GABRIELS_RING_FALLOFF_PER_BLOCK = 1.0D / 8.0D;
+    /** Absorption won per entity blinded, and how long it lasts. */
+    public static final float GABRIELS_RING_ABSORPTION = 1.0F;
+    public static final int GABRIELS_RING_ABSORPTION_TICKS = 600;
+
     // --- Fragstone Shard tuning ---
     public static final double FRAGSTONE_SHARD_RADIUS = 1.15D;
 

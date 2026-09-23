@@ -5,15 +5,15 @@ package net.h3xpy.bloodbound.skillcheck;
  * wide the success zone is and how long the sweep takes.
  * <p>
  * The window a player actually gets is {@code zoneWidth * durationTicks} ticks, so shrinking the
- * zone and speeding up the sweep compound: NORMAL leaves ~168 ms, HARD only ~40 ms.
+ * zone and speeding up the sweep compound: NORMAL leaves ~168 ms, HARD only ~63 ms.
  */
 public enum SkillCheckDifficulty {
     /** Tinkerer's opening check: wide and slow, since every one after it is tighter. */
     EASY(0.16F, 28),
     /** The everyday check raised while healing someone. */
     NORMAL(0.105F, 24),
-    /** Surgical Suture's self-heal check. Deliberately punishing: a 40 ms window. */
-    HARD(0.04F, 20);
+    /** Surgical Suture's self-heal check. Still punishing, but a readable one: a 63 ms window. */
+    HARD(0.06F, 21);
 
     private final float zoneWidth;
     private final int durationTicks;

@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:tier1_perk",
+  "display": {
+    "icon": { "id": "minecraft:lapis_lazuli" },
+    "title": { "translate": "advancement.bloodbound.tier2_perk.title" },
+    "description": { "translate": "advancement.bloodbound.tier2_perk.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

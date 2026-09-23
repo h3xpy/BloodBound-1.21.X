@@ -1,6 +1,6 @@
 # BloodBound
 
-A Dead by Daylight style perk system for Minecraft 1.21.1 (NeoForge 21.1.249).
+A Dead by Daylight style perk system for Minecraft 1.21.1 (NeoForge 21.1.248).
 
 Kill mobs for **soul shards**, spend them on a **soulweb**, and keep the perks you learn for good.
 
@@ -70,9 +70,17 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | **Under The Radar** | Passive | Nametag hidden and every sound you make silenced, subtitles included. The first aura reveal against you is blocked, along with any other for **4/8/12** seconds; then a **40/30/20** second cooldown. |
 | **Final Blow** | Passive | See the marks of anything under **30/40/50%** health. Walking them leaves the owner Broken, lingering **6/8/10** seconds after you step off. Their marks vanish the moment they heal back over the line. |
 | **Full Extraction** | Passive | Ores drop smelted, with their rock, and a **20/25/30%** chance of a soul shard, rerolled after every success. Off with Silk Touch. |
-| **Frag' Nade** | Active | Hold to wind up a throw (up to 3 seconds, shown on the slot), release to throw. Comes off walls, stops on the floor, beeps 0.75 s if it bounced or 1.5 s if not, then blasts twice a second apart: **1.8/2/2.2** blocks, then **3.75/4.25/4.75** with heavy knockback. **5/6/7** armour-ignoring damage each, thrower included. Cooldown **20/17/14** seconds. |
+| **Frag' Nade** | Active | Hold to wind up a throw (up to 3 seconds, shown on the slot), release to throw. Comes off walls, stops on the floor, beeps 0.75 s if it bounced or 1.5 s if not, then blasts twice a second apart: **1.8/2/2.2** blocks, then **3.75/4.25/4.75** with heavy knockback. **5/6/7** armour- and enchantment-ignoring damage each, thrower included. Cooldown **20/17/14** seconds. |
 | **Green Herbs** | Passive | Unlocks healing. Your own natural healing runs **1.5/2/2.5x** as fast. Put **6/4/2** HP into another player and they mend that way too for **60/90/120** seconds, unless they already carry the perk. |
 | **From The Dark** | Passive | Permanent night vision. Sprinting in light level 3 or lower grants Speed III for 2 seconds, then a **9/7/5** second cooldown. The price: Flashed lasts twice as long on you. |
+| **Crime And Punishment** | Passive | Turn a blow aside with a shield, or anything else that parries, and whoever threw it is Flashed for **2.5/3/3.5** seconds. Cooldown **25/23/21** seconds. |
+| **Enhanced Perception** | Passive | Everything of yours that reveals auras within a radius reaches **10/15/20** blocks further. |
+| **Call Of Death** | Passive | A kill of yours reveals every player and creature within **16/20/24** blocks of the body for 8 seconds. |
+| **Ice Block** | Active | Seal yourself in ice for **7/10/13** seconds: untouchable, held still, on Regeneration I. The ice is an entity, so no world block is touched and you can see out of it. Any damage shatters it and throws everything within 5 blocks away; the key breaks it early instead. Cooldown **30/27/24** seconds. |
+| **Blessing Of Life** | Active | Hold the key 5 seconds still to lay a ritual. Everything alive within **18/22/26** blocks gains Regeneration I; players standing in it may heal others with no perk at all, and do it 150% faster. 20 consecutive seconds inside shows you the ritual. Cooldown 180 seconds. |
+| **Eavesdrop** | Active | Hold the key **4/3.5/3** seconds still to lay a ritual. Within 100 blocks of it, every chest and everything moving within **20/24/28** blocks of it is outlined for you. 30 seconds inside, all told, shows a player the ritual. Cooldown **80/70/60** seconds. |
+| **Inevitable Death** | Active | Hold the key **12/11/10** seconds still, glowing, to lay a ritual of **300/400/500** charges. No cooldown: the reserve refills **3/4/5** charges a second while no circle of yours stands, and only a full one may be laid. Anything alive but you within **12/14/16** blocks is Exposed until it leaves or the circle runs dry, at 15 charges a second each. Seen from 4 blocks, growing a block every 4 seconds up to 12. |
+| **Sin Of Obliviousness** | Active | Hold the key 5 seconds still to lay a ritual. Anything but you that takes damage within **12/16/20** blocks is Blinded for as long as the ritual stands; leaving the circle is no cure, breaking it is. Seen from 4 blocks, growing a block every 3 seconds up to 24. Cooldown 180 seconds. |
 
 
 ## Marks
@@ -113,7 +121,7 @@ whatever it was chasing and cannot pick a new target up until it ends. Everythin
 sprint-jumping included; once the bar is empty, running costs **5 HP a second** instead. The way out is
 written under the bar: hold the heal key for `20 − charges` seconds — **no healing perk is needed**, letting
 go only pauses it, and the perks that make you a faster medic make this faster too. The screen reddens
-at the edges as the bar empties. A mob has no bar to manage and simply bleeds out at 2 HP a second for
+at the edges as the bar empties. A mob has no bar to manage and simply bleeds out at 0.5 HP a second for
 as many seconds as it had charges. Anything Bleeding trails blood behind it, visible to everyone.
 
 **Exhausted** — a stamina bar of `5 − (level−1)/2` charges. Running, sprint-jumping included, spends one
@@ -164,8 +172,9 @@ you a check, and a doctored client gains nothing.
 ## Healing
 
 Any perk that grants healing — Surgical Suture, Caretaker or We Can Do This — unlocks it. Stand within 3 blocks of a
-player who is **crouched and holding still**, hold the heal key, and they recover 1 HP every 1.5
-seconds — a full 20 HP heal in 30 seconds.
+player who is **crouched and holding still**, hold the heal key, and they recover 1 HP every 0.75
+seconds — a full 20 HP heal in 15 seconds. Every kind of mending in the mod runs at twice its
+written rate: co-op healing, Patch Up and dressing a Bleeding wound alike.
 
 While healing, a skill check fires on a 30% roll each second. Land it and the target gains an extra
 point of health; miss it and they lose one and the heal stalls for a second. A missed check can
@@ -261,6 +270,15 @@ you already own and addons you do not.
 | **Tracking Head** | No One Gets Away | Rare | The shot bends slightly onto its target. |
 | **Heavy Hook** | No One Gets Away | Epic | Drags you to the catch instead; it still gets the debuffs. |
 | **Soul Chain** | No One Gets Away | Unstable | Through blocks, 15% slower, reveals anything within 2 blocks for 3 seconds; a miss halves the cooldown. |
+| **Adware** | Enhanced Perception | Common | Another 4 blocks of reach. |
+| **Spyware** | Enhanced Perception | Uncommon | Auras you reveal stay up 3 seconds longer; an Omniscience reveal holds 3 seconds after you move. |
+| **Ransomware** | Enhanced Perception | Epic | Anything whose aura you reveal is left Exhausted. |
+| **Torn Page** | Crime And Punishment | Rare | A parry made during the cooldown takes 20% off what is left of it. |
+| **Damned Soul** | Crime And Punishment | Epic | The flash is 2 seconds shorter, plus 0.25 s per point of damage the blow carried. |
+| **Weighing Scale** | Crime And Punishment | Unstable | Anything you Flash, by any means, is Broken for 10 seconds. |
+| **Bloodied Bandages** | Ice Block | Common | Sealing yourself in mends 3 HP straight away. |
+| **Shattered Mask** | Ice Block | Rare | Breaking out early throws you about 7 blocks forward and 2 blocks up. |
+| **Gabriel's Ring** | Ice Block | Epic | A block shattered by someone else Flashes everything within 16 blocks looking at it for 4 s, less 1 s per 8 blocks; each one caught is 1 HP of absorption for 30 seconds. |
 | **Odd Arrow** | Longshot | Unstable | No gravity, 60% slower start that accelerates, S-shaped flight, bows draw twice as fast. |
 | **Cursed Riser** | Longshot | Epic | Arrows bend slightly onto their target and start Bleeding on 18 charges. |
 | **Leather Glove** | Close Call | Common | The dash carries 40% further. |
@@ -284,6 +302,32 @@ you already own and addons you do not.
 | **Dead Weight** | Perfect Landing | Rare | Fall 75% faster, land with a Speed a third stronger but a third shorter, and crush whatever you land on for up to 30. |
 | **Momentum Formula** | Perfect Landing | Epic | Past 3 blocks of fall you drop 2.5x as fast, and the Speed you land with lasts 40% less. |
 | **Bounty Poster** | Longshot | Unstable | A hit from over 27 blocks away leaves the target Exposed for 20 seconds and reveals their aura to you for the same. |
+
+## Rituals
+
+Some perks lay a ritual on the ground: a circle that works on everything inside it. Laying one is an
+unbroken piece of work — hold the key, stand perfectly still — and a player may have one ritual per
+perk at a time, so laying a second breaks the first. Flames say what one is for: ordinary flame when
+it does something to you, soul flame when it does something for you — an Eavesdrop trap counts as helpful, since its work is done for the
+one who laid it. Any ritual can be broken by any damage at all: a blow, an arrow, a blast.
+
+A ritual is a marker entity drawing the `bloodbound:ritual` block model, which is why its aura can
+be revealed the way a creature's can: `RitualManager` owns them, `RitualSetup` owns the laying.
+
+## Advancements
+
+Six of them, on their own tab. They are datapack advancements whose only criterion is `impossible`,
+handed out from `ModAdvancements` when the soulweb pays out — so nothing else can trip them, and a
+perk granted by command does not count.
+
+| Advancement | Earned by |
+| --- | --- |
+| **BloodBound** | Buying anything at all on the soulweb (the tab's root) |
+| **Emerald Green** | Your first tier 1 perk |
+| **Sapphire Blue** | Your first tier 2 perk |
+| **Amethyst Purple** | Your first tier 3 perk |
+| **An Upgrade?** | Your first addon |
+| **Big Spender** | Your first unstable addon |
 
 ## Soulweb rules
 
@@ -346,8 +390,15 @@ syncs the target immediately, so their screen and HUD update on the spot.
 | `cooldowns clear <targets>` | Clears every perk cooldown. |
 | `reset <targets>` | Wipes all BloodBound progress. |
 | `info <target>` | Prints learned perks, tiers, fitted addons, web level and shard count. |
+| `usage perks [count]` | How long every perk has been worn across the whole server, longest first. Never-worn ones are listed last, in red. |
+| `usage addons [count]` | The same for addons. |
+| `usage reset` | Wipes the usage record. |
 
 Perk and addon ids tab-complete.
+
+The usage figures are what a balance pass runs on: a perk nobody equips wants a buff, one everybody
+wears wants a look at. They are sampled once a second per player, summed over everyone online, and
+saved with the world in `bloodbound_usage`.
 
 ## Adding a perk
 

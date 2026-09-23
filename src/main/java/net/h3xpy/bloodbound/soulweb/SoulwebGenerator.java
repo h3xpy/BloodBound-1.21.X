@@ -37,10 +37,15 @@ public final class SoulwebGenerator {
     /** And ends up at this one, once the level curve has topped out. */
     private static final int PERK_FINAL_COST = 200;
 
-    /** Fewest perk nodes a web may hold, when there are that many perks left to offer. */
+    /**
+     * Fewest perk nodes a web may hold, when there are that many perks left to offer. Every web owes
+     * the player at least one perk or tier: a web with nothing to learn on it is not worth a trip.
+     */
     private static final int MIN_PERK_NODES = 2;
+    /** And this many at the very least, whatever else the roll says. */
+    private static final int GUARANTEED_PERK_NODES = 1;
     /** Fewest addon nodes a web may hold, when the player owns a perk with an addon left to buy. */
-    private static final int MIN_ADDON_NODES = 1;
+    private static final int MIN_ADDON_NODES = 2;
 
     /** How far a price may swing either way, once swings start at all. */
     private static final int PRICE_VARIATION = 7;
@@ -97,8 +102,8 @@ public final class SoulwebGenerator {
         // Every web owes the player at least MIN_PERK_NODES perks, as far as there are perks left
         // to offer at all.
         int perkCount = perkRewards.isEmpty() ? 0
-                : Math.min(perkRewards.size(),
-                        Math.max(MIN_PERK_NODES, 1 + random.nextInt(Config.SOULWEB_MAX_PERK_NODES.getAsInt())));
+                : Math.min(perkRewards.size(), Math.max(GUARANTEED_PERK_NODES,
+                        Math.max(MIN_PERK_NODES, 1 + random.nextInt(Config.SOULWEB_MAX_PERK_NODES.getAsInt()))));
         List<Integer> perkSlots = pickSpreadSlots(random, slots, branchCount, perkCount, List.of());
 
         List<NodeReward> addonRewards = pickAddonRewards(random, unlockedPerks, unlockedAddons);
@@ -265,8 +270,10 @@ public final class SoulwebGenerator {
 
         List<NodeReward> rewards = new ArrayList<>();
         // At least one, so a web always has an addon on it whenever one is eligible at all.
-        int wanted = Math.min(pool.size(),
-                Math.max(MIN_ADDON_NODES, random.nextInt(Config.SOULWEB_MAX_ADDON_NODES.getAsInt() + 1)));
+        // Rolled from the floor upwards rather than from zero: addons were turning up far too rarely
+        // for how much of the mod they are.
+        int wanted = Math.min(pool.size(), MIN_ADDON_NODES
+                + random.nextInt(Math.max(1, Config.SOULWEB_MAX_ADDON_NODES.getAsInt() - MIN_ADDON_NODES + 1)));
         for (int i = 0; i < wanted; i++) {
             Addon picked = weightedPick(random, pool);
             if (picked == null) {

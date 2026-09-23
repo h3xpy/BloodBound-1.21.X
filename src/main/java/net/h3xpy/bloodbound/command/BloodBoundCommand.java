@@ -17,6 +17,7 @@ import net.h3xpy.bloodbound.perk.AddonRegistry;
 import net.h3xpy.bloodbound.perk.Perk;
 import net.h3xpy.bloodbound.perk.PerkRegistry;
 import net.h3xpy.bloodbound.registry.ModItems;
+import net.h3xpy.bloodbound.stats.PerkUsageStats;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -25,6 +26,7 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -39,6 +41,9 @@ public final class BloodBoundCommand {
 
     /** Vanilla's "game master" level: ops and command blocks, not plain players. */
     private static final int PERMISSION_LEVEL = 2;
+
+    /** How many lines a usage listing shows when no count is asked for. */
+    private static final int USAGE_DEFAULT_LIMIT = 20;
 
     private static final SuggestionProvider<CommandSourceStack> PERK_IDS = (context, builder) -> {
         List<ResourceLocation> ids = new ArrayList<>();
@@ -76,7 +81,74 @@ public final class BloodBoundCommand {
                                         "bloodbound.command.reset"))))
                 .then(Commands.literal("info")
                         .then(Commands.argument("target", EntityArgument.player())
-                                .executes(BloodBoundCommand::info))));
+                                .executes(BloodBoundCommand::info)))
+                .then(usageCommands()));
+    }
+
+    /**
+     * How long everything has been worn, server-wide. What it is for is balance: a perk nobody ever
+     * equips wants a buff, and one everybody wears wants a look at.
+     */
+    private static LiteralArgumentBuilder<CommandSourceStack> usageCommands() {
+        return Commands.literal("usage")
+                .then(Commands.literal("perks")
+                        .executes(context -> usage(context, true, USAGE_DEFAULT_LIMIT))
+                        .then(Commands.argument("count", IntegerArgumentType.integer(1, 200))
+                                .executes(context -> usage(context, true,
+                                        IntegerArgumentType.getInteger(context, "count")))))
+                .then(Commands.literal("addons")
+                        .executes(context -> usage(context, false, USAGE_DEFAULT_LIMIT))
+                        .then(Commands.argument("count", IntegerArgumentType.integer(1, 200))
+                                .executes(context -> usage(context, false,
+                                        IntegerArgumentType.getInteger(context, "count")))))
+                .then(Commands.literal("reset").executes(BloodBoundCommand::resetUsage));
+    }
+
+    /** Prints the table, longest worn first. */
+    private static int usage(CommandContext<CommandSourceStack> context, boolean perks, int limit) {
+        MinecraftServer server = context.getSource().getServer();
+        PerkUsageStats stats = PerkUsageStats.get(server);
+        List<PerkUsageStats.Entry> entries = perks ? stats.perks() : stats.addons();
+
+        context.getSource().sendSuccess(() -> Component.translatable(perks
+                ? "bloodbound.command.usage_perks" : "bloodbound.command.usage_addons")
+                .withStyle(ChatFormatting.GOLD), false);
+
+        int shown = 0;
+        for (PerkUsageStats.Entry entry : entries) {
+            if (shown++ >= limit) {
+                break;
+            }
+            int rank = shown;
+            context.getSource().sendSuccess(() -> Component.literal(rank + ". ")
+                    .withStyle(ChatFormatting.DARK_GRAY)
+                    .append(Component.literal(entry.name()).withStyle(ChatFormatting.WHITE))
+                    .append(Component.literal(" — " + formatDuration(entry.ticks()))
+                            .withStyle(entry.ticks() > 0 ? ChatFormatting.GRAY : ChatFormatting.DARK_RED)),
+                    false);
+        }
+        return shown;
+    }
+
+    private static int resetUsage(CommandContext<CommandSourceStack> context) {
+        PerkUsageStats.get(context.getSource().getServer()).reset();
+        context.getSource().sendSuccess(() -> Component.translatable("bloodbound.command.usage_reset")
+                .withStyle(ChatFormatting.GRAY), true);
+        return 1;
+    }
+
+    /** Ticks as something readable: hours and minutes, or minutes and seconds under the hour. */
+    private static String formatDuration(long ticks) {
+        long seconds = ticks / 20L;
+        long hours = seconds / 3600L;
+        long minutes = seconds % 3600L / 60L;
+        if (hours > 0L) {
+            return hours + "h " + minutes + "m";
+        }
+        if (minutes > 0L) {
+            return minutes + "m " + seconds % 60L + "s";
+        }
+        return seconds + "s";
     }
 
     // --- perks ---
