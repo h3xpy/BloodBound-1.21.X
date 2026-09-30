@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.event.UnderTheRadarHandler;
 import net.h3xpy.bloodbound.network.OmnisciencePayload;
@@ -151,6 +152,9 @@ public final class Omniscience {
                         containers.add(cursor.immutable());
                     } else if (state.is(Tags.Blocks.ORES) && isVisibleAtTier(state, tier)) {
                         ores.add(cursor.immutable());
+                        if (state.is(Blocks.ANCIENT_DEBRIS)) {
+                            ModAdvancements.grant(player, ModAdvancements.CHEATER);
+                        }
                     }
                 }
             }

@@ -225,12 +225,12 @@ public final class ModPerks {
 
     /**
      * Fires a harpoon of a shot: whatever it catches is dragged back to the player and left barely
-     * able to move or fight for a moment.
+     * able to move or fight for a moment. A shot that catches nothing costs half the cooldown.
      * <p>Scaling: [0] cooldown in seconds.
      */
     public static final Perk NO_ONE_GETS_AWAY = PerkRegistry.register(Perk.builder("no_one_gets_away")
             .type(PerkType.ACTIVE)
-            .scaling(45, 40, 35)
+            .scaling(30, 27, 24)
             .cooldown(0)
             .build());
 
@@ -549,12 +549,14 @@ public final class ModPerks {
 
     /**
      * Nobody sees your name, and almost nobody hears you coming.
-     * <p>Scaling: [0] seconds a blocked reveal keeps every other one off, [1] cooldown in seconds.
+     * <p>Scaling: [0] seconds a blocked reveal keeps every other one off, [1] cooldown in seconds,
+     * [2] how much closer a mob has to get to notice you, as a percentage.
      */
     public static final Perk UNDER_THE_RADAR = PerkRegistry.register(Perk.builder("under_the_radar")
             .type(PerkType.PASSIVE)
             .scaling(4, 8, 12)
             .scaling(40, 30, 20)
+            .scaling(50, 65, 80)
             .cooldown(1)
             .build());
 
@@ -774,6 +776,7 @@ public final class ModPerks {
     // --- Under The Radar tuning ---
     public static final int RADAR_WINDOW = 0;
     public static final int RADAR_COOLDOWN = 1;
+    public static final int RADAR_DETECTION = 2;
 
     // --- Final Blow tuning ---
     public static final int FINAL_BLOW_THRESHOLD = 0;
@@ -812,6 +815,120 @@ public final class ModPerks {
     public static double fragSpeed(double share) {
         return FRAG_MIN_SPEED + (FRAG_MAX_SPEED - FRAG_MIN_SPEED) * Math.clamp(share, 0.0D, 1.0D);
     }
+
+    /**
+     * A reserve that reaches further the fuller it is, and pays for every reach by the block.
+     * <p>Scaling: [0] the reserve.
+     */
+    public static final Perk WIRELESS = PerkRegistry.register(Perk.builder("wireless")
+            .type(PerkType.PASSIVE)
+            .scaling(50, 60, 70)
+            .build());
+
+    /**
+     * Hold still under fire long enough and let go a cylinder of energy that runs through walls.
+     * <p>Scaling: [0] seconds of charging, [1] radius in blocks, [2] blocks it grows a second,
+     * [3] its longest reach in blocks, [4] seconds between two hits, [5] cooldown in seconds.
+     */
+    public static final Perk SHORT_CIRCUIT = PerkRegistry.register(Perk.builder("short_circuit")
+            .type(PerkType.ACTIVE)
+            .scaling(3.66, 3.33, 3)
+            .scaling(2, 2.5, 3)
+            .scaling(10, 12.5, 15)
+            .scaling(40, 50, 60)
+            .scaling(0.17, 0.15, 0.13)
+            .scaling(70, 65, 60)
+            .cooldown(5)
+            .build());
+
+    /**
+     * A ritual that watches over your other rituals: wider, sharing their work, and unbreakable.
+     * <p>Scaling: [0] radius in blocks, [1] how much wider the rituals in it grow, as a percentage,
+     * [2] how many more charges a ritual with charges holds, as a percentage.
+     */
+    public static final Perk BAD_OMEN = PerkRegistry.register(Perk.builder("bad_omen")
+            .type(PerkType.ACTIVE)
+            .scaling(48, 64, 80)
+            .scaling(30, 50, 70)
+            .scaling(20, 30, 40)
+            .flatCooldown(180)
+            .build());
+
+    /**
+     * A shot that chains whatever it hits to the spot it was standing on.
+     * <p>Scaling: [0] chain length in blocks, [1] damage the anchor takes before it breaks,
+     * [2] cooldown on a hit in seconds, [3] cooldown on a miss in seconds.
+     */
+    public static final Perk CHAINED_UP = PerkRegistry.register(Perk.builder("chained_up")
+            .type(PerkType.ACTIVE)
+            .scaling(3, 2.5, 2)
+            .scaling(6, 10, 14)
+            .scaling(60, 55, 50)
+            .scaling(25, 23, 21)
+            .cooldown(2)
+            .build());
+
+    /**
+     * A ritual inside which nothing is built and nothing is broken, for as long as its charges last.
+     * <p>Scaling: [0] charges, [1] radius in blocks, [2] cooldown in seconds.
+     */
+    public static final Perk NULLIFICATION = PerkRegistry.register(Perk.builder("nullification")
+            .type(PerkType.ACTIVE)
+            .scaling(500, 1000, 1500)
+            .scaling(20, 25, 30)
+            .scaling(180, 160, 140)
+            .cooldown(2)
+            .build());
+
+    // --- Nullification tuning ---
+    public static final int NULL_CHARGES = 0;
+    public static final int NULL_RADIUS = 1;
+    public static final int NULL_SETUP_TICKS = 100;
+    /** Charges a block that was saved costs, per point of its hardness. */
+    public static final float NULL_COST_PER_HARDNESS = 10.0F;
+    /** How long it keeps working once empty, before it breaks. */
+    public static final int NULL_EMPTY_GRACE_TICKS = 100;
+    /** How long it has to go without spending before it refills, and how fast it does. */
+    public static final int NULL_REGEN_DELAY_TICKS = 1200;
+    public static final float NULL_REGEN_PER_SECOND = 5.0F;
+
+    // --- Wireless tuning ---
+    public static final int WIRELESS_CHARGES = 0;
+    public static final double WIRELESS_REGEN_PER_SECOND = 2.0D;
+    /** Reach each charge adds, in blocks, to blocks and entities alike. */
+    public static final double WIRELESS_REACH_PER_CHARGE = 0.05D;
+    /** Charges an interaction costs, per block it reached past the player's own reach. */
+    public static final double WIRELESS_COST_PER_BLOCK = 4.0D;
+
+    // --- Short Circuit tuning ---
+    public static final int CIRCUIT_CHARGE = 0;
+    public static final int CIRCUIT_RADIUS = 1;
+    public static final int CIRCUIT_GROWTH = 2;
+    public static final int CIRCUIT_LENGTH = 3;
+    public static final int CIRCUIT_INTERVAL = 4;
+    /** How long the cylinder holds at full length before it fades. */
+    public static final int CIRCUIT_LINGER_TICKS = 20;
+    public static final float CIRCUIT_DAMAGE = 1.0F;
+
+    // --- Bad Omen tuning ---
+    public static final int OMEN_RADIUS = 0;
+    public static final int OMEN_RADIUS_BONUS = 1;
+    public static final int OMEN_CHARGE_BONUS = 2;
+    public static final int OMEN_SETUP_TICKS = 100;
+    /** How long a player who tried to break a guarded ritual is shown the Bad Omen. */
+    public static final int OMEN_REVEAL_TICKS = 400;
+
+    // --- Chained Up tuning ---
+    public static final int CHAIN_LENGTH = 0;
+    public static final int CHAIN_ANCHOR_HEALTH = 1;
+    public static final int CHAIN_HIT_COOLDOWN = 2;
+    public static final int CHAIN_MISS_COOLDOWN = 3;
+    public static final double CHAIN_SHOT_SPEED = 2.4D;
+    public static final double CHAIN_SHOT_RANGE = 48.0D;
+    public static final double CHAIN_SHOT_RADIUS = 0.4D;
+    /** How hard the chain pulls back, per block past its length, and the most it pulls in one tick. */
+    public static final double CHAIN_PULL_PER_BLOCK = 0.25D;
+    public static final double CHAIN_PULL_MAX = 0.6D;
 
     // --- Perfect Landing tuning ---
     /** Fall distance, in blocks, above which the perk kicks in. */
@@ -1063,6 +1180,8 @@ public final class ModPerks {
     /** Index of the cooldown, in seconds. */
     public static final int NO_ONE_GETS_AWAY_COOLDOWN = 0;
     /** How fast the shot travels, in blocks per tick, and how far it carries. */
+    /** Share of the cooldown a shot that catches nothing leaves standing. */
+    public static final double HARPOON_MISS_COOLDOWN = 0.5D;
     public static final double HARPOON_SPEED = 2.4D;
     public static final double HARPOON_RANGE = 40.0D;
     /** Radius of the shot, in blocks. */

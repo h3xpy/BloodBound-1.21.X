@@ -2,6 +2,7 @@ package net.h3xpy.bloodbound.perk.impl;
 
 import java.util.List;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.network.RecallTimerPayload;
@@ -29,6 +30,9 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * Diagnostic Tool A, B and C each change what the second press does.
  */
 public final class BrokenMovementDevice {
+
+    /** And I'm Out: how low the player has to be when the point takes them back. */
+    private static final float AND_IM_OUT_HEALTH = 3.0F;
 
     private BrokenMovementDevice() {}
 
@@ -104,9 +108,7 @@ public final class BrokenMovementDevice {
         }
 
         snapTo(player, data.recallX(), data.recallY(), data.recallZ(), data.recallYRot(), data.recallXRot());
-        // setHealth, not heal: the point restores the exact health that was recorded, whether that
-        // is more or less than the player has now, and no healing rule gets a say in it.
-        player.setHealth(Math.min(data.recallHealth(), player.getMaxHealth()));
+        restoreHealth(player, data.recallHealth());
 
         finish(player, data, tier, gameTime);
         return true;
@@ -233,7 +235,7 @@ public final class BrokenMovementDevice {
     /** The rewind ran all the way home: the point pays out in full. */
     private static void completeRewind(ServerPlayer player, PlayerPerkData data, int tier, long gameTime) {
         snapTo(player, data.recallX(), data.recallY(), data.recallZ(), data.recallYRot(), data.recallXRot());
-        player.setHealth(Math.min(data.recallHealth(), player.getMaxHealth()));
+        restoreHealth(player, data.recallHealth());
         data.stopRewind();
         finish(player, data, tier, gameTime);
         PerkDataManager.sync(player);
@@ -257,6 +259,19 @@ public final class BrokenMovementDevice {
     }
 
     // --- shared bits ---
+
+    /**
+     * Puts the recorded health back. setHealth, not heal: the point restores exactly what was
+     * recorded, whether that is more or less than the player has now, and no healing rule gets a
+     * say in it. Coming back whole from the brink is And I'm Out.
+     */
+    private static void restoreHealth(ServerPlayer player, float recorded) {
+        float before = player.getHealth();
+        player.setHealth(Math.min(recorded, player.getMaxHealth()));
+        if (before <= AND_IM_OUT_HEALTH && player.getHealth() >= player.getMaxHealth()) {
+            ModAdvancements.grant(player, ModAdvancements.AND_IM_OUT);
+        }
+    }
 
     /** Moves the player without letting the trip itself hurt them. */
     private static void snapTo(ServerPlayer player, double x, double y, double z, float yRot, float xRot) {

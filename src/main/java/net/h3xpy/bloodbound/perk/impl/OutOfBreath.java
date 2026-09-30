@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.event.BankShotHandler;
 import net.h3xpy.bloodbound.perk.ModPerks;
@@ -46,6 +47,8 @@ public final class OutOfBreath {
         private Vec3 position;
         private Vec3 velocity;
         private int ticksLeft = ModPerks.BREATH_MAX_FLIGHT_TICKS;
+        /** Walls it has come off, for That's Sick. */
+        private int bounces;
 
         private Shot(ServerPlayer owner, int tier, Vec3 position, Vec3 velocity) {
             this.ownerId = owner.getUUID();
@@ -57,6 +60,8 @@ public final class OutOfBreath {
     }
 
     private static final int SUB_STEPS = 4;
+    /** That's Sick: walls a charge has to come off before it finds somebody. */
+    private static final int THATS_SICK_BOUNCES = 3;
 
     private static final DustParticleOptions MAGENTA = new DustParticleOptions(new Vector3f(0.85F, 0.2F, 0.8F), 1.0F);
     private static final DustParticleOptions MAGENTA_LARGE = new DustParticleOptions(new Vector3f(0.95F, 0.3F, 0.9F), 2.0F);
@@ -123,6 +128,7 @@ public final class OutOfBreath {
 
             shot.velocity = BankShotHandler.reflect(shot.velocity, face)
                     .scale(ModPerks.BREATH_BOUNCE_SPEED);
+            shot.bounces++;
             level.playSound(null, shot.position.x, shot.position.y, shot.position.z,
                     SoundEvents.METAL_HIT, SoundSource.PLAYERS, 0.4F, 0.9F);
             break;
@@ -158,6 +164,12 @@ public final class OutOfBreath {
             if (!victim.isAlive() || victim.getEyePosition().distanceTo(blast) > radius
                     && victim.position().distanceTo(blast) > radius) {
                 continue;
+            }
+            if (shot.bounces >= THATS_SICK_BOUNCES && !victim.getUUID().equals(shot.ownerId)) {
+                ServerPlayer owner = level.getServer().getPlayerList().getPlayer(shot.ownerId);
+                if (owner != null) {
+                    ModAdvancements.grant(owner, ModAdvancements.THATS_SICK);
+                }
             }
             victim.addEffect(new MobEffectInstance(ModEffects.EXHAUSTED, duration, level_ - 1,
                     false, true, true));

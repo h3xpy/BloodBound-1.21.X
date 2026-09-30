@@ -1,20 +1,23 @@
 package net.h3xpy.bloodbound;
 
+import net.h3xpy.bloodbound.client.ClientCameraShake;
+import net.h3xpy.bloodbound.client.ClientDrawSpeed;
 import net.h3xpy.bloodbound.client.ClientEventHandler;
 import net.h3xpy.bloodbound.client.ClientUnderTheRadar;
-import net.h3xpy.bloodbound.client.model.BarbedWireModel;
-import net.h3xpy.bloodbound.client.model.IceShellModel;
-import net.h3xpy.bloodbound.client.model.TargetFoundModel;
 import net.h3xpy.bloodbound.client.ModKeyMappings;
 import net.h3xpy.bloodbound.client.hud.EffectBarsOverlay;
 import net.h3xpy.bloodbound.client.hud.FlashedOverlay;
 import net.h3xpy.bloodbound.client.hud.PerkHudLayer;
 import net.h3xpy.bloodbound.client.hud.SkillCheckOverlay;
-import net.h3xpy.bloodbound.client.screen.PerkTableScreen;
+import net.h3xpy.bloodbound.client.model.BarbedWireModel;
+import net.h3xpy.bloodbound.client.model.IceShellModel;
+import net.h3xpy.bloodbound.client.model.TargetFoundModel;
 import net.h3xpy.bloodbound.client.render.BarbedWireRenderer;
+import net.h3xpy.bloodbound.client.render.ChainAnchorRenderer;
 import net.h3xpy.bloodbound.client.render.IceShellRenderer;
 import net.h3xpy.bloodbound.client.render.RitualRenderer;
 import net.h3xpy.bloodbound.client.render.TargetFoundRenderer;
+import net.h3xpy.bloodbound.client.screen.PerkTableScreen;
 import net.h3xpy.bloodbound.registry.ModEntities;
 import net.h3xpy.bloodbound.registry.ModMenus;
 import net.neoforged.api.distmarker.Dist;
@@ -49,6 +52,8 @@ public class BloodBoundClient {
 
         NeoForge.EVENT_BUS.register(ClientEventHandler.class);
         NeoForge.EVENT_BUS.register(ClientUnderTheRadar.class);
+        NeoForge.EVENT_BUS.register(ClientDrawSpeed.class);
+        NeoForge.EVENT_BUS.register(ClientCameraShake.class);
     }
 
     private static void registerScreens(RegisterMenuScreensEvent event) {
@@ -66,6 +71,7 @@ public class BloodBoundClient {
         event.registerEntityRenderer(ModEntities.TARGET_FOUND.get(), TargetFoundRenderer::new);
         event.registerEntityRenderer(ModEntities.RITUAL.get(), RitualRenderer::new);
         event.registerEntityRenderer(ModEntities.ICE_SHELL.get(), IceShellRenderer::new);
+        event.registerEntityRenderer(ModEntities.CHAIN_ANCHOR.get(), ChainAnchorRenderer::new);
     }
 
     private static void registerGuiLayers(RegisterGuiLayersEvent event) {

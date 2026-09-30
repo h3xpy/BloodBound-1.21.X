@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:first_addon",
+  "display": {
+    "icon": { "id": "minecraft:player_head" },
+    "title": { "translate": "advancement.bloodbound.i_know_this_guy.title" },
+    "description": { "translate": "advancement.bloodbound.i_know_this_guy.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

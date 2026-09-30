@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:root",
+  "display": {
+    "icon": { "id": "minecraft:milk_bucket" },
+    "title": { "translate": "advancement.bloodbound.i_dont_think_so.title" },
+    "description": { "translate": "advancement.bloodbound.i_dont_think_so.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

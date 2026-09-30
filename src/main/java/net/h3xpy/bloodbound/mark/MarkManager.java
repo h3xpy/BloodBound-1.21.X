@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
+import net.h3xpy.bloodbound.BloodBound;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.network.MarksPayload;
@@ -78,6 +81,11 @@ public final class MarkManager {
     private static final int MAX_PER_LEVEL = 6000;
     /** How often Final Blow re-reads who is wounded enough to be shown. */
     private static final int FINAL_BLOW_REFRESH = 5;
+    /** How long an entity may go unseen before its last position is forgotten. */
+    private static final int LAST_STAMP_SWEEP_TICKS = 1200;
+    /** How often a failing tick is written to the log, so a recurring fault cannot flood it. */
+    private static final long FAILURE_LOG_INTERVAL_MS = 60_000L;
+    private static long lastFailureLog;
 
     /** One mark: when it was laid, who left it, and whether that was a player or a mob. */
     private record Mark(long laidAt, UUID ownerId, boolean fromPlayer) {}
@@ -99,7 +107,27 @@ public final class MarkManager {
      * whatever has expired. Called once a tick for the whole server.
      */
     public static void tick(MinecraftServer server) {
+        // Marks are only ever something to look at. Whatever goes wrong laying them, the server
+        // carries on: the worst it should cost is a trail, never the tick.
+        try {
+            tickMarks(server);
+        } catch (RuntimeException e) {
+            long now = System.currentTimeMillis();
+            if (now - lastFailureLog > FAILURE_LOG_INTERVAL_MS) {
+                lastFailureLog = now;
+                BloodBound.LOGGER.error("BloodBound marks failed a tick; skipping it", e);
+            }
+        }
+    }
+
+    private static void tickMarks(MinecraftServer server) {
         long gameTime = server.overworld().getGameTime();
+
+        // Where things were last seen is only needed while they keep being seen. Anything absent
+        // for a minute — unloaded, gone to another dimension — is forgotten rather than kept for ever.
+        if (gameTime % LAST_STAMP_SWEEP_TICKS == 0) {
+            LAST_STAMP.values().removeIf(last -> gameTime - (long) last[3] > LAST_STAMP_SWEEP_TICKS);
+        }
 
         // Nothing is laid while nobody can read it, so an empty room costs nothing at all.
         boolean watched = false;
@@ -122,30 +150,46 @@ public final class MarkManager {
         }
     }
 
+    /**
+     * Lays this pass's marks in one level.
+     * <p>
+     * Only what a watcher could ever be shown is looked at: the mobs within sending range of a
+     * player who reads marks, found through the level's own spatial lookup. This used to walk
+     * {@code getAllEntities()}, which is a live view over the level's whole entity table — on a
+     * server where other threads load and unload entities (C2ME, Distant Horizons), the table
+     * changed under the loop and the iterator ran off the end of it, taking the server down.
+     */
     private static void stampLevel(ServerLevel level, long gameTime, boolean mobsToo) {
+        List<ServerPlayer> watchers = new ArrayList<>();
+        for (ServerPlayer player : level.players()) {
+            PlayerPerkData data = PerkDataManager.get(player);
+            if (data.canSeeMarks() || data.getActiveTier(ModPerks.FINAL_BLOW) > 0) {
+                watchers.add(player);
+            }
+        }
+        // Nobody here can read a trail, so nobody here needs one laid.
+        if (watchers.isEmpty()) {
+            return;
+        }
+
         List<Laid> laid = new ArrayList<>();
 
-        // Players are looked at twice as often as mobs; the scan over every entity only happens on
-        // the passes mobs are due.
-        Iterable<? extends Entity> candidates = mobsToo ? level.getAllEntities() : level.players();
-        for (Entity entity : candidates) {
-            if (!(entity instanceof LivingEntity living) || !living.isAlive()) {
-                continue;
-            }
-            boolean player = living instanceof Player;
-            if (player) {
-                // Sprinting, or off the ground: a jump scuffs the ground it left and the ground it
-                // lands on, which is what a real trail looks like.
-                if (living.isSpectator() || !(living.isSprinting() || !living.onGround())) {
-                    continue;
+        // Players are few, and a copy of the list, so a login mid-pass cannot upset it.
+        for (ServerPlayer player : List.copyOf(level.players())) {
+            consider(level, player, gameTime, laid);
+        }
+
+        // Mobs are looked at half as often, and only round the players who could be told.
+        if (mobsToo) {
+            double reach = SEND_RANGE + RADIUS;
+            Set<Integer> seen = new HashSet<>();
+            for (ServerPlayer watcher : watchers) {
+                for (Mob mob : level.getEntitiesOfClass(Mob.class, watcher.getBoundingBox().inflate(reach))) {
+                    if (seen.add(mob.getId())) {
+                        consider(level, mob, gameTime, laid);
+                    }
                 }
-            } else if (!(living instanceof Mob) || !living.onGround()) {
-                continue;
             }
-            if (!hasMoved(living)) {
-                continue;
-            }
-            stamp(level, living, player, gameTime, laid);
         }
 
         if (!laid.isEmpty()) {
@@ -153,10 +197,34 @@ public final class MarkManager {
         }
     }
 
-    /** True when the entity has gone somewhere since its last pass, which also records where it is. */
-    private static boolean hasMoved(LivingEntity entity) {
+    /** One entity's turn: it leaves a set if it is the kind that does, and has moved to leave it. */
+    private static void consider(ServerLevel level, LivingEntity living, long gameTime, List<Laid> laid) {
+        if (!living.isAlive()) {
+            return;
+        }
+        boolean player = living instanceof Player;
+        if (player) {
+            // Sprinting, or off the ground: a jump scuffs the ground it left and the ground it
+            // lands on, which is what a real trail looks like.
+            if (living.isSpectator() || !(living.isSprinting() || !living.onGround())) {
+                return;
+            }
+        } else if (!living.onGround()) {
+            return;
+        }
+        if (!hasMoved(living, gameTime)) {
+            return;
+        }
+        stamp(level, living, player, gameTime, laid);
+    }
+
+    /**
+     * True when the entity has gone somewhere since its last pass, which also records where it is
+     * — and when, so entries for things that have wandered off or unloaded can be swept up.
+     */
+    private static boolean hasMoved(LivingEntity entity, long gameTime) {
         double[] last = LAST_STAMP.get(entity.getUUID());
-        double[] now = {entity.getX(), entity.getY(), entity.getZ()};
+        double[] now = {entity.getX(), entity.getY(), entity.getZ(), gameTime};
         LAST_STAMP.put(entity.getUUID(), now);
         if (last == null) {
             return false;
@@ -406,15 +474,21 @@ public final class MarkManager {
      * you can see.
      */
     public static boolean hasForeignMark(ServerPlayer player, BlockPos pos) {
+        return foreignMarkOwner(player, pos) != null;
+    }
+
+    /** As above, naming whoever left the mark, or null when there is none to follow. */
+    @Nullable
+    public static UUID foreignMarkOwner(ServerPlayer player, BlockPos pos) {
         Map<BlockPos, Mark> marks = MARKS.get(player.serverLevel());
         if (marks == null) {
-            return false;
+            return null;
         }
         Mark mark = marks.get(pos);
         if (mark == null || mark.ownerId().equals(player.getUUID())) {
-            return false;
+            return null;
         }
-        return player.level().getGameTime() - mark.laidAt() >= FADE_IN_TICKS;
+        return player.level().getGameTime() - mark.laidAt() >= FADE_IN_TICKS ? mark.ownerId() : null;
     }
 
     /** Forgets everything, on server shutdown. */

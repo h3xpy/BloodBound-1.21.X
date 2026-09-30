@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:first_addon",
+  "display": {
+    "icon": { "id": "minecraft:beacon" },
+    "title": { "translate": "advancement.bloodbound.get_in_there.title" },
+    "description": { "translate": "advancement.bloodbound.get_in_there.description" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

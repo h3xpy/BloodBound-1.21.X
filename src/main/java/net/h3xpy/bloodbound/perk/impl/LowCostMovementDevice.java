@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
@@ -209,6 +210,9 @@ public final class LowCostMovementDevice {
                 continue;
             }
             victim.hurt(PerkDamageSource.of(player.damageSources().playerAttack(player), "box_opener"), damage);
+            if (victim.isDeadOrDying()) {
+                ModAdvancements.grant(player, ModAdvancements.NOT_THAT_LOW_COST);
+            }
             player.level().playSound(null, player.blockPosition(), SoundEvents.PLAYER_ATTACK_CRIT,
                     SoundSource.PLAYERS, 0.9F, 0.8F);
             // One ram per launch: the window closes on the first thing hit.

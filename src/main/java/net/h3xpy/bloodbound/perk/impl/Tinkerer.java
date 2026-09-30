@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModAddons;
@@ -32,11 +33,14 @@ public final class Tinkerer {
     private static final class Session {
         private final ItemStack stack;
         private final int tier;
+        /** Hyperfocused: the tool came in with a tenth of its durability or less. */
+        private final boolean nearlyBroken;
         private final float openingZone;
         private float zoneWidth;
 
-        private Session(ItemStack stack, int tier, float openingZone) {
+        private Session(ItemStack stack, int tier, float openingZone, boolean nearlyBroken) {
             this.stack = stack;
+            this.nearlyBroken = nearlyBroken;
             this.tier = tier;
             this.openingZone = openingZone;
             this.zoneWidth = openingZone;
@@ -44,6 +48,9 @@ public final class Tinkerer {
     }
 
     private static final Map<UUID, Session> SESSIONS = new HashMap<>();
+
+    /** Hyperfocused: the share of durability, or less, a tool has to be mended back from. */
+    private static final double HYPERFOCUSED_SHARE = 0.10D;
 
     private Tinkerer() {}
 
@@ -59,6 +66,10 @@ public final class Tinkerer {
             refuse(player, "bloodbound.message.tinkerer_no_item");
             return false;
         }
+
+        // Read before Duct Tape stretches the pool, which would make any tool look nearly broken.
+        boolean nearlyBroken = stack.getMaxDamage() > 0
+                && stack.getMaxDamage() - stack.getDamageValue() <= stack.getMaxDamage() * HYPERFOCUSED_SHARE;
 
         // Duct Tape stretches the durability pool before any mending starts, so the run has
         // somewhere past full to put the extra work.
@@ -76,7 +87,7 @@ public final class Tinkerer {
             opening *= ModAddons.SPRING_CLAMP_MULTIPLIER;
         }
 
-        SESSIONS.put(player.getUUID(), new Session(stack, tier, opening));
+        SESSIONS.put(player.getUUID(), new Session(stack, tier, opening, nearlyBroken));
         player.level().playSound(null, player.blockPosition(), SoundEvents.ANVIL_USE,
                 SoundSource.PLAYERS, 0.4F, 1.6F);
         SkillCheckManager.start(player, SkillCheckContext.TINKERER, SkillCheckDifficulty.EASY, opening);
@@ -117,6 +128,9 @@ public final class Tinkerer {
                 SoundSource.PLAYERS, 0.35F, 1.9F);
 
         if (!stack.isDamaged()) {
+            if (session.nearlyBroken) {
+                ModAdvancements.grant(player, ModAdvancements.HYPERFOCUSED);
+            }
             stop(player, "bloodbound.message.tinkerer_complete", gameTime);
             return;
         }

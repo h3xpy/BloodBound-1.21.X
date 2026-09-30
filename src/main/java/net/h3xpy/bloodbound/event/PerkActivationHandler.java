@@ -2,6 +2,7 @@ package net.h3xpy.bloodbound.event;
 
 import java.util.Map;
 
+import net.h3xpy.bloodbound.advancement.AchievementTracker;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModAddons;
@@ -11,21 +12,25 @@ import net.h3xpy.bloodbound.perk.PerkRegistry;
 import net.h3xpy.bloodbound.perk.PerkType;
 import net.h3xpy.bloodbound.perk.impl.AdvancedMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.AntiExhaustionSyringe;
+import net.h3xpy.bloodbound.perk.impl.BadOmen;
 import net.h3xpy.bloodbound.perk.impl.BarbedWire;
-import net.h3xpy.bloodbound.perk.impl.BlessingOfLife;
-import net.h3xpy.bloodbound.perk.impl.Eavesdrop;
-import net.h3xpy.bloodbound.perk.impl.InevitableDeath;
 import net.h3xpy.bloodbound.perk.impl.BewareThePowerOfAnAngel;
+import net.h3xpy.bloodbound.perk.impl.BlessingOfLife;
 import net.h3xpy.bloodbound.perk.impl.BrokenMovementDevice;
+import net.h3xpy.bloodbound.perk.impl.ChainedUp;
+import net.h3xpy.bloodbound.perk.impl.Eavesdrop;
 import net.h3xpy.bloodbound.perk.impl.Flashbang;
 import net.h3xpy.bloodbound.perk.impl.FragNade;
+import net.h3xpy.bloodbound.perk.impl.HealingRunes;
 import net.h3xpy.bloodbound.perk.impl.IceBlock;
+import net.h3xpy.bloodbound.perk.impl.InevitableDeath;
 import net.h3xpy.bloodbound.perk.impl.KeepFighting;
 import net.h3xpy.bloodbound.perk.impl.LowCostMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.NoOneGetsAway;
-import net.h3xpy.bloodbound.perk.impl.HealingRunes;
+import net.h3xpy.bloodbound.perk.impl.Nullification;
 import net.h3xpy.bloodbound.perk.impl.OutOfBreath;
 import net.h3xpy.bloodbound.perk.impl.PatchUp;
+import net.h3xpy.bloodbound.perk.impl.ShortCircuit;
 import net.h3xpy.bloodbound.perk.impl.SinOfObliviousness;
 import net.h3xpy.bloodbound.perk.impl.SurgicalSuture;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
@@ -81,7 +86,11 @@ public final class PerkActivationHandler {
             Map.entry(ModPerks.BLESSING_OF_LIFE.id(), BlessingOfLife::activate),
             Map.entry(ModPerks.EAVESDROP.id(), Eavesdrop::activate),
             Map.entry(ModPerks.INEVITABLE_DEATH.id(), InevitableDeath::activate),
-            Map.entry(ModPerks.SIN_OF_OBLIVIOUSNESS.id(), SinOfObliviousness::activate));
+            Map.entry(ModPerks.SIN_OF_OBLIVIOUSNESS.id(), SinOfObliviousness::activate),
+            Map.entry(ModPerks.SHORT_CIRCUIT.id(), ShortCircuit::activate),
+            Map.entry(ModPerks.BAD_OMEN.id(), BadOmen::activate),
+            Map.entry(ModPerks.CHAINED_UP.id(), ChainedUp::activate),
+            Map.entry(ModPerks.NULLIFICATION.id(), Nullification::activate));
 
     private PerkActivationHandler() {}
 
@@ -179,6 +188,13 @@ public final class PerkActivationHandler {
         } else if (perk.id().equals(ModPerks.FRAGNADE.id())) {
             // Wound up while the key is down, thrown when it comes up.
             FragNade.setHolding(player, holding, player.level().getGameTime());
+        } else if (perk.id().equals(ModPerks.SHORT_CIRCUIT.id())) {
+            // Charged for as long as the key stays down, and let go on its own once full.
+            ShortCircuit.setHolding(player, holding, player.level().getGameTime());
+        } else if (perk.id().equals(ModPerks.BAD_OMEN.id())) {
+            BadOmen.setHolding(player, holding);
+        } else if (perk.id().equals(ModPerks.NULLIFICATION.id())) {
+            Nullification.setHolding(player, holding);
         }
     }
 
@@ -204,6 +220,7 @@ public final class PerkActivationHandler {
 
         data.startDash(ModPerks.CLOSE_CALL_DASH_TICKS, dirX, dirZ, gameTime,
                 ModPerks.CLOSE_CALL_INVULNERABILITY_TICKS);
+        AchievementTracker.onCloseCall(player, player.getHealth());
         chargeCloseCall(data, tier, gameTime);
 
         player.level().playSound(null, player.blockPosition(), SoundEvents.PLAYER_ATTACK_SWEEP,

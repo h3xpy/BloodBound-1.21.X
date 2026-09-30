@@ -87,6 +87,9 @@ public final class ModNetwork {
         registrar.playToClient(RecallTimerPayload.TYPE, RecallTimerPayload.STREAM_CODEC,
                 (payload, context) -> ClientPayloadHandler.handleRecallTimer(payload));
 
+        registrar.playToClient(CameraShakePayload.TYPE, CameraShakePayload.STREAM_CODEC,
+                (payload, context) -> ClientPayloadHandler.handleCameraShake(payload));
+
         registrar.playToClient(AuraRevealPayload.TYPE, AuraRevealPayload.STREAM_CODEC,
                 (payload, context) -> ClientPayloadHandler.handleAuraReveal(payload));
 

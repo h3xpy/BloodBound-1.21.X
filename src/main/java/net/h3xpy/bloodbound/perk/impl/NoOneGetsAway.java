@@ -9,8 +9,10 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
+import net.h3xpy.bloodbound.effect.MovementTracker;
 import net.h3xpy.bloodbound.event.AuraRevealHandler;
 import net.h3xpy.bloodbound.event.BankShotHandler;
 import net.h3xpy.bloodbound.perk.ModAddons;
@@ -26,6 +28,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -61,6 +64,8 @@ public final class NoOneGetsAway {
         private double travelled;
         /** Bounces bought from Bank Shot. */
         private int bankBounces;
+        /** Whether it has come off a wall yet, for Trick Shot. */
+        private boolean bounced;
 
         private Shot(ServerPlayer owner, PlayerPerkData data, int tier, long firedAt) {
             this.ownerId = owner.getUUID();
@@ -89,6 +94,10 @@ public final class NoOneGetsAway {
 
     private static final List<Shot> IN_FLIGHT = new ArrayList<>();
 
+    /** No You Don't: how far off the catch has to be, and how fast it has to be going, in blocks a tick. */
+    private static final double NO_YOU_DONT_RANGE = 30.0D;
+    private static final double NO_YOU_DONT_SPEED = 0.05D;
+
     private NoOneGetsAway() {}
 
     public static boolean activate(ServerPlayer player, PlayerPerkData data, int tier, long gameTime) {
@@ -97,8 +106,8 @@ public final class NoOneGetsAway {
         shot.bankBounces = !shot.soulChain && BankShotHandler.spendBounce(player) ? ModPerks.BANK_SHOT_BOUNCES : 0;
         IN_FLIGHT.add(shot);
 
-        // Charged on the shot rather than on the catch: a miss is a miss, and the perk should not
-        // be something you can throw at a wall over and over for free.
+        // Charged on the shot rather than on the catch, so the perk is never something to throw at a
+        // wall over and over for free. A miss hands half of it back once the shot is done.
         data.setCooldown(ModPerks.NO_ONE_GETS_AWAY.id(), gameTime, shot.cooldownTicks);
 
         player.level().playSound(null, player.blockPosition(),
@@ -137,6 +146,7 @@ public final class NoOneGetsAway {
             LivingEntity caught = entityAlong(level, owner, from, to);
             if (caught != null) {
                 if (owner != null) {
+                    feats(owner, caught, shot);
                     reelIn(owner, caught, shot.heavyHook);
                 }
                 return false;
@@ -149,11 +159,13 @@ public final class NoOneGetsAway {
                 if (wall.getType() != HitResult.Type.MISS) {
                     level.sendParticles(ParticleTypes.CRIT, to.x, to.y, to.z, 6, 0.1D, 0.1D, 0.1D, 0.02D);
                     if (shot.bankBounces <= 0) {
+                        missed(level, shot, owner);
                         return false;
                     }
 
                     // Bank Shot buys the harpoon one carom, and a look for a mark on the way out.
                     shot.bankBounces--;
+                    shot.bounced = true;
                     Direction face = wall.getDirection();
                     shot.velocity = BankShotHandler.reflect(shot.velocity, face)
                             .scale(ModPerks.BANK_SHOT_BOUNCE_SPEED);
@@ -230,17 +242,35 @@ public final class NoOneGetsAway {
         }
     }
 
-    /** Soul Chain: a shot that catches nothing leaves half the cooldown it was charged. */
+    /**
+     * A shot that caught nothing, whether it ran out of range or into a wall: only half the
+     * cooldown it was charged stands, and Soul Chain halves what is left of that again.
+     */
     private static void missed(ServerLevel level, Shot shot, @Nullable ServerPlayer owner) {
-        if (!shot.soulChain || owner == null) {
+        if (owner == null) {
             return;
         }
         PlayerPerkData data = PerkDataManager.get(owner);
         long now = level.getGameTime();
-        int remaining = (int) Math.max(0L,
-                Math.round(shot.cooldownTicks * ModAddons.SOUL_CHAIN_MISS_COOLDOWN) - (now - shot.firedAt));
+        double share = ModPerks.HARPOON_MISS_COOLDOWN;
+        if (shot.soulChain) {
+            share *= ModAddons.SOUL_CHAIN_MISS_COOLDOWN;
+        }
+        int remaining = (int) Math.max(0L, Math.round(shot.cooldownTicks * share) - (now - shot.firedAt));
         data.setCooldown(ModPerks.NO_ONE_GETS_AWAY.id(), now, remaining);
         PerkDataManager.sync(owner);
+    }
+
+    /** Trick Shot and No You Don't, read the moment the harpoon catches something. */
+    private static void feats(ServerPlayer owner, LivingEntity caught, Shot shot) {
+        if (shot.bounced) {
+            BankShotHandler.checkTrickShot(owner, caught);
+        }
+        double speed = caught instanceof Player player ? MovementTracker.speed(player)
+                : caught.getDeltaMovement().horizontalDistance();
+        if (owner.distanceTo(caught) > NO_YOU_DONT_RANGE && speed > NO_YOU_DONT_SPEED) {
+            ModAdvancements.grant(owner, ModAdvancements.NO_YOU_DONT);
+        }
     }
 
     /** The first living thing this step passes through, other than whoever fired. */

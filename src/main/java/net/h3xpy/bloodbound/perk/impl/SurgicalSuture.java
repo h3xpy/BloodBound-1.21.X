@@ -1,6 +1,7 @@
 package net.h3xpy.bloodbound.perk.impl;
 
 import net.h3xpy.bloodbound.BloodBound;
+import net.h3xpy.bloodbound.advancement.AchievementTracker;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModAddons;
@@ -67,6 +68,7 @@ public final class SurgicalSuture {
 
         if (success) {
             applyReward(player, data, tier);
+            AchievementTracker.onSutureLanded(player);
             // Landing the check outright costs nothing. Only Sterilizer's second chance carries a
             // cooldown, and a halved one at that.
             if (isRetry) {

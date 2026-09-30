@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:tier1_perk",
+  "display": {
+    "icon": { "id": "minecraft:glowstone_dust" },
+    "title": { "translate": "advancement.bloodbound.the_sun.title" },
+    "description": { "translate": "advancement.bloodbound.the_sun.description" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

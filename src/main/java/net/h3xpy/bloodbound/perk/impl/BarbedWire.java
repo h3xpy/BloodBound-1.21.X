@@ -1,10 +1,6 @@
 package net.h3xpy.bloodbound.perk.impl;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -12,6 +8,7 @@ import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.entity.BarbedWireEntity;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.ritual.TrapRoster;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -43,8 +40,6 @@ public final class BarbedWire {
     }
 
     private static final Map<UUID, Setup> SETTING = new HashMap<>();
-    /** Coils each player has out, oldest first — which is the one that goes when a fourth is laid. */
-    private static final Map<UUID, Deque<BarbedWireEntity>> PLACED = new HashMap<>();
 
     private BarbedWire() {}
 
@@ -81,7 +76,7 @@ public final class BarbedWire {
     public static void tick(ServerPlayer player, PlayerPerkData data, long gameTime) {
         // Taking the perk out of the loadout takes every coil it laid with it.
         if (data.getActiveTier(ModPerks.BARBED_WIRE) <= 0) {
-            if (PLACED.containsKey(player.getUUID()) || SETTING.containsKey(player.getUUID())) {
+            if (TrapRoster.hasAny(BarbedWireEntity.KIND, player.getUUID()) || SETTING.containsKey(player.getUUID())) {
                 clear(player.getUUID());
             }
             return;
@@ -127,18 +122,9 @@ public final class BarbedWire {
         ServerLevel level = player.serverLevel();
         BarbedWireEntity wire = new BarbedWireEntity(level, player, tier);
         wire.moveTo(player.getX(), player.getY(), player.getZ(), 0.0F, 0.0F);
+        // Joining the level is what puts it on the roster, and pushes the oldest coil out past the limit.
         level.addFreshEntity(wire);
-
-        Deque<BarbedWireEntity> mine = PLACED.computeIfAbsent(player.getUUID(), id -> new ArrayDeque<>());
-        // Anything already gone stops counting against the limit.
-        mine.removeIf(existing -> existing.isRemoved());
-        mine.addLast(wire);
-
-        int limit = ModPerks.BARBED_WIRE.intValue(ModPerks.BARBED_TRAPS, tier);
-        while (mine.size() > limit) {
-            BarbedWireEntity oldest = mine.removeFirst();
-            oldest.discard();
-        }
+        int limit = wire.trapLimit();
 
         data.setCooldown(ModPerks.BARBED_WIRE.id(), gameTime, ModPerks.BARBED_WIRE.cooldownTicks(tier));
         PerkDataManager.sync(player);
@@ -146,19 +132,17 @@ public final class BarbedWire {
         level.playSound(null, player.blockPosition(), SoundEvents.CHAIN_PLACE,
                 SoundSource.PLAYERS, 0.7F, 0.9F);
         player.displayClientMessage(Component.translatable("bloodbound.message.barbed_wire_placed",
-                mine.size(), limit).withStyle(ChatFormatting.GRAY), true);
+                TrapRoster.count(BarbedWireEntity.KIND, player.getUUID()), limit).withStyle(ChatFormatting.GRAY), true);
     }
 
-    /** Forgets a player entirely, and takes their coils with them. */
+    /** Takes every coil the player has out away, wherever it is: the perk came off. */
     public static void clear(UUID playerId) {
         SETTING.remove(playerId);
-        Deque<BarbedWireEntity> mine = PLACED.remove(playerId);
-        if (mine == null) {
-            return;
-        }
-        List<BarbedWireEntity> copy = new ArrayList<>(mine);
-        for (BarbedWireEntity wire : copy) {
-            wire.discard();
-        }
+        TrapRoster.removeAll(BarbedWireEntity.KIND, playerId);
+    }
+
+    /** A logout: the work in hand is dropped, the coils already down stay where they are. */
+    public static void logout(UUID playerId) {
+        SETTING.remove(playerId);
     }
 }

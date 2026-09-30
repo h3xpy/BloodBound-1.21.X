@@ -9,6 +9,7 @@ import net.h3xpy.bloodbound.effect.BleedingHandler;
 import net.h3xpy.bloodbound.event.AuraRevealHandler;
 import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.registry.ModEntities;
+import net.h3xpy.bloodbound.ritual.TrapRoster;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -33,10 +34,13 @@ import net.minecraft.world.phys.AABB;
  * A coil of barbed wire on the floor.
  * <p>
  * An entity rather than a block: it has to sit on top of whatever is already there, be shot at, and
- * belong to somebody. It does not move, does not collide, and is not saved with the world — a trap
- * that outlived the session that laid it would belong to nobody.
+ * belong to somebody. It does not move and does not collide. It is saved with the world, owner and
+ * all, so a coil stays where it was laid through its owner logging out and the server restarting;
+ * {@link TrapRoster} keeps count of them.
  */
-public class BarbedWireEntity extends Entity {
+public class BarbedWireEntity extends Entity implements TrapRoster.Trap {
+
+    public static final String KIND = "barbed_wire";
 
     /** Opacity as a percentage, which is the only thing the client needs to draw it. */
     private static final EntityDataAccessor<Integer> DATA_OPACITY =
@@ -50,6 +54,7 @@ public class BarbedWireEntity extends Entity {
     @Nullable
     private UUID ownerId;
     private int tier = 1;
+    private long placedAt;
     private int triggerCooldown;
 
     public BarbedWireEntity(EntityType<? extends BarbedWireEntity> type, Level level) {
@@ -61,7 +66,8 @@ public class BarbedWireEntity extends Entity {
         this(ModEntities.BARBED_WIRE.get(), level);
         this.ownerId = owner.getUUID();
         this.tier = tier;
-        this.entityData.set(DATA_OPACITY, ModPerks.BARBED_WIRE.intValue(ModPerks.BARBED_OPACITY, tier));
+        this.placedAt = level.getGameTime();
+        applyTier();
     }
 
     @Override
@@ -165,15 +171,45 @@ public class BarbedWireEntity extends Entity {
         return ownerId;
     }
 
-    // Traps belong to a session, not to a save file: nothing is read or written.
-    @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {}
+    private void applyTier() {
+        this.entityData.set(DATA_OPACITY, ModPerks.BARBED_WIRE.intValue(ModPerks.BARBED_OPACITY, tier));
+    }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {}
+    public String trapKind() {
+        return KIND;
+    }
 
     @Override
-    public boolean shouldBeSaved() {
-        return false;
+    @Nullable
+    public UUID trapOwnerId() {
+        return ownerId;
+    }
+
+    @Override
+    public long placedAt() {
+        return placedAt;
+    }
+
+    @Override
+    public int trapLimit() {
+        return ModPerks.BARBED_WIRE.intValue(ModPerks.BARBED_TRAPS, tier);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundTag tag) {
+        ownerId = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
+        tier = Math.max(1, tag.getInt("Tier"));
+        placedAt = tag.getLong("PlacedAt");
+        applyTier();
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundTag tag) {
+        if (ownerId != null) {
+            tag.putUUID("Owner", ownerId);
+        }
+        tag.putInt("Tier", tier);
+        tag.putLong("PlacedAt", placedAt);
     }
 }

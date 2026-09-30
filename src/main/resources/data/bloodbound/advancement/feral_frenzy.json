@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:tier1_perk",
+  "display": {
+    "icon": { "id": "minecraft:iron_sword" },
+    "title": { "translate": "advancement.bloodbound.feral_frenzy.title" },
+    "description": { "translate": "advancement.bloodbound.feral_frenzy.description" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

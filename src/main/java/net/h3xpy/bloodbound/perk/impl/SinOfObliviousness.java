@@ -84,16 +84,14 @@ public final class SinOfObliviousness {
         if (!(victim.level() instanceof ServerLevel level) || !victim.isAlive()) {
             return;
         }
-        for (ServerPlayer owner : level.getServer().getPlayerList().getPlayers()) {
-            RitualManager.Ritual ritual =
-                    RitualManager.get(owner.getUUID(), ModPerks.SIN_OF_OBLIVIOUSNESS.id());
-            if (ritual == null || !ritual.isAlive() || ritual.dimension() != level.dimension()) {
+        for (RitualManager.Ritual ritual : RitualManager.all(ModPerks.SIN_OF_OBLIVIOUSNESS.id())) {
+            if (!ritual.isAlive() || ritual.dimension() != level.dimension()) {
                 continue;
             }
             if (victim.getUUID().equals(ritual.ownerId()) || !ritual.covers(victim.position())) {
                 continue;
             }
-            BLINDED.put(victim.getUUID(), owner.getUUID());
+            BLINDED.put(victim.getUUID(), ritual.ownerId());
             blind(victim);
             return;
         }
@@ -143,6 +141,12 @@ public final class SinOfObliviousness {
     private static void blind(LivingEntity victim) {
         victim.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, ModPerks.SIN_BLINDNESS_TICKS,
                 0, false, true, true));
+    }
+
+    /** A logout: the laying in hand is dropped, the circle already down stays where it is. */
+    public static void logout(ServerPlayer player) {
+        RitualSetup.stop(player, ModPerks.SIN_OF_OBLIVIOUSNESS.id(), false);
+        BLINDED.remove(player.getUUID());
     }
 
     public static void clear(ServerPlayer player) {

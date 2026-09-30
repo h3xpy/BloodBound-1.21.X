@@ -2,11 +2,14 @@ package net.h3xpy.bloodbound.perk.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.damage.ModDamageTypes;
 import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
@@ -79,6 +82,10 @@ public final class FragNade {
         private int beepTicks;
         private int beepsLeftUntilNext;
         private int secondIn = -1;
+        /** Bounces bought from Bank Shot, which the floor answers to as well as the walls. */
+        private int bankBounces;
+        /** Everything either blast has hurt, for Crowd Control. */
+        private final Set<Integer> hurt = new HashSet<>();
 
         private Grenade(ServerPlayer owner, PlayerPerkData data, int tier, Vec3 position, Vec3 velocity) {
             this.ownerId = owner.getUUID();
@@ -106,6 +113,8 @@ public final class FragNade {
     }
 
     private static final int SUB_STEPS = 4;
+    /** Crowd Control: how many one grenade has to hurt. */
+    private static final int CROWD_CONTROL_VICTIMS = 5;
 
     private static final List<Grenade> ACTIVE = new ArrayList<>();
     /** Players winding a throw up, and the tick they started. */
@@ -140,8 +149,10 @@ public final class FragNade {
             return;
         }
         double share = Math.min(1.0D, (gameTime - since) / (double) ModPerks.FRAG_HOLD_MAX_TICKS);
-        ACTIVE.add(new Grenade(player, data, tier, player.getEyePosition(),
-                player.getLookAngle().scale(ModPerks.fragSpeed(share))));
+        Grenade grenade = new Grenade(player, data, tier, player.getEyePosition(),
+                player.getLookAngle().scale(ModPerks.fragSpeed(share)));
+        grenade.bankBounces = BankShotHandler.spendBounce(player) ? ModPerks.BANK_SHOT_BOUNCES : 0;
+        ACTIVE.add(grenade);
 
         data.setCooldown(ModPerks.FRAGNADE.id(), gameTime, ModPerks.FRAGNADE.cooldownTicks(tier));
         PerkDataManager.sync(player);
@@ -197,6 +208,10 @@ public final class FragNade {
             Direction face = hit.getDirection();
             grenade.position = hit.getLocation().add(Vec3.atLowerCornerOf(face.getNormal())
                     .scale(ModPerks.FRAG_RADIUS + 0.02D));
+            if (grenade.bankBounces > 0) {
+                bankBounce(level, grenade, face);
+                break;
+            }
             if (face == Direction.UP) {
                 land(level, grenade);
                 return true;
@@ -212,6 +227,23 @@ public final class FragNade {
         level.sendParticles(TRAIL, grenade.position.x, grenade.position.y, grenade.position.z,
                 2, 0.03D, 0.03D, 0.03D, 0.0D);
         return true;
+    }
+
+    /**
+     * Bank Shot: whatever the grenade meets first, floor included, it comes off — and on the way
+     * out it looks for somebody to land on, aimed high enough that gravity brings it down on them.
+     */
+    private static void bankBounce(ServerLevel level, Grenade grenade, Direction face) {
+        grenade.bankBounces--;
+        grenade.bounced = true;
+        grenade.velocity = BankShotHandler.reflect(grenade.velocity, face).scale(ModPerks.BANK_SHOT_BOUNCE_SPEED);
+        ServerPlayer owner = level.getServer().getPlayerList().getPlayer(grenade.ownerId);
+        LivingEntity mark = BankShotHandler.seek(level, grenade.position, grenade.velocity, owner);
+        if (mark != null) {
+            grenade.velocity = BankShotHandler.steer(grenade.position, grenade.velocity, mark, ModPerks.FRAG_GRAVITY);
+        }
+        level.playSound(null, grenade.position.x, grenade.position.y, grenade.position.z,
+                SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.PLAYERS, 0.6F, mark != null ? 1.6F : 1.0F);
     }
 
     private static void land(ServerLevel level, Grenade grenade) {
@@ -284,7 +316,9 @@ public final class FragNade {
             // Magic damage is what vanilla already treats as ignoring armour. The thrower is not
             // spared — except by Pure Topaz, and only from the second blast.
             if (!(isOwner && !first && grenade.topaz)) {
-                victim.hurt(PerkDamageSource.of(source, "frag_nade"), damage);
+                if (victim.hurt(PerkDamageSource.of(source, "frag_nade"), damage) && !isOwner) {
+                    grenade.hurt.add(victim.getId());
+                }
             }
 
             if (first) {
@@ -307,6 +341,10 @@ public final class FragNade {
             if (isOwner && grenade.topaz) {
                 FALL_GUARDS.put(owner.getUUID(), new FallGuard(level.getGameTime()));
             }
+        }
+
+        if (!first && owner != null && grenade.hurt.size() >= CROWD_CONTROL_VICTIMS) {
+            ModAdvancements.grant(owner, ModAdvancements.CROWD_CONTROL);
         }
     }
 

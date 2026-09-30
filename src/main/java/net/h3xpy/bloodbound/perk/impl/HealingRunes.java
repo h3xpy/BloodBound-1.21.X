@@ -5,10 +5,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.event.BankShotHandler;
 import net.h3xpy.bloodbound.network.PerkChargesPayload;
+import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -47,6 +49,12 @@ public final class HealingRunes {
         private int ticksLeft = ModPerks.RUNES_MAX_FLIGHT_TICKS;
         /** A bounce bought from Bank Shot. */
         private int bankBounces;
+        /** Whether it has come off a wall yet, for Trick Shot. */
+        /** Lucky Charm and Decorated Leaf change what a rune is worth, settled as it leaves. */
+        private float healScale = 1.0F;
+        /** Decorated Leaf: a rune that breaks at its thrower's feet mends them. */
+        private boolean selfHeal;
+        private boolean bounced;
 
         private Rune(ServerPlayer owner, int tier, Vec3 position, Vec3 velocity) {
             this.ownerId = owner.getUUID();
@@ -61,6 +69,9 @@ public final class HealingRunes {
 
     private static final List<Rune> IN_FLIGHT = new ArrayList<>();
 
+    /** Background Player: how far off the patient has to be. */
+    private static final double BACKGROUND_PLAYER_RANGE = 30.0D;
+
     private HealingRunes() {}
 
     public static boolean activate(ServerPlayer player, PlayerPerkData data, int tier, long gameTime) {
@@ -71,10 +82,25 @@ public final class HealingRunes {
         }
 
         data.setPerkCharges(ModPerks.HEALING_RUNES.id(), charges - 1.0F);
-        Rune rune = new Rune(player, tier, player.getEyePosition(),
-                player.getLookAngle().scale(ModPerks.RUNES_SPEED));
-        rune.bankBounces = BankShotHandler.spendBounce(player) ? ModPerks.BANK_SHOT_BOUNCES : 0;
-        IN_FLIGHT.add(rune);
+
+        double speed = ModPerks.RUNES_SPEED;
+        if (data.isAddonActive(ModAddons.INK_BOTTLE)) {
+            speed *= ModAddons.INK_BOTTLE_SPEED;
+        }
+        Vec3 look = player.getLookAngle();
+        boolean lucky = data.isAddonActive(ModAddons.LUCKY_CHARM);
+        boolean leaf = data.isAddonActive(ModAddons.DECORATED_LEAF);
+        // One Bank Shot charge covers the whole volley.
+        int bounces = BankShotHandler.spendBounce(player) ? ModPerks.BANK_SHOT_BOUNCES : 0;
+
+        for (Vec3 offset : lucky ? triangle(look) : List.of(Vec3.ZERO)) {
+            Rune rune = new Rune(player, tier, player.getEyePosition().add(offset), look.scale(speed));
+            rune.bankBounces = bounces;
+            rune.healScale = (lucky ? ModAddons.LUCKY_CHARM_HEAL : 1.0F)
+                    * (leaf ? ModAddons.DECORATED_LEAF_OTHER_HEAL : 1.0F);
+            rune.selfHeal = leaf;
+            IN_FLIGHT.add(rune);
+        }
 
         sendCharges(player, data, tier, max);
         player.level().playSound(null, player.blockPosition(), SoundEvents.EVOKER_CAST_SPELL,
@@ -82,6 +108,23 @@ public final class HealingRunes {
         player.level().playSound(null, player.blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME,
                 SoundSource.PLAYERS, 0.8F, 1.7F);
         return true;
+    }
+
+    /**
+     * Lucky Charm: three starting points in a triangle square to where the player is looking, one
+     * above the crosshair and two below either side of it, all flying the same way.
+     */
+    private static List<Vec3> triangle(Vec3 look) {
+        Vec3 side = Math.abs(look.y) > 0.95D ? new Vec3(1.0D, 0.0D, 0.0D) : new Vec3(0.0D, 1.0D, 0.0D);
+        Vec3 right = look.cross(side).normalize();
+        Vec3 up = right.cross(look).normalize();
+        double spread = ModAddons.LUCKY_CHARM_SPREAD;
+        List<Vec3> points = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            double angle = Math.PI / 2.0D + i * Math.PI * 2.0D / 3.0D;
+            points.add(right.scale(Math.cos(angle) * spread).add(up.scale(Math.sin(angle) * spread)));
+        }
+        return points;
     }
 
     /** Hands a rune back when one is due. Called once a tick per player. */
@@ -94,6 +137,9 @@ public final class HealingRunes {
         float max = ModPerks.HEALING_RUNES.intValue(ModPerks.RUNES_CHARGES, tier);
         float charges = data.perkCharges(ModPerks.HEALING_RUNES.id(), max);
         int recharge = ModPerks.HEALING_RUNES.ticks(ModPerks.RUNES_RECHARGE, tier);
+        if (data.isAddonActive(ModAddons.CHEAP_PAPER)) {
+            recharge = Math.max(1, (int) Math.round(recharge * ModAddons.CHEAP_PAPER_RECHARGE));
+        }
         boolean changed = false;
 
         // Short of a rune always means a timer running towards the next one, so they come back one
@@ -166,6 +212,7 @@ public final class HealingRunes {
                 if (rune.bankBounces > 0) {
                     // Bank Shot: off the wall, and onto whoever is in the cone on the way out.
                     rune.bankBounces--;
+                    rune.bounced = true;
                     Direction face = wall.getDirection();
                     rune.position = wall.getLocation().add(Vec3.atLowerCornerOf(face.getNormal())
                             .scale(ModPerks.RUNES_RADIUS * 0.5D + 0.05D));
@@ -181,6 +228,9 @@ public final class HealingRunes {
                 }
                 level.sendParticles(ParticleTypes.HAPPY_VILLAGER, to.x, to.y, to.z, 6,
                         0.1D, 0.1D, 0.1D, 0.02D);
+                if (rune.selfHeal) {
+                    mendThrower(level, rune, wall.getLocation());
+                }
                 level.playSound(null, to.x, to.y, to.z, SoundEvents.AMETHYST_BLOCK_BREAK,
                         SoundSource.PLAYERS, 0.6F, 1.4F);
                 return false;
@@ -217,14 +267,21 @@ public final class HealingRunes {
     }
 
     private static void mend(ServerLevel level, Rune rune, LivingEntity target) {
-        float heal = (float) ModPerks.HEALING_RUNES.value(ModPerks.RUNES_HEAL, rune.tier);
+        float heal = (float) ModPerks.HEALING_RUNES.value(ModPerks.RUNES_HEAL, rune.tier) * rune.healScale;
+        boolean hurt = target.getHealth() < target.getMaxHealth();
         target.heal(heal);
 
         // A rune landing on a player is healing them, for the perks that pay out on that.
         ServerPlayer owner = level.getServer().getPlayerList().getPlayer(rune.ownerId);
+        if (owner != null && rune.bounced) {
+            BankShotHandler.checkTrickShot(owner, target);
+        }
         if (owner != null && target instanceof ServerPlayer patient) {
             GreenHerbs.recordHealing(owner, patient, heal);
             TeamSpirit.recordHealing(owner, patient, heal);
+            if (hurt && owner.distanceTo(patient) > BACKGROUND_PLAYER_RANGE) {
+                ModAdvancements.grant(owner, ModAdvancements.BACKGROUND_PLAYER);
+            }
         }
         level.playSound(null, target.blockPosition(), SoundEvents.AMETHYST_CLUSTER_BREAK,
                 SoundSource.PLAYERS, 0.7F, 1.5F);
@@ -233,6 +290,23 @@ public final class HealingRunes {
                 5, 0.3D, 0.2D, 0.3D, 0.0D);
         level.playSound(null, target.blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME,
                 SoundSource.PLAYERS, 0.8F, 1.2F);
+    }
+
+    /**
+     * Decorated Leaf: a rune broken on the ground at its thrower's feet mends them instead, at half
+     * what it would have done for anybody else.
+     */
+    private static void mendThrower(ServerLevel level, Rune rune, Vec3 where) {
+        ServerPlayer owner = level.getServer().getPlayerList().getPlayer(rune.ownerId);
+        if (owner == null || owner.level() != level
+                || owner.position().distanceTo(where) > ModAddons.DECORATED_LEAF_FEET_RANGE) {
+            return;
+        }
+        float heal = (float) ModPerks.HEALING_RUNES.value(ModPerks.RUNES_HEAL, rune.tier)
+                * rune.healScale / ModAddons.DECORATED_LEAF_OTHER_HEAL * ModAddons.DECORATED_LEAF_SELF_HEAL;
+        owner.heal(heal);
+        level.sendParticles(ParticleTypes.HEART, owner.getX(), owner.getEyeY(), owner.getZ(),
+                3, 0.3D, 0.2D, 0.3D, 0.0D);
     }
 
     private static void sendCharges(ServerPlayer player, PlayerPerkData data, int tier, float max) {

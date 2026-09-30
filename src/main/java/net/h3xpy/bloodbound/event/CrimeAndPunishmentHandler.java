@@ -1,5 +1,6 @@
 package net.h3xpy.bloodbound.event;
 
+import net.h3xpy.bloodbound.advancement.AchievementTracker;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModAddons;
@@ -57,6 +58,7 @@ public final class CrimeAndPunishmentHandler {
         }
 
         Flashbang.blind(player, attacker, ticks);
+        AchievementTracker.onPunished(player, attacker);
         data.setCooldown(ModPerks.CRIME_AND_PUNISHMENT.id(), gameTime,
                 ModPerks.CRIME_AND_PUNISHMENT.cooldownTicks(tier));
         PerkDataManager.sync(player);

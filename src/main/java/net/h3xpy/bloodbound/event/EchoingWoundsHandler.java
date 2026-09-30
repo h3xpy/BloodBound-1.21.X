@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
@@ -40,9 +41,12 @@ public final class EchoingWoundsHandler {
 
     /** One queued jump: hit {@code targetId}, then look around it for the next one. */
     private record EchoJump(UUID attackerId, UUID targetId, ResourceKey<Level> dimension, float damage,
-            int jumpsLeft, long fireAt, Set<UUID> alreadyHit) {}
+            int jumpsLeft, long fireAt, Set<UUID> alreadyHit, int[] kills) {}
 
     private static final List<EchoJump> PENDING = new ArrayList<>();
+
+    /** Bloody Massacre: kills one echoing blow has to carry. */
+    private static final int BLOODY_MASSACRE_KILLS = 3;
 
     /** Set while an echo is landing, so an echo can never start another echo. */
     private static boolean echoing;
@@ -84,7 +88,7 @@ public final class EchoingWoundsHandler {
 
         PENDING.add(new EchoJump(attacker.getUUID(), next.getUUID(), attacker.level().dimension(),
                 openingDamage(event.getAmount(), tier, data), jumps,
-                gameTime + ModPerks.ECHOING_WOUNDS_INTERVAL_TICKS, hit));
+                gameTime + ModPerks.ECHOING_WOUNDS_INTERVAL_TICKS, hit, new int[1]));
 
         int cooldown = ModPerks.ECHOING_WOUNDS.cooldownTicks(tier);
         if (data.isAddonActive(ModAddons.HYSTERIA)) {
@@ -166,6 +170,9 @@ public final class EchoingWoundsHandler {
         } finally {
             echoing = false;
         }
+        if (victim.isDeadOrDying() && ++jump.kills()[0] >= BLOODY_MASSACRE_KILLS) {
+            ModAdvancements.grant(player, ModAdvancements.BLOODY_MASSACRE);
+        }
 
         if (data.isAddonActive(ModAddons.HYSTERIA)) {
             victim.addEffect(new MobEffectInstance(MobEffects.BLINDNESS,
@@ -198,7 +205,7 @@ public final class EchoingWoundsHandler {
 
         return new EchoJump(jump.attackerId(), next.getUUID(), jump.dimension(),
                 nextDamage(jump.damage(), tier, data), jumpsLeft,
-                level.getGameTime() + ModPerks.ECHOING_WOUNDS_INTERVAL_TICKS, hit);
+                level.getGameTime() + ModPerks.ECHOING_WOUNDS_INTERVAL_TICKS, hit, jump.kills());
     }
 
     /** Nearest living thing to {@code around} the echo has not already been through. */

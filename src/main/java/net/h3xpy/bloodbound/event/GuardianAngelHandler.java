@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.advancement.AchievementTracker;
 import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
@@ -167,6 +168,7 @@ public final class GuardianAngelHandler {
     private static void survive(ServerPlayer player, Trial trial) {
         TRIALS.remove(player.getUUID());
         markSaved(player, false);
+        AchievementTracker.onGuardianSurvived(player);
 
         PlayerPerkData data = PerkDataManager.get(player);
         data.setCooldown(ModPerks.GUARDIAN_ANGEL.id(), player.level().getGameTime(),

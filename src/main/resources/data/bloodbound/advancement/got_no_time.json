@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:root",
+  "display": {
+    "icon": { "id": "minecraft:clock" },
+    "title": { "translate": "advancement.bloodbound.got_no_time.title" },
+    "description": { "translate": "advancement.bloodbound.got_no_time.description" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

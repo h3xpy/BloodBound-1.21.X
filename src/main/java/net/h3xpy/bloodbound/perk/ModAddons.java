@@ -620,14 +620,49 @@ public final class ModAddons {
     /** Extra ticks of draw per tick held: one, which is twice as fast. */
     public static final double ODD_ARROW_DRAW = 1.0D;
     /** How far across its line it weaves, as a share of its speed, and how long one S takes. */
-    public static final double ODD_ARROW_WAVE_AMPLITUDE = 0.35D;
-    public static final int ODD_ARROW_WAVE_PERIOD = 20;
+    public static final double ODD_ARROW_WAVE_AMPLITUDE = 0.6D;
+    public static final int ODD_ARROW_WAVE_PERIOD = 8;
 
     // --- Cursed Riser tuning ---
     public static final double CURSED_RISER_DRIFT = 0.08D;
     public static final double CURSED_RISER_CONE = 30.0D;
     public static final double CURSED_RISER_RANGE = 24.0D;
     public static final int CURSED_RISER_BLEED = 18;
+
+    // --- Healing Runes ---
+
+    /** Runes come back sooner. */
+    public static final Addon CHEAP_PAPER = AddonRegistry.register(
+            Addon.of("cheap_paper", ModPerks.HEALING_RUNES, AddonRarity.COMMON));
+
+    /** Runes fly faster. */
+    public static final Addon INK_BOTTLE = AddonRegistry.register(
+            Addon.of("ink_bottle", ModPerks.HEALING_RUNES, AddonRarity.UNCOMMON));
+
+    /** Three runes at once, each a little weaker. */
+    public static final Addon LUCKY_CHARM = AddonRegistry.register(
+            Addon.of("lucky_charm", ModPerks.HEALING_RUNES, AddonRarity.RARE));
+
+    /** A rune at your own feet mends you; one on anybody else mends them more. */
+    public static final Addon DECORATED_LEAF = AddonRegistry.register(
+            Addon.of("decorated_leaf", ModPerks.HEALING_RUNES, AddonRarity.EPIC));
+
+    // --- Cheap Paper tuning ---
+    public static final double CHEAP_PAPER_RECHARGE = 0.60D;
+
+    // --- Ink Bottle tuning ---
+    public static final double INK_BOTTLE_SPEED = 2.0D;
+
+    // --- Lucky Charm tuning ---
+    public static final float LUCKY_CHARM_HEAL = 0.67F;
+    /** How far each rune of the three sits from the middle of the triangle, in blocks. */
+    public static final double LUCKY_CHARM_SPREAD = 0.4D;
+
+    // --- Decorated Leaf tuning ---
+    public static final float DECORATED_LEAF_SELF_HEAL = 0.5F;
+    public static final float DECORATED_LEAF_OTHER_HEAL = 1.5F;
+    /** How close to the thrower's feet a rune has to break for it to count as thrown at them. */
+    public static final double DECORATED_LEAF_FEET_RANGE = 1.5D;
 
     // --- Wire Spool tuning ---
     /** Multiplier on how fast the reserve fills. */
@@ -928,7 +963,7 @@ public final class ModAddons {
 
     // --- Point Blank tuning ---
     /** Damage multiplier on a headshot. */
-    public static final float POINT_BLANK_MULTIPLIER = 1.75F;
+    public static final float POINT_BLANK_MULTIPLIER = 1.45F;
     /**
      * Fraction of the target's height, measured from its feet, above which a hit counts as a
      * headshot.

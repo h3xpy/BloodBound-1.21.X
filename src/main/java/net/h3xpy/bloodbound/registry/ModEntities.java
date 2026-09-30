@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import net.h3xpy.bloodbound.BloodBound;
 import net.h3xpy.bloodbound.entity.BarbedWireEntity;
+import net.h3xpy.bloodbound.entity.ChainAnchorEntity;
 import net.h3xpy.bloodbound.entity.IceShellEntity;
 import net.h3xpy.bloodbound.entity.RitualEntity;
 import net.h3xpy.bloodbound.entity.TargetFoundEntity;
@@ -60,6 +61,16 @@ public final class ModEntities {
                     .updateInterval(20)
                     .noSummon()
                     .build("ice_shell"));
+
+    /** Chained Up's anchor: small, still, and there to be hit. */
+    public static final Supplier<EntityType<ChainAnchorEntity>> CHAIN_ANCHOR =
+            ENTITY_TYPES.register("chain_anchor", () -> EntityType.Builder
+                    .<ChainAnchorEntity>of(ChainAnchorEntity::new, MobCategory.MISC)
+                    .sized(0.6F, 0.6F)
+                    .clientTrackingRange(8)
+                    .updateInterval(20)
+                    .noSummon()
+                    .build("chain_anchor"));
 
     private ModEntities() {}
 

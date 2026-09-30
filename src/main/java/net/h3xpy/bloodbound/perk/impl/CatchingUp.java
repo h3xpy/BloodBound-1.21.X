@@ -1,6 +1,9 @@
 package net.h3xpy.bloodbound.perk.impl;
 
+import java.util.UUID;
+
 import net.h3xpy.bloodbound.BloodBound;
+import net.h3xpy.bloodbound.advancement.AchievementTracker;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.mark.MarkManager;
 import net.h3xpy.bloodbound.perk.ModPerks;
@@ -81,7 +84,9 @@ public final class CatchingUp {
     /** Speed while on somebody else's trail, and for a few seconds after leaving it. */
     private static void tickTrail(ServerPlayer player, PlayerPerkData data, int tier, long gameTime) {
         BlockPos ground = player.blockPosition().below();
-        if (MarkManager.hasForeignMark(player, ground)) {
+        UUID trail = MarkManager.foreignMarkOwner(player, ground);
+        if (trail != null) {
+            AchievementTracker.onTrail(player, trail, gameTime);
             // Pushed out afresh on every tick spent on the trail, so the linger is counted from the
             // last mark stepped on rather than from the first.
             data.setTrailSpeedUntil(gameTime + ModPerks.CATCHING_UP.ticks(ModPerks.CATCHING_UP_LINGER, tier));

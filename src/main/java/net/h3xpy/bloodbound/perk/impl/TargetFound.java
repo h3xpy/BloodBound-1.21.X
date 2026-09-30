@@ -1,8 +1,5 @@
 package net.h3xpy.bloodbound.perk.impl;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -12,6 +9,7 @@ import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.entity.TargetFoundEntity;
 import net.h3xpy.bloodbound.event.AuraRevealHandler;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.ritual.TrapRoster;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -65,7 +63,6 @@ public final class TargetFound {
     }
 
     private static final Map<UUID, Setup> SETTING = new HashMap<>();
-    private static final Map<UUID, Deque<TargetFoundEntity>> PLACED = new HashMap<>();
     private static final Map<UUID, Pending> PENDING = new HashMap<>();
 
     private TargetFound() {}
@@ -171,7 +168,7 @@ public final class TargetFound {
     public static void tick(ServerPlayer player, PlayerPerkData data, long gameTime) {
         if (data.getActiveTier(ModPerks.TARGET_FOUND) <= 0) {
             // Out of the loadout, and every wire goes with it.
-            if (PLACED.containsKey(player.getUUID()) || PENDING.containsKey(player.getUUID())
+            if (TrapRoster.hasAny(TargetFoundEntity.KIND, player.getUUID()) || PENDING.containsKey(player.getUUID())
                     || SETTING.containsKey(player.getUUID())) {
                 clear(player.getUUID());
             }
@@ -244,22 +241,16 @@ public final class TargetFound {
         ServerLevel level = player.serverLevel();
         TargetFoundEntity wire = new TargetFoundEntity(level, player, tier);
         wire.moveTo(player.getX(), player.getY(), player.getZ(), 0.0F, 0.0F);
+        // Joining the level is what puts it on the roster, and pushes the oldest wire out past the limit.
         level.addFreshEntity(wire);
-
-        Deque<TargetFoundEntity> mine = PLACED.computeIfAbsent(player.getUUID(), id -> new ArrayDeque<>());
-        mine.removeIf(TargetFoundEntity::isRemoved);
-        mine.addLast(wire);
-        int limit = ModPerks.TARGET_FOUND.intValue(ModPerks.TARGET_TRAPS, tier);
-        while (mine.size() > limit) {
-            mine.removeFirst().discard();
-        }
+        int limit = wire.trapLimit();
 
         data.setCooldown(ModPerks.TARGET_FOUND.id(), gameTime, ModPerks.TARGET_FOUND.cooldownTicks(tier));
         PerkDataManager.sync(player);
 
         level.playSound(null, player.blockPosition(), SoundEvents.TRIPWIRE_ATTACH, SoundSource.PLAYERS, 0.8F, 1.0F);
         player.displayClientMessage(Component.translatable("bloodbound.message.target_found_placed",
-                mine.size(), limit).withStyle(ChatFormatting.GRAY), true);
+                TrapRoster.count(TargetFoundEntity.KIND, player.getUUID()), limit).withStyle(ChatFormatting.GRAY), true);
     }
 
     /** Forgets a player entirely, and takes their wires with them. */
@@ -269,9 +260,18 @@ public final class TargetFound {
         if (pending != null) {
             pending.wire.discard();
         }
-        Deque<TargetFoundEntity> mine = PLACED.remove(playerId);
-        if (mine != null) {
-            new ArrayList<>(mine).forEach(TargetFoundEntity::discard);
+        TrapRoster.removeAll(TargetFoundEntity.KIND, playerId);
+    }
+
+    /**
+     * A logout: the work in hand and any open window are dropped — the wire that opened it has done
+     * its job — but the wires still waiting stay where they are, armed for when the owner is back.
+     */
+    public static void logout(UUID playerId) {
+        SETTING.remove(playerId);
+        Pending pending = PENDING.remove(playerId);
+        if (pending != null) {
+            pending.wire.discard();
         }
     }
 }

@@ -32,10 +32,14 @@ public final class AuraRevealHandler {
 
     private AuraRevealHandler() {}
 
-    /** Reveals a target's aura to one player and starts the effect on the target. */
-    public static void reveal(ServerPlayer viewer, LivingEntity target, int durationTicks) {
+    /**
+     * Reveals a target's aura to one player and starts the effect on the target.
+     *
+     * @return true when the reveal took
+     */
+    public static boolean reveal(ServerPlayer viewer, LivingEntity target, int durationTicks) {
         if (target instanceof ServerPlayer hidden && UnderTheRadarHandler.blocksReveal(hidden)) {
-            return;
+            return false;
         }
         // Every reveal in the mod comes through here, so this is where Enhanced Perception's addons
         // belong: they then cover any perk that reveals an aura, including ones not written yet.
@@ -43,11 +47,13 @@ public final class AuraRevealHandler {
         target.addEffect(new MobEffectInstance(ModEffects.AURA_REVEALED, ticks, 0, false, true, true));
         // Only track it if the effect actually took: something immune would leave a stale watcher.
         if (!target.hasEffect(ModEffects.AURA_REVEALED)) {
-            return;
+            return false;
         }
         WATCHERS.put(target.getUUID(), viewer.getUUID());
         PacketDistributor.sendToPlayer(viewer, new AuraRevealPayload(target.getId(), ticks));
         EnhancedPerception.onRevealed(viewer, target);
+        UnderTheRadarHandler.onRevealedAnyway(target);
+        return true;
     }
 
     /**

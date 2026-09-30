@@ -77,6 +77,13 @@ public final class PanicAttackHandler {
         return tier;
     }
 
+    /** Whoever is rattling this player right now, if anybody is. Read right after {@link #tierAffecting}. */
+    @Nullable
+    public static ServerPlayer attackerAffecting(ServerPlayer victim) {
+        UUID attackerId = PANICKED.get(victim.getUUID());
+        return attackerId == null ? null : attacker(victim, attackerId);
+    }
+
     @Nullable
     private static ServerPlayer attacker(ServerPlayer victim, UUID attackerId) {
         ServerPlayer attacker = victim.serverLevel().getServer().getPlayerList().getPlayer(attackerId);

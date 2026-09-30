@@ -1,5 +1,6 @@
 package net.h3xpy.bloodbound.event;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.perk.impl.EnhancedPerception;
@@ -16,6 +17,9 @@ import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
  * was keeping the victim company.
  */
 public final class CallOfDeathHandler {
+
+    /** I Know Everything: how many one kill has to light up. */
+    private static final int I_KNOW_EVERYTHING_REVEALS = 20;
 
     private CallOfDeathHandler() {}
 
@@ -34,13 +38,19 @@ public final class CallOfDeathHandler {
                 ModPerks.CALL_OF_DEATH.value(ModPerks.CALL_OF_DEATH_RADIUS, tier));
         double radiusSq = radius * radius;
         AABB box = AABB.ofSize(dead.position(), radius * 2, radius * 2, radius * 2);
+        int revealed = 0;
 
         for (LivingEntity nearby : killer.serverLevel().getEntitiesOfClass(LivingEntity.class, box)) {
             if (nearby == dead || nearby == killer || !nearby.isAlive()
                     || nearby.distanceToSqr(dead.position()) > radiusSq) {
                 continue;
             }
-            AuraRevealHandler.reveal(killer, nearby, ModPerks.CALL_OF_DEATH_REVEAL_TICKS);
+            if (AuraRevealHandler.reveal(killer, nearby, ModPerks.CALL_OF_DEATH_REVEAL_TICKS)) {
+                revealed++;
+            }
+        }
+        if (revealed >= I_KNOW_EVERYTHING_REVEALS) {
+            ModAdvancements.grant(killer, ModAdvancements.I_KNOW_EVERYTHING);
         }
     }
 }

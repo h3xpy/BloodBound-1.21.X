@@ -1,5 +1,9 @@
 package net.h3xpy.bloodbound.skillcheck;
 
+import java.util.UUID;
+
+import javax.annotation.Nullable;
+
 /**
  * A skill check currently running for one player. The server owns the timing; the client renders a
  * copy of it and reports when the player hit the key.
@@ -11,6 +15,9 @@ public class ActiveSkillCheck {
     private final float zoneWidth;
     private final int durationTicks;
     private int elapsedTicks;
+    /** Whoever's Panic Attack was on this check, for Aww.. Too Bad. */
+    @Nullable
+    private UUID panickedBy;
 
     public ActiveSkillCheck(int id, SkillCheckContext context, float zoneStart, float zoneWidth, int durationTicks) {
         this.id = id;
@@ -43,6 +50,15 @@ public class ActiveSkillCheck {
     /** Needle position, 0 at the start of the sweep and 1 at the end. */
     public float progress() {
         return durationTicks <= 0 ? 1.0F : Math.min(1.0F, elapsedTicks / (float) durationTicks);
+    }
+
+    @Nullable
+    public UUID panickedBy() {
+        return panickedBy;
+    }
+
+    public void setPanickedBy(@Nullable UUID panickedBy) {
+        this.panickedBy = panickedBy;
     }
 
     public void tick() {

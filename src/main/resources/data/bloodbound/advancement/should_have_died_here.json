@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:root",
+  "display": {
+    "icon": { "id": "minecraft:rabbit_foot" },
+    "title": { "translate": "advancement.bloodbound.should_have_died_here.title" },
+    "description": { "translate": "advancement.bloodbound.should_have_died_here.description" },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

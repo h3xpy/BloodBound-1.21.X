@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:first_addon",
+  "display": {
+    "icon": { "id": "minecraft:iron_pickaxe" },
+    "title": { "translate": "advancement.bloodbound.perfect_extraction.title" },
+    "description": { "translate": "advancement.bloodbound.perfect_extraction.description" },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

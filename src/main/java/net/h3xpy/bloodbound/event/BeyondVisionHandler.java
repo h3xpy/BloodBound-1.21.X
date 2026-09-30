@@ -3,6 +3,7 @@ package net.h3xpy.bloodbound.event;
 import java.util.UUID;
 
 import net.h3xpy.bloodbound.BloodBound;
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModPerks;
@@ -65,6 +66,7 @@ public final class BeyondVisionHandler {
         // is why the perk used to do nothing at all.
         if (shortened < original) {
             instance.duration = shortened;
+            ModAdvancements.grant(player, ModAdvancements.I_DONT_THINK_SO);
         }
     }
 

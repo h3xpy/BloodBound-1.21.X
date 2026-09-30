@@ -18,5 +18,9 @@ public final class ModDamageTypes {
     public static final ResourceKey<DamageType> FRAG_NADE = ResourceKey.create(Registries.DAMAGE_TYPE,
             ResourceLocation.fromNamespaceAndPath(BloodBound.MODID, "frag_nade"));
 
+    /** Short Circuit's cylinder: an ordinary blow as armour goes, but a kill it can be credited with. */
+    public static final ResourceKey<DamageType> SHORT_CIRCUIT = ResourceKey.create(Registries.DAMAGE_TYPE,
+            ResourceLocation.fromNamespaceAndPath(BloodBound.MODID, "short_circuit"));
+
     private ModDamageTypes() {}
 }

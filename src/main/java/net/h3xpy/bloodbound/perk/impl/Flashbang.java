@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.event.BankShotHandler;
@@ -76,6 +77,10 @@ public final class Flashbang {
 
     /** Players holding their slot key, and the tick they started. Pulled Pin is the only user. */
     private static final Map<UUID, Long> WINDING = new HashMap<>();
+
+    /** The Sun: how far off the victim has to be, and how long they have to be blinded for. */
+    private static final double THE_SUN_RANGE = 30.0D;
+    private static final int THE_SUN_TICKS = 40;
 
     private Flashbang() {}
 
@@ -295,18 +300,21 @@ public final class Flashbang {
      * Blinds one victim. From The Dark makes it worse: eyes used to the dark take twice as long to
      * come back.
      */
-    public static void blind(LivingEntity victim, int ticks) {
-        blind(null, victim, ticks);
+    public static int blind(LivingEntity victim, int ticks) {
+        return blind(null, victim, ticks);
     }
 
     /**
      * The same, with whoever is responsible. Every flash in the mod comes through here, so Weighing
      * Scale only has to be written once to cover them all.
+     *
+     * @return how long the victim was actually blinded for
      */
-    public static void blind(@Nullable ServerPlayer source, LivingEntity victim, int ticks) {
+    public static int blind(@Nullable ServerPlayer source, LivingEntity victim, int ticks) {
         if (victim instanceof ServerPlayer player
                 && PerkDataManager.get(player).getActiveTier(ModPerks.FROM_THE_DARK) > 0) {
             ticks *= ModPerks.FROM_THE_DARK_FLASH_MULTIPLIER;
+            ModAdvancements.grant(player, ModAdvancements.MY_EYES);
         }
         victim.addEffect(new MobEffectInstance(ModEffects.FLASHED, ticks, 0, false, true, true));
 
@@ -314,6 +322,11 @@ public final class Flashbang {
             victim.addEffect(new MobEffectInstance(ModEffects.BROKEN, ModAddons.WEIGHING_SCALE_BROKEN_TICKS,
                     0, false, true, true));
         }
+        if (source != null && source.level() == victim.level() && victim != source
+                && source.distanceTo(victim) > THE_SUN_RANGE && ticks >= THE_SUN_TICKS) {
+            ModAdvancements.grant(source, ModAdvancements.THE_SUN);
+        }
+        return ticks;
     }
 
     /**

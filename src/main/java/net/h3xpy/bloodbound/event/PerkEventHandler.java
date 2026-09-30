@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.h3xpy.bloodbound.BloodBound;
+import net.h3xpy.bloodbound.advancement.AchievementTracker;
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
@@ -16,28 +18,33 @@ import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.perk.impl.AdvancedMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.AntiExhaustionSyringe;
+import net.h3xpy.bloodbound.perk.impl.BadOmen;
 import net.h3xpy.bloodbound.perk.impl.BarbedWire;
-import net.h3xpy.bloodbound.perk.impl.BlessingOfLife;
-import net.h3xpy.bloodbound.perk.impl.Eavesdrop;
-import net.h3xpy.bloodbound.perk.impl.InevitableDeath;
 import net.h3xpy.bloodbound.perk.impl.BewareThePowerOfAnAngel;
+import net.h3xpy.bloodbound.perk.impl.BlessingOfLife;
 import net.h3xpy.bloodbound.perk.impl.BrokenMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.CatchingUp;
+import net.h3xpy.bloodbound.perk.impl.ChainedUp;
+import net.h3xpy.bloodbound.perk.impl.Eavesdrop;
 import net.h3xpy.bloodbound.perk.impl.Flashbang;
 import net.h3xpy.bloodbound.perk.impl.FragNade;
 import net.h3xpy.bloodbound.perk.impl.FromTheDark;
 import net.h3xpy.bloodbound.perk.impl.GreenHerbs;
 import net.h3xpy.bloodbound.perk.impl.HealingRunes;
 import net.h3xpy.bloodbound.perk.impl.IceBlock;
+import net.h3xpy.bloodbound.perk.impl.InevitableDeath;
 import net.h3xpy.bloodbound.perk.impl.LowCostMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.NoOneGetsAway;
+import net.h3xpy.bloodbound.perk.impl.Nullification;
 import net.h3xpy.bloodbound.perk.impl.Omniscience;
 import net.h3xpy.bloodbound.perk.impl.OutOfBreath;
+import net.h3xpy.bloodbound.perk.impl.ShortCircuit;
 import net.h3xpy.bloodbound.perk.impl.SinOfObliviousness;
 import net.h3xpy.bloodbound.perk.impl.SurgicalSuture;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
 import net.h3xpy.bloodbound.perk.impl.TeamSpirit;
 import net.h3xpy.bloodbound.perk.impl.Tinkerer;
+import net.h3xpy.bloodbound.perk.impl.Wireless;
 import net.h3xpy.bloodbound.registry.ModEffects;
 import net.h3xpy.bloodbound.ritual.RitualManager;
 import net.h3xpy.bloodbound.skillcheck.SkillCheckManager;
@@ -90,6 +97,9 @@ public final class PerkEventHandler {
     private static final int NIGHT_VISION_DURATION = 400;
     private static final int NIGHT_VISION_REFRESH_BELOW = 300;
 
+    /** Vertigo: the fall Perfect Landing has to catch, in blocks. */
+    private static final float VERTIGO_FALL = 120.0F;
+
     private PerkEventHandler() {}
 
     // --- Perfect Landing ---
@@ -117,6 +127,9 @@ public final class PerkEventHandler {
         float distance = event.getDistance();
         event.setCanceled(true);
         player.resetFallDistance();
+        if (distance > VERTIGO_FALL) {
+            ModAdvancements.grant(player, ModAdvancements.VERTIGO);
+        }
 
         // Both fall addons buy their speed on the way down and pay for it on the ground: what is
         // left of the sprint is shorter than the perk alone would give.
@@ -179,6 +192,7 @@ public final class PerkEventHandler {
     public static void onDamageTaken(LivingDamageEvent.Post event) {
         if (!event.getEntity().level().isClientSide) {
             SinOfObliviousness.onDamaged(event.getEntity());
+            ShortCircuit.onHurt(event.getEntity());
         }
     }
 
@@ -238,11 +252,16 @@ public final class PerkEventHandler {
         Eavesdrop.tick(player, data, gameTime);
         InevitableDeath.tick(player, data, gameTime);
         SinOfObliviousness.tick(player, data, gameTime);
+        BadOmen.tick(player, data, gameTime);
+        Nullification.tick(player, data, gameTime);
+        ShortCircuit.tick(player, data, gameTime);
+        Wireless.tick(player, data, gameTime);
         BleedingHandler.tickCure(player, gameTime);
         HuntersInstinctHandler.tick(player, data);
         Flashbang.tick(player, data, gameTime);
         AntiExhaustionSyringe.tick(player, data, gameTime);
         MovementTracker.update(player);
+        AchievementTracker.tick(player, gameTime);
         TargetFound.tick(player, data, gameTime);
         FragNade.tickFallGuard(player, gameTime);
         MarkManager.finalBlowStep(player, data, gameTime);
@@ -277,6 +296,8 @@ public final class PerkEventHandler {
         OutOfBreath.tickShots(event.getServer());
         HealingRunes.tickRunes(event.getServer());
         FragNade.tickGrenades(event.getServer());
+        ShortCircuit.tickBeams(event.getServer());
+        ChainedUp.tickShots(event.getServer());
         UnderTheRadarHandler.tick(event.getServer());
         RitualManager.tick(event.getServer());
         long ritualTime = event.getServer().overworld().getGameTime();
@@ -284,7 +305,11 @@ public final class PerkEventHandler {
         Eavesdrop.tickTraps(event.getServer(), ritualTime);
         InevitableDeath.tickRituals(event.getServer(), ritualTime);
         SinOfObliviousness.tickRituals(event.getServer(), ritualTime);
+        Nullification.tickRituals(event.getServer(), ritualTime);
         PerkUsageStats.sample(event.getServer(), ritualTime);
+        if (ritualTime % 400L == 0L) {
+            AchievementTracker.sweep(ritualTime);
+        }
     }
 
     /**
@@ -391,6 +416,7 @@ public final class PerkEventHandler {
 
         int duration = ModPerks.ADRENALINE.ticks(ModPerks.ADRENALINE_DURATION, tier);
         data.setDamageImmuneUntil(gameTime + duration);
+        AchievementTracker.onAdrenaline(player, player.getLastHurtByMob());
         player.addEffect(new MobEffectInstance(ModEffects.BROKEN, duration, 0, false, true, true));
 
         // The cooldown is counted from the end of the window, not the start.

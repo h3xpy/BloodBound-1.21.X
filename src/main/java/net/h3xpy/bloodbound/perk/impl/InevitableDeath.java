@@ -106,8 +106,9 @@ public final class InevitableDeath {
         RitualManager.Ritual ritual = RitualManager.get(player.getUUID(), ModPerks.INEVITABLE_DEATH.id());
         float charges = data.perkCharges(ModPerks.INEVITABLE_DEATH.id(), max);
 
-        if (ritual != null && ritual.isAlive()) {
-            // Mirror what the circle has left, so the reserve cannot be spent twice.
+        if (ritual != null) {
+            // Mirror what the circle has left, so the reserve cannot be spent twice — even while the
+            // circle sits in an unloaded chunk, where it still stands.
             charges = ritual.charges();
             data.setPerkCharges(ModPerks.INEVITABLE_DEATH.id(), charges);
         } else if (charges < max) {
@@ -126,9 +127,9 @@ public final class InevitableDeath {
 
     /** Works every ritual on the server. Called once a tick. */
     public static void tickRituals(MinecraftServer server, long gameTime) {
-        for (ServerPlayer owner : server.getPlayerList().getPlayers()) {
-            RitualManager.Ritual ritual = RitualManager.get(owner.getUUID(), ModPerks.INEVITABLE_DEATH.id());
-            if (ritual == null || !ritual.isAlive()) {
+        // Every circle on the ground, its owner online or not: a trap does not wait to be watched.
+        for (RitualManager.Ritual ritual : RitualManager.all(ModPerks.INEVITABLE_DEATH.id())) {
+            if (!ritual.isAlive()) {
                 continue;
             }
             ServerLevel level = server.getLevel(ritual.dimension());
@@ -170,8 +171,11 @@ public final class InevitableDeath {
                     release(nearby);
                 }
                 RitualManager.remove(ritual.ownerId(), ModPerks.INEVITABLE_DEATH.id());
-                owner.displayClientMessage(Component.translatable("bloodbound.message.inevitable_spent")
-                        .withStyle(ChatFormatting.DARK_GRAY), true);
+                ServerPlayer owner = server.getPlayerList().getPlayer(ritual.ownerId());
+                if (owner != null) {
+                    owner.displayClientMessage(Component.translatable("bloodbound.message.inevitable_spent")
+                            .withStyle(ChatFormatting.DARK_GRAY), true);
+                }
             }
         }
     }
@@ -195,6 +199,12 @@ public final class InevitableDeath {
                 release(held);
             }
         }
+    }
+
+    /** A logout: the laying in hand is dropped, the circle already down stays where it is. */
+    public static void logout(ServerPlayer player) {
+        RitualSetup.stop(player, ModPerks.INEVITABLE_DEATH.id(), false);
+        EXPOSED.remove(player.getUUID());
     }
 
     public static void clear(ServerPlayer player) {

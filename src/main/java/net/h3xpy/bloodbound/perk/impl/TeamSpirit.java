@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModPerks;
@@ -32,6 +33,9 @@ public final class TeamSpirit {
         private final int tier;
         private long expiresAt;
         private long graceUntil;
+        /** Kills and blocks since the boons were earned, for Get In There. */
+        private int kills;
+        private int mined;
 
         private Boon(UUID sourceId, int tier, long expiresAt) {
             this.sourceId = sourceId;
@@ -42,6 +46,9 @@ public final class TeamSpirit {
 
     /** Effects are handed out in slices this long and topped up while the holder stays close. */
     private static final int SLICE_TICKS = 40;
+    /** Get In There: what one run of the boons has to be worth. */
+    private static final int GET_IN_THERE_KILLS = 10;
+    private static final int GET_IN_THERE_BLOCKS = 50;
 
     private static final Map<UUID, Boon> BOONS = new HashMap<>();
     /** Health each medic has put into each patient since the last payout. */
@@ -82,6 +89,30 @@ public final class TeamSpirit {
                 .withStyle(ChatFormatting.GOLD), true);
         target.level().playSound(null, target.blockPosition(), SoundEvents.BEACON_ACTIVATE,
                 SoundSource.PLAYERS, 0.5F, 1.6F);
+    }
+
+    /** A kill by somebody carrying the boons. */
+    public static void onKill(ServerPlayer killer) {
+        Boon boon = BOONS.get(killer.getUUID());
+        if (boon != null && ++boon.kills >= GET_IN_THERE_KILLS) {
+            credit(killer, boon);
+        }
+    }
+
+    /** A block broken by somebody carrying the boons. */
+    public static void onMined(ServerPlayer miner) {
+        Boon boon = BOONS.get(miner.getUUID());
+        if (boon != null && ++boon.mined >= GET_IN_THERE_BLOCKS) {
+            credit(miner, boon);
+        }
+    }
+
+    /** Get In There goes to the medic, not to whoever they sent in. */
+    private static void credit(ServerPlayer holder, Boon boon) {
+        ServerPlayer medic = holder.serverLevel().getServer().getPlayerList().getPlayer(boon.sourceId);
+        if (medic != null) {
+            ModAdvancements.grant(medic, ModAdvancements.GET_IN_THERE);
+        }
     }
 
     /** Keeps the boons topped up, and takes them away from anybody who wandered off. */

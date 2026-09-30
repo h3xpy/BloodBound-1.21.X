@@ -2,6 +2,7 @@ package net.h3xpy.bloodbound.perk.impl;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.advancement.AchievementTracker;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.event.AuraRevealHandler;
 import net.h3xpy.bloodbound.perk.ModAddons;
@@ -51,6 +52,7 @@ public final class KeepFighting {
         // Counts as healing somebody, for the perks that pay out on that.
         GreenHerbs.recordHealing(player, target, given);
         TeamSpirit.recordHealing(player, target, given);
+        AchievementTracker.onKeepFighting(player, target);
         // setHealth rather than hurt: this is a price paid, not damage taken, so it should not
         // trigger hurt animations, knockback or damage-reduction perks.
         player.setHealth(player.getHealth() - cost);

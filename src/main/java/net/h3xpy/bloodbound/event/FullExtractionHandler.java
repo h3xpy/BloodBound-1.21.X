@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.registry.ModItems;
@@ -40,6 +41,9 @@ import net.neoforged.neoforge.event.level.BlockDropsEvent;
  * switches the whole perk off: that pick is asking for the ore block, and gets it.
  */
 public final class FullExtractionHandler {
+
+    /** Perfect Extraction: the shards one ore has to give up. */
+    private static final int PERFECT_EXTRACTION_SHARDS = 3;
 
     private FullExtractionHandler() {}
 
@@ -82,6 +86,9 @@ public final class FullExtractionHandler {
         }
         if (shards > 0) {
             event.getDrops().add(itemAt(level, pos, new ItemStack(ModItems.SOUL_SHARD.get(), shards)));
+        }
+        if (shards >= PERFECT_EXTRACTION_SHARDS) {
+            ModAdvancements.grant(player, ModAdvancements.PERFECT_EXTRACTION);
         }
 
         level.sendParticles(ParticleTypes.FLAME, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D,

@@ -18,8 +18,19 @@ import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 
 /**
  * Rolls soul shards into a mob's death drops.
+ * <p>
+ * The tougher the mob, the better its odds of a big payout. A zombie's twenty health is the yardstick
+ * and rolls exactly as the configured weights say; anything frailer leans towards the small end of
+ * them, anything sturdier towards the large end, and from fifty health up the roll is skipped for a
+ * flat six.
  */
 public final class SoulShardDropHandler {
+
+    /** Max health that rolls the configured weights as they stand: a zombie's. */
+    private static final double REFERENCE_HEALTH = 20.0D;
+    /** From this much max health a kill pays {@link #GUARANTEED_SHARDS}, no roll. */
+    private static final double GUARANTEED_HEALTH = 50.0D;
+    private static final int GUARANTEED_SHARDS = 6;
 
     private SoulShardDropHandler() {}
 
@@ -39,7 +50,7 @@ public final class SoulShardDropHandler {
             return;
         }
 
-        int shards = Config.rollShardCount(entity.getRandom().nextDouble());
+        int shards = rollFor(entity);
 
         // Raise The Stakes tops up every hostile kill, even the ones that rolled nothing.
         if (entity instanceof Enemy && killer instanceof ServerPlayer hunter) {
@@ -58,5 +69,20 @@ public final class SoulShardDropHandler {
         event.getDrops().add(new ItemEntity(entity.level(),
                 entity.getX(), entity.getY() + entity.getBbHeight() / 2.0D, entity.getZ(),
                 new ItemStack(ModItems.SOUL_SHARD.get(), shards)));
+    }
+
+    /**
+     * The shard roll, leaned by the mob's max health. The roll is bent rather than the weights
+     * replaced, so a server's own weights still decide what a zombie drops and everything else is
+     * measured against that: raised to the power reference / health, it drifts towards 0 for a
+     * silverfish and towards 1 for an enderman.
+     */
+    private static int rollFor(LivingEntity entity) {
+        double health = Math.max(1.0D, entity.getMaxHealth());
+        if (health >= GUARANTEED_HEALTH) {
+            return GUARANTEED_SHARDS;
+        }
+        double roll = Math.pow(entity.getRandom().nextDouble(), REFERENCE_HEALTH / health);
+        return Config.rollShardCount(Math.min(roll, 0.999999D));
     }
 }

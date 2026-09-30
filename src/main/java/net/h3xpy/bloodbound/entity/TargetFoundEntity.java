@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
 import net.h3xpy.bloodbound.registry.ModEntities;
+import net.h3xpy.bloodbound.ritual.TrapRoster;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -27,7 +28,9 @@ import net.minecraft.world.phys.AABB;
  * Once tripped it goes quiet: the owner's window runs from {@link TargetFound}, which is also what
  * takes the wire away once that window is over.
  */
-public class TargetFoundEntity extends Entity {
+public class TargetFoundEntity extends Entity implements TrapRoster.Trap {
+
+    public static final String KIND = "target_found";
 
     private static final EntityDataAccessor<Integer> DATA_OPACITY =
             SynchedEntityData.defineId(TargetFoundEntity.class, EntityDataSerializers.INT);
@@ -38,6 +41,8 @@ public class TargetFoundEntity extends Entity {
     @Nullable
     private UUID ownerId;
     private boolean tripped;
+    private int tier = 1;
+    private long placedAt;
 
     public TargetFoundEntity(EntityType<? extends TargetFoundEntity> type, Level level) {
         super(type, level);
@@ -47,7 +52,9 @@ public class TargetFoundEntity extends Entity {
     public TargetFoundEntity(Level level, ServerPlayer owner, int tier) {
         this(ModEntities.TARGET_FOUND.get(), level);
         this.ownerId = owner.getUUID();
-        this.entityData.set(DATA_OPACITY, ModPerks.TARGET_FOUND.intValue(ModPerks.TARGET_OPACITY, tier));
+        this.tier = tier;
+        this.placedAt = level.getGameTime();
+        applyTier();
     }
 
     @Override
@@ -66,6 +73,11 @@ public class TargetFoundEntity extends Entity {
             return;
         }
 
+        // The wire is only a way back to its owner, so with the owner away it has nothing to do but
+        // wait, still armed, for them to come back.
+        if (ownerId == null || serverLevel.getServer().getPlayerList().getPlayer(ownerId) == null) {
+            return;
+        }
         AABB reach = getBoundingBox().inflate(ModPerks.TARGET_TRAP_RADIUS, 0.3D, ModPerks.TARGET_TRAP_RADIUS);
         for (LivingEntity victim : serverLevel.getEntitiesOfClass(LivingEntity.class, reach)) {
             if (!victim.isAlive() || victim.isSpectator() || victim.getUUID().equals(ownerId)) {
@@ -97,15 +109,54 @@ public class TargetFoundEntity extends Entity {
         return false;
     }
 
-    // Wires belong to a session, not to a save file.
-    @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {}
+    private void applyTier() {
+        this.entityData.set(DATA_OPACITY, ModPerks.TARGET_FOUND.intValue(ModPerks.TARGET_OPACITY, tier));
+    }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {}
+    public String trapKind() {
+        return KIND;
+    }
 
     @Override
-    public boolean shouldBeSaved() {
-        return false;
+    @Nullable
+    public UUID trapOwnerId() {
+        return ownerId;
+    }
+
+    @Override
+    public long placedAt() {
+        return placedAt;
+    }
+
+    @Override
+    public int trapLimit() {
+        return ModPerks.TARGET_FOUND.intValue(ModPerks.TARGET_TRAPS, tier);
+    }
+
+    /** A wire already tripped was only waiting on its owner's window; it does not come back. */
+    @Override
+    public boolean isSpent() {
+        return tripped;
+    }
+
+    // Saved with the world, so a wire outlasts its owner's logout and a restart alike.
+    @Override
+    protected void readAdditionalSaveData(CompoundTag tag) {
+        ownerId = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
+        tier = Math.max(1, tag.getInt("Tier"));
+        placedAt = tag.getLong("PlacedAt");
+        tripped = tag.getBoolean("Tripped");
+        applyTier();
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundTag tag) {
+        if (ownerId != null) {
+            tag.putUUID("Owner", ownerId);
+        }
+        tag.putInt("Tier", tier);
+        tag.putLong("PlacedAt", placedAt);
+        tag.putBoolean("Tripped", tripped);
     }
 }

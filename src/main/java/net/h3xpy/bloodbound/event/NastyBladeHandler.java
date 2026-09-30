@@ -1,5 +1,6 @@
 package net.h3xpy.bloodbound.event;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.network.NastyBladePayload;
@@ -23,6 +24,9 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * goes with it.
  */
 public final class NastyBladeHandler {
+
+    /** Feral Frenzy: the tokens one streak has to bank. */
+    private static final int FERAL_FRENZY_TOKENS = 50;
 
     private NastyBladeHandler() {}
 
@@ -71,6 +75,9 @@ public final class NastyBladeHandler {
             return;
         }
         data.addBladeToken(gameTime + streak, gameTime + ModPerks.NASTY_BLADE_TOKEN_COOLDOWN);
+        if (data.bladeTokens() >= FERAL_FRENZY_TOKENS) {
+            ModAdvancements.grant(attacker, ModAdvancements.FERAL_FRENZY);
+        }
 
         // A short rising note per token, so the streak is something you hear rather than count. The
         // same pling the skill checks use: it carries over a fight, where a chime does not.

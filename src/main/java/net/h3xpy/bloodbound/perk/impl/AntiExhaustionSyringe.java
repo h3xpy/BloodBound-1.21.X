@@ -3,6 +3,7 @@ package net.h3xpy.bloodbound.perk.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.network.PerkChargesPayload;
 import net.h3xpy.bloodbound.perk.ModAddons;
@@ -25,6 +26,9 @@ import net.neoforged.neoforge.network.PacketDistributor;
  */
 public final class AntiExhaustionSyringe {
 
+    /** Got No Time: the cooldown one dose has to wipe, all told. */
+    private static final long GOT_NO_TIME_TICKS = 90L * 20L;
+
     private AntiExhaustionSyringe() {}
 
     public static boolean activate(ServerPlayer player, PlayerPerkData data, int tier, long gameTime) {
@@ -33,6 +37,9 @@ public final class AntiExhaustionSyringe {
 
         // Its own cooldown is set below, so skipping it here keeps the shot from paying for itself.
         int cleared = data.skipCooldowns(fraction, gameTime, ModPerks.ANTI_EXHAUSTION_SYRINGE.id());
+        if (data.lastSkippedTicks() >= GOT_NO_TIME_TICKS) {
+            ModAdvancements.grant(player, ModAdvancements.GOT_NO_TIME);
+        }
         boolean didSomething = cleared > 0;
 
         // Metal Syringe: the charge pools are filled too, which the cooldown sweep never touches.

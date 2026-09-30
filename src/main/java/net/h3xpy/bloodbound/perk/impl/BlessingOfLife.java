@@ -67,9 +67,9 @@ public final class BlessingOfLife {
 
     /** Works every Blessing on the server. Called once a tick. */
     public static void tickRituals(MinecraftServer server, long gameTime) {
-        for (ServerPlayer owner : server.getPlayerList().getPlayers()) {
-            RitualManager.Ritual ritual = RitualManager.get(owner.getUUID(), ModPerks.BLESSING_OF_LIFE.id());
-            if (ritual == null || !ritual.isAlive()) {
+        // Every Blessing on the ground, its owner online or not: it heals whoever is standing in it.
+        for (RitualManager.Ritual ritual : RitualManager.all(ModPerks.BLESSING_OF_LIFE.id())) {
+            if (!ritual.isAlive()) {
                 continue;
             }
             ServerLevel level = server.getLevel(ritual.dimension());
@@ -104,14 +104,18 @@ public final class BlessingOfLife {
         if (!(player.level() instanceof ServerLevel level)) {
             return false;
         }
-        for (ServerPlayer owner : level.getServer().getPlayerList().getPlayers()) {
-            RitualManager.Ritual ritual = RitualManager.get(owner.getUUID(), ModPerks.BLESSING_OF_LIFE.id());
-            if (ritual != null && ritual.isAlive() && ritual.dimension() == player.level().dimension()
+        for (RitualManager.Ritual ritual : RitualManager.all(ModPerks.BLESSING_OF_LIFE.id())) {
+            if (ritual.isAlive() && ritual.dimension() == player.level().dimension()
                     && ritual.covers(player.position())) {
                 return true;
             }
         }
         return false;
+    }
+
+    /** A logout: the laying in hand is dropped, the Blessing already down stays where it is. */
+    public static void logout(ServerPlayer player) {
+        RitualSetup.stop(player, ModPerks.BLESSING_OF_LIFE.id(), false);
     }
 
     public static void clear(ServerPlayer player) {

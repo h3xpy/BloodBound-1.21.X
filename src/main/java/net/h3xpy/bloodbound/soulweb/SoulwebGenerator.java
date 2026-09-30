@@ -66,6 +66,9 @@ public final class SoulwebGenerator {
      */
     private static final int LOOT_FINAL_MULTIPLIER = 25;
 
+    /** What rare loot costs, as a share of what its own price curve says. */
+    private static final double RARE_LOOT_PRICE_SCALE = 0.65D;
+
     /** Web level below which the rare pool never appears. */
     private static final int RARE_POOL_MIN_LEVEL = 4;
     /** Rare pool odds gain this much every {@link #RARE_CHANCE_STEP_LEVELS} levels. */
@@ -119,6 +122,7 @@ public final class SoulwebGenerator {
             NodeReward reward;
             int baseCost;
             int finalCost;
+            double priceScale = 1.0D;
 
             int perkIndex = perkSlots.indexOf(i);
             int addonIndex = addonSlots.indexOf(i);
@@ -137,9 +141,13 @@ public final class SoulwebGenerator {
                 reward = buildLootReward(random, registries, entry, rare);
                 baseCost = entry.cost();
                 finalCost = entry.cost() * LOOT_FINAL_MULTIPLIER;
+                if (rare) {
+                    priceScale = RARE_LOOT_PRICE_SCALE;
+                }
             }
 
-            int price = priceWithVariation(random, scaleToLevel(baseCost, finalCost, level), level);
+            int onCurve = (int) Math.max(1L, Math.round(scaleToLevel(baseCost, finalCost, level) * priceScale));
+            int price = priceWithVariation(random, onCurve, level);
             nodes.add(new SoulwebNode(branch, depth, price, reward,
                     layoutAngle(random, branch, branchCount, depth),
                     BASE_RADIUS + (depth - 1) * RADIUS_STEP));

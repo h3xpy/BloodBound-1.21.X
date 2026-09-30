@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModAddons;
@@ -47,6 +48,9 @@ public final class RaiseTheStakesHandler {
             Map.entry(Items.QUARTZ, Items.QUARTZ_BLOCK),
             Map.entry(Items.AMETHYST_SHARD, Items.AMETHYST_BLOCK));
 
+    /** Jackpot: how many times one ore has to pay out again. */
+    private static final int JACKPOT_ROLLS = 5;
+
     private RaiseTheStakesHandler() {}
 
     @SubscribeEvent
@@ -76,6 +80,9 @@ public final class RaiseTheStakesHandler {
         int extra = 0;
         while (extra < ModPerks.RAISE_THE_STAKES_MAX_EXTRA_DROPS && player.getRandom().nextFloat() < chance) {
             extra++;
+        }
+        if (extra >= JACKPOT_ROLLS) {
+            ModAdvancements.grant(player, ModAdvancements.JACKPOT);
         }
 
         // Shattered Coin gambles the ore itself on the opening roll.

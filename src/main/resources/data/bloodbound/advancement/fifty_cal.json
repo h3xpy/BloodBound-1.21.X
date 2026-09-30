@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:tier1_perk",
+  "display": {
+    "icon": { "id": "minecraft:crossbow" },
+    "title": { "translate": "advancement.bloodbound.fifty_cal.title" },
+    "description": { "translate": "advancement.bloodbound.fifty_cal.description" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

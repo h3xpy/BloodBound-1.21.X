@@ -2,6 +2,7 @@ package net.h3xpy.bloodbound.event;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.client.ClientBankShots;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
@@ -89,6 +90,8 @@ public final class BankShotHandler {
     private static final int SYNC_TICKS = 3;
     /** How far Paper Fan looks down the crosshair for the point to steer the shot onto. */
     private static final double PAPER_FAN_REACH = 96.0D;
+    /** Trick Shot: how far off the crosshair something may be and still count as on screen. */
+    private static final double TRICK_SHOT_VIEW_DEGREES = 55.0D;
 
     private BankShotHandler() {}
 
@@ -230,6 +233,22 @@ public final class BankShotHandler {
         }
     }
 
+    /**
+     * Trick Shot: a shot off a wall landing on something its shooter could not see — behind cover,
+     * or off the edge of the screen.
+     */
+    public static void checkTrickShot(ServerPlayer shooter, LivingEntity target) {
+        if (shooter.level() != target.level() || target == shooter) {
+            return;
+        }
+        Vec3 offset = target.getBoundingBox().getCenter().subtract(shooter.getEyePosition());
+        boolean onScreen = offset.lengthSqr() < 1.0E-6D || offset.normalize().dot(shooter.getLookAngle())
+                >= Math.cos(Math.toRadians(TRICK_SHOT_VIEW_DEGREES));
+        if (!onScreen || !shooter.hasLineOfSight(target)) {
+            ModAdvancements.grant(shooter, ModAdvancements.TRICK_SHOT);
+        }
+    }
+
     /** Whoever fired the shot, if they are still about. */
     @Nullable
     private static ServerPlayer owner(Projectile projectile, CompoundTag tag) {
@@ -261,6 +280,7 @@ public final class BankShotHandler {
         if (shooter == null) {
             return;
         }
+        checkTrickShot(shooter, target);
         PlayerPerkData data = PerkDataManager.get(shooter);
 
         if (data.isAddonActive(ModAddons.ORIGAMI_CRANE)) {

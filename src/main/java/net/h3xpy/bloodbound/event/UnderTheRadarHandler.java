@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.network.HiddenPlayersPayload;
@@ -18,7 +19,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
@@ -74,6 +78,24 @@ public final class UnderTheRadarHandler {
     }
 
     /**
+     * Mobs have to come that much closer to notice the player. Vanilla scales every mob's
+     * detection range by how visible its target is — sneaking and invisibility work the same way —
+     * so this is the one place to say it, and a mob that already has the player in its sights is
+     * held to the same shortened leash.
+     */
+    @SubscribeEvent
+    public static void onVisibility(LivingEvent.LivingVisibilityEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player) || !(event.getLookingEntity() instanceof Mob)) {
+            return;
+        }
+        int tier = PerkDataManager.get(player).getActiveTier(ModPerks.UNDER_THE_RADAR);
+        if (tier > 0) {
+            event.modifyVisibility(1.0D
+                    - ModPerks.UNDER_THE_RADAR.value(ModPerks.RADAR_DETECTION, tier) / 100.0D);
+        }
+    }
+
+    /**
      * Whether an attempt to reveal this player's aura is stopped. The first attempt outside the
      * cooldown opens the window — and puts the perk on cooldown for the window and the cooldown
      * together, so the HUD counts the whole of it down.
@@ -102,6 +124,17 @@ public final class UnderTheRadarHandler {
                 .withStyle(ChatFormatting.DARK_AQUA), true);
         player.playNotifySound(SoundEvents.ILLUSIONER_MIRROR_MOVE, SoundSource.PLAYERS, 0.6F, 1.4F);
         return true;
+    }
+
+    /**
+     * A reveal got through all the same — the perk was cooling down. That's Embarrassing, for
+     * whoever was wearing it.
+     */
+    public static void onRevealedAnyway(net.minecraft.world.entity.LivingEntity target) {
+        if (target instanceof ServerPlayer player
+                && PerkDataManager.get(player).getActiveTier(ModPerks.UNDER_THE_RADAR) > 0) {
+            ModAdvancements.grant(player, ModAdvancements.THATS_EMBARRASSING);
+        }
     }
 
     public static void clear() {

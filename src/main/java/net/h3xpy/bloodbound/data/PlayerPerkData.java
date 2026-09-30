@@ -11,11 +11,11 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import net.h3xpy.bloodbound.soulweb.Soulweb;
-import net.h3xpy.bloodbound.soulweb.SoulwebGenerator;
 import net.h3xpy.bloodbound.perk.Addon;
 import net.h3xpy.bloodbound.perk.Perk;
 import net.h3xpy.bloodbound.perk.PerkRegistry;
+import net.h3xpy.bloodbound.soulweb.Soulweb;
+import net.h3xpy.bloodbound.soulweb.SoulwebGenerator;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -292,6 +292,7 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
      */
     public int skipCooldowns(float fraction, long gameTime, @Nullable ResourceLocation skip) {
         int affected = 0;
+        lastSkippedTicks = 0L;
         for (Map.Entry<ResourceLocation, Long> entry : cooldowns.entrySet()) {
             if (entry.getKey().equals(skip)) {
                 continue;
@@ -300,10 +301,19 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
             if (remaining <= 0L) {
                 continue;
             }
-            entry.setValue(entry.getValue() - Math.round(remaining * (double) fraction));
+            long skipped = Math.round(remaining * (double) fraction);
+            entry.setValue(entry.getValue() - skipped);
+            lastSkippedTicks += skipped;
             affected++;
         }
         return affected;
+    }
+
+    /** How many ticks of cooldown the last {@link #skipCooldowns} took off, all told. */
+    private long lastSkippedTicks;
+
+    public long lastSkippedTicks() {
+        return lastSkippedTicks;
     }
 
     /** Brings every running cooldown forward, for Lightbringer's recovery aura. */

@@ -1,5 +1,6 @@
 package net.h3xpy.bloodbound.event;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModAddons;
@@ -59,7 +60,10 @@ public final class HuntersInstinctHandler {
             if (hunter.distanceToSqr(victim) > radius * radius) {
                 continue;
             }
-            AuraRevealHandler.reveal(hunter, victim, ModPerks.HUNTERS_INSTINCT_REVEAL_TICKS);
+            if (AuraRevealHandler.reveal(hunter, victim, ModPerks.HUNTERS_INSTINCT_REVEAL_TICKS)
+                    && victim instanceof ServerPlayer) {
+                ModAdvancements.grant(hunter, ModAdvancements.I_KNOW_THIS_GUY);
+            }
         }
     }
 }

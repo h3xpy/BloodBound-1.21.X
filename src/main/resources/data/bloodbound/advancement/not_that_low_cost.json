@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:first_addon",
+  "display": {
+    "icon": { "id": "minecraft:piston" },
+    "title": { "translate": "advancement.bloodbound.not_that_low_cost.title" },
+    "description": { "translate": "advancement.bloodbound.not_that_low_cost.description" },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

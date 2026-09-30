@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.event.GuardianAngelHandler;
@@ -90,6 +91,10 @@ public final class SkillCheckManager {
         float zoneStart = MIN_ZONE_START + (span <= 0 ? 0 : player.getRandom().nextFloat() * span);
 
         ActiveSkillCheck check = new ActiveSkillCheck(nextId++, context, zoneStart, zoneWidth, duration);
+        if (panic > 0) {
+            ServerPlayer rattler = PanicAttackHandler.attackerAffecting(player);
+            check.setPanickedBy(rattler == null ? null : rattler.getUUID());
+        }
         ACTIVE.put(player.getUUID(), check);
 
         PacketDistributor.sendToPlayer(player, new StartSkillCheckPayload(
@@ -146,6 +151,12 @@ public final class SkillCheckManager {
 
     private static void resolve(ServerPlayer player, ActiveSkillCheck check, boolean success) {
         ACTIVE.remove(player.getUUID());
+        if (!success && check.panickedBy() != null && player.getServer() != null) {
+            ServerPlayer rattler = player.getServer().getPlayerList().getPlayer(check.panickedBy());
+            if (rattler != null) {
+                ModAdvancements.grant(rattler, ModAdvancements.AWW_TOO_BAD);
+            }
+        }
         PacketDistributor.sendToPlayer(player, new SkillCheckResultPayload(check.id(), success));
 
         player.playNotifySound(

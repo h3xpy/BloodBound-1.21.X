@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:root",
+  "display": {
+    "icon": { "id": "minecraft:phantom_membrane" },
+    "title": { "translate": "advancement.bloodbound.the_angel_has_fallen.title" },
+    "description": { "translate": "advancement.bloodbound.the_angel_has_fallen.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

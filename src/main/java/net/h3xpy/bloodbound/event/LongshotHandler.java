@@ -1,10 +1,17 @@
 package net.h3xpy.bloodbound.event;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.effect.BleedingHandler;
@@ -12,6 +19,7 @@ import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.registry.ModEffects;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
@@ -21,19 +29,20 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LightBlock;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -41,8 +50,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
@@ -86,6 +95,17 @@ public final class LongshotHandler {
     private record ArrowLight(ResourceKey<Level> dimension, BlockPos pos) {}
 
     private static final Map<UUID, ArrowLight> LIGHTS = new HashMap<>();
+
+    /** What a target was carrying the moment a Bounty Poster arrow reached it: fire, and harmful effects. */
+    private record Before(int fireTicks, Set<Holder<MobEffect>> harmful) {}
+
+    /** Bounty arrows' targets as they were before the hit, for this tick only. */
+    private static final Map<Integer, Before> BEFORE_BOUNTY = new HashMap<>();
+    /** Targets Exposed by a bounty this tick: nothing else harmful the arrow carries may land on them. */
+    private static final Set<LivingEntity> BOUNTY_GUARDED = new HashSet<>();
+
+    /** Fifty Cal: the damage the distance alone has to add. */
+    private static final double FIFTY_CAL_BONUS = 10.0D;
 
     private LongshotHandler() {}
 
@@ -153,23 +173,6 @@ public final class LongshotHandler {
         tag.putDouble(KEY_ODD_DIR_Z, direction.z);
     }
 
-    // --- Odd Arrow: the draw ---
-
-    /** Odd Arrow draws twice as fast: one extra tick taken off the use for every tick held. */
-    @SubscribeEvent
-    public static void onUseTick(LivingEntityUseItemEvent.Tick event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) {
-            return;
-        }
-        if (!(event.getItem().getItem() instanceof BowItem) && !(event.getItem().getItem() instanceof CrossbowItem)) {
-            return;
-        }
-        PlayerPerkData data = PerkDataManager.get(player);
-        if (data.getActiveTier(ModPerks.LONGSHOT) > 0 && data.isAddonActive(ModAddons.ODD_ARROW)) {
-            event.setDuration(Math.max(1, event.getDuration() - (int) Math.round(ModAddons.ODD_ARROW_DRAW)));
-        }
-    }
-
     // --- damage ---
 
     /**
@@ -189,7 +192,11 @@ public final class LongshotHandler {
 
         double travelled = Math.sqrt(arrow.distanceToSqr(
                 tag.getDouble(KEY_ORIGIN_X), tag.getDouble(KEY_ORIGIN_Y), tag.getDouble(KEY_ORIGIN_Z)));
-        float amount = event.getAmount() + (float) (travelled * tag.getDouble(KEY_PER_BLOCK));
+        double bonus = travelled * tag.getDouble(KEY_PER_BLOCK);
+        float amount = event.getAmount() + (float) bonus;
+        if (bonus >= FIFTY_CAL_BONUS && arrow.getOwner() instanceof ServerPlayer shooter) {
+            ModAdvancements.grant(shooter, ModAdvancements.FIFTY_CAL);
+        }
 
         // Point Blank multiplies the whole thing, distance bonus included.
         if (tag.getBoolean(KEY_HEADSHOT) && isHeadshot(arrow, event.getEntity())) {
@@ -239,10 +246,47 @@ public final class LongshotHandler {
     private static void applyBounty(AbstractArrow arrow, LivingEntity target) {
         target.addEffect(new MobEffectInstance(ModEffects.EXPOSED,
                 ModAddons.BOUNTY_POSTER_DURATION_TICKS, 0, false, true, true));
+        // Exposed leaves one point of health, and whatever else the arrow carried — Flame, a tipped
+        // head, an enchantment — would spend it. The bounty is the whole of the shot's payload.
+        stripArrowEffects(target, BEFORE_BOUNTY.get(target.getId()));
+        BOUNTY_GUARDED.add(target);
 
         if (arrow.getOwner() instanceof ServerPlayer shooter) {
             AuraRevealHandler.reveal(shooter, target, ModAddons.BOUNTY_POSTER_DURATION_TICKS);
             shooter.playNotifySound(SoundEvents.ARROW_HIT_PLAYER, SoundSource.PLAYERS, 1.0F, 0.6F);
+        }
+    }
+
+    /**
+     * Puts a bounty target back the way it was before the arrow arrived, bar the bounty itself:
+     * the fire it was already on, and only the harmful effects it already had.
+     */
+    private static void stripArrowEffects(LivingEntity target, @Nullable Before before) {
+        target.setRemainingFireTicks(before == null ? 0 : Math.min(before.fireTicks(), target.getRemainingFireTicks()));
+        List<Holder<MobEffect>> added = new ArrayList<>();
+        for (MobEffectInstance effect : target.getActiveEffects()) {
+            Holder<MobEffect> type = effect.getEffect();
+            if (type.value().getCategory() == MobEffectCategory.HARMFUL && !type.is(ModEffects.EXPOSED)
+                    && !type.is(ModEffects.AURA_REVEALED) && (before == null || !before.harmful().contains(type))) {
+                added.add(type);
+            }
+        }
+        added.forEach(target::removeEffect);
+    }
+
+    /**
+     * Whatever the arrow still means to put on a bounty target after the hit — a tipped arrow's
+     * potion, an enchantment's curse — is turned away for the rest of the tick.
+     */
+    @SubscribeEvent
+    public static void onEffectApplicable(MobEffectEvent.Applicable event) {
+        if (BOUNTY_GUARDED.isEmpty() || !BOUNTY_GUARDED.contains(event.getEntity())) {
+            return;
+        }
+        Holder<MobEffect> type = event.getEffectInstance().getEffect();
+        if (type.value().getCategory() == MobEffectCategory.HARMFUL && !type.is(ModEffects.EXPOSED)
+                && !type.is(ModEffects.AURA_REVEALED)) {
+            event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
         }
     }
 
@@ -427,6 +471,19 @@ public final class LongshotHandler {
     public static void onImpact(ProjectileImpactEvent event) {
         if (event.getProjectile() instanceof AbstractArrow arrow && !arrow.level().isClientSide) {
             releaseLight(arrow.getUUID(), arrow.level());
+            // Flame lights the target before the damage is even dealt, so the bounty has to know what
+            // the target looked like a moment earlier than any damage event can tell it.
+            if (arrow.getPersistentData().getBoolean(KEY_BOUNTY)
+                    && event.getRayTraceResult() instanceof EntityHitResult hit
+                    && hit.getEntity() instanceof LivingEntity target) {
+                Set<Holder<MobEffect>> harmful = new HashSet<>();
+                for (MobEffectInstance effect : target.getActiveEffects()) {
+                    if (effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
+                        harmful.add(effect.getEffect());
+                    }
+                }
+                BEFORE_BOUNTY.put(target.getId(), new Before(target.getRemainingFireTicks(), harmful));
+            }
         }
     }
 
@@ -437,6 +494,13 @@ public final class LongshotHandler {
      */
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
+        if (!BOUNTY_GUARDED.isEmpty()) {
+            for (LivingEntity target : BOUNTY_GUARDED) {
+                stripArrowEffects(target, BEFORE_BOUNTY.get(target.getId()));
+            }
+            BOUNTY_GUARDED.clear();
+        }
+        BEFORE_BOUNTY.clear();
         if (LIGHTS.isEmpty()) {
             return;
         }

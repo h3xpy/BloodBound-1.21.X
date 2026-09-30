@@ -3,14 +3,15 @@ package net.h3xpy.bloodbound.client;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.network.AuraRevealPayload;
 import net.h3xpy.bloodbound.network.BankShotMarkPayload;
+import net.h3xpy.bloodbound.network.CameraShakePayload;
 import net.h3xpy.bloodbound.network.EffectChargesPayload;
 import net.h3xpy.bloodbound.network.HiddenPlayersPayload;
-import net.h3xpy.bloodbound.network.RemoveMarksPayload;
 import net.h3xpy.bloodbound.network.MarksPayload;
 import net.h3xpy.bloodbound.network.NastyBladePayload;
 import net.h3xpy.bloodbound.network.OmnisciencePayload;
 import net.h3xpy.bloodbound.network.PerkChargesPayload;
 import net.h3xpy.bloodbound.network.RecallTimerPayload;
+import net.h3xpy.bloodbound.network.RemoveMarksPayload;
 import net.h3xpy.bloodbound.network.SkillCheckResultPayload;
 import net.h3xpy.bloodbound.network.StartSkillCheckPayload;
 import net.h3xpy.bloodbound.network.SyncPerkDataPayload;
@@ -35,6 +36,10 @@ public final class ClientPayloadHandler {
 
     public static void handleSkillCheckResult(SkillCheckResultPayload payload) {
         ClientSkillCheck.result(payload);
+    }
+
+    public static void handleCameraShake(CameraShakePayload payload) {
+        ClientCameraShake.shake(payload.strength(), payload.ticks());
     }
 
     public static void handleRecallTimer(RecallTimerPayload payload) {

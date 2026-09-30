@@ -12,7 +12,9 @@ import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.event.UnderTheRadarHandler;
 import net.h3xpy.bloodbound.network.OmnisciencePayload;
+import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.registry.ModEffects;
 import net.h3xpy.bloodbound.ritual.RitualManager;
 import net.h3xpy.bloodbound.ritual.RitualSetup;
 import net.minecraft.ChatFormatting;
@@ -21,6 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -42,6 +45,8 @@ public final class Eavesdrop {
     private static final Map<UUID, List<BlockPos>> CHESTS = new HashMap<>();
     /** Owners whose screen is currently holding this perk's outlines. */
     private static final Set<UUID> REPORTING = new HashSet<>();
+    /** Spyware: what each owner is still being shown after it stopped moving, and until when. */
+    private static final Map<UUID, Map<Integer, Long>> LINGERING = new HashMap<>();
 
     /** How often the chests around a ritual are looked for again. */
     private static final int CHEST_SCAN_INTERVAL = 100;
@@ -80,6 +85,8 @@ public final class Eavesdrop {
         RitualSetup.stop(player, ModPerks.EAVESDROP.id(), false);
         LAST_SEEN.remove(player.getUUID());
         CHESTS.remove(player.getUUID());
+        // Laid at its own radius: Enhanced Perception is added live by the ritual, so it follows the
+        // perk and Adware being fitted or taken off after the ritual is down.
         RitualManager.place(player, ModPerks.EAVESDROP.id(), RitualManager.Mood.HELPFUL, tier,
                 ModPerks.EAVESDROP.value(ModPerks.EAVESDROP_RADIUS, tier), 0.0F);
         data.setCooldown(ModPerks.EAVESDROP.id(), gameTime, ModPerks.EAVESDROP.cooldownTicks(tier));
@@ -93,12 +100,20 @@ public final class Eavesdrop {
         for (ServerPlayer owner : server.getPlayerList().getPlayers()) {
             RitualManager.Ritual trap = RitualManager.get(owner.getUUID(), ModPerks.EAVESDROP.id());
             if (trap == null || !trap.isAlive()) {
-                // The ritual is gone, however it went: somebody broke it, the owner died, the perk
-                // came off. The outlines it drew are the owner's screen until they are taken back,
-                // and nothing else will do it.
+                // The ritual is gone, however it went, or out of reach in an unloaded chunk. The
+                // outlines it drew are the owner's screen until they are taken back, and nothing else
+                // will do it.
                 stopReporting(owner);
+            }
+        }
+
+        // Every ritual keeps giving itself away to loiterers, its owner online or not; only one whose
+        // owner is about has anybody to report to.
+        for (RitualManager.Ritual trap : RitualManager.all(ModPerks.EAVESDROP.id())) {
+            if (!trap.isAlive()) {
                 continue;
             }
+            ServerPlayer owner = server.getPlayerList().getPlayer(trap.ownerId());
             ServerLevel level = server.getLevel(trap.dimension());
             if (level == null) {
                 continue;
@@ -106,7 +121,7 @@ public final class Eavesdrop {
 
             watchers(level, trap);
 
-            if (gameTime % ModPerks.EAVESDROP_SWEEP_INTERVAL != 0L) {
+            if (owner == null || gameTime % ModPerks.EAVESDROP_SWEEP_INTERVAL != 0L) {
                 continue;
             }
             boolean watching = owner.level().dimension() == trap.dimension()
@@ -157,17 +172,54 @@ public final class Eavesdrop {
         }
         LAST_SEEN.put(owner.getUUID(), now);
 
+        // Enhanced Perception's addons, which this ritual draws for itself rather than through an aura
+        // reveal: Spyware keeps a mover outlined a little after it stops, Ransomware tires it.
+        PlayerPerkData data = PerkDataManager.get(owner);
+        Map<Integer, Long> lingering = LINGERING.computeIfAbsent(owner.getUUID(), id -> new HashMap<>());
+        if (data.isAddonActive(ModAddons.SPYWARE)) {
+            for (int id : moving) {
+                lingering.put(id, gameTime + ModAddons.SPYWARE_EXTRA_TICKS);
+            }
+            lingering.values().removeIf(until -> until <= gameTime);
+            for (Map.Entry<Integer, Long> entry : lingering.entrySet()) {
+                if (now.containsKey(entry.getKey()) && !moving.contains(entry.getKey())) {
+                    moving.add(entry.getKey());
+                }
+            }
+        } else {
+            lingering.clear();
+        }
+        if (data.isAddonActive(ModAddons.RANSOMWARE)) {
+            for (LivingEntity entity : trap.occupants(level)) {
+                if (moving.contains(entity.getId())) {
+                    entity.addEffect(new MobEffectInstance(ModEffects.EXHAUSTED, ModAddons.RANSOMWARE_EXHAUST_TICKS,
+                            ModAddons.RANSOMWARE_EXHAUST_LEVEL - 1, false, true, true));
+                }
+            }
+        }
+
         REPORTING.add(owner.getUUID());
         PacketDistributor.sendToPlayer(owner, new OmnisciencePayload(
                 OmnisciencePayload.SOURCE_EAVESDROP, List.of(), chests, moving));
     }
 
-    /** Every chest and barrel in the ritual's reach. */
+    /**
+     * Every chest and barrel in the ritual's reach — and, under a Bad Omen, in the reach of every
+     * ritual it shares its circle with.
+     */
     private static List<BlockPos> scanChests(ServerLevel level, RitualManager.Ritual trap) {
         List<BlockPos> chests = new ArrayList<>();
-        int reach = (int) Math.ceil(trap.radius());
-        double radiusSq = trap.radius() * trap.radius();
-        BlockPos centre = BlockPos.containing(trap.position());
+        scanCircle(level, trap, chests);
+        for (RitualManager.Ritual sibling : RitualManager.linked(trap)) {
+            scanCircle(level, sibling, chests);
+        }
+        return chests;
+    }
+
+    private static void scanCircle(ServerLevel level, RitualManager.Ritual circle, List<BlockPos> chests) {
+        int reach = (int) Math.ceil(circle.radius());
+        double radiusSq = circle.radius() * circle.radius();
+        BlockPos centre = BlockPos.containing(circle.position());
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
 
         for (int x = -reach; x <= reach; x++) {
@@ -182,12 +234,14 @@ public final class Eavesdrop {
                     }
                     BlockState state = level.getBlockState(cursor);
                     if (state.is(Tags.Blocks.CHESTS) || state.is(Tags.Blocks.BARRELS)) {
-                        chests.add(cursor.immutable());
+                        BlockPos found = cursor.immutable();
+                        if (!chests.contains(found)) {
+                            chests.add(found);
+                        }
                     }
                 }
             }
         }
-        return chests;
     }
 
     /** Loitering in its reach for half a minute, all told, is what finds it. */
@@ -207,8 +261,17 @@ public final class Eavesdrop {
     /** Takes a player's ritual away, and everything remembered about it. */
     private static void drop(UUID ownerId) {
         LAST_SEEN.remove(ownerId);
+        LINGERING.remove(ownerId);
         CHESTS.remove(ownerId);
         RitualManager.remove(ownerId, ModPerks.EAVESDROP.id());
+    }
+
+    /** A logout: the laying in hand is dropped, the ritual already down stays where it is. */
+    public static void logout(ServerPlayer player) {
+        RitualSetup.stop(player, ModPerks.EAVESDROP.id(), false);
+        REPORTING.remove(player.getUUID());
+        LAST_SEEN.remove(player.getUUID());
+        LINGERING.remove(player.getUUID());
     }
 
     public static void clear(ServerPlayer player) {
