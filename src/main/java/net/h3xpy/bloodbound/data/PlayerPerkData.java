@@ -43,9 +43,13 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 public class PlayerPerkData implements INBTSerializable<CompoundTag> {
     /** How many perks a player can have equipped at once. */
     public static final int LOADOUT_SIZE = 4;
+    /** How many loadouts a player can keep saved at the perk table. */
+    public static final int PRESET_COUNT = 5;
 
     private final Map<ResourceLocation, Integer> unlockedPerks = new LinkedHashMap<>();
     private final ResourceLocation[] loadout = new ResourceLocation[LOADOUT_SIZE];
+    /** Saved loadouts, by preset number; null where nothing is saved. */
+    private final LoadoutPreset[] presets = new LoadoutPreset[PRESET_COUNT];
     /** Perk id to the game time at which its cooldown expires. */
     private final Map<ResourceLocation, Long> cooldowns = new HashMap<>();
 
@@ -106,6 +110,20 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
             }
         }
         cooldowns.remove(perkId);
+    }
+
+    // --- presets ---
+
+    @Nullable
+    public LoadoutPreset preset(int index) {
+        return index >= 0 && index < PRESET_COUNT ? presets[index] : null;
+    }
+
+    /** Saves the loadout as it stands, addons included, into a preset; null empties it. */
+    public void setPreset(int index, @Nullable LoadoutPreset preset) {
+        if (index >= 0 && index < PRESET_COUNT) {
+            presets[index] = preset;
+        }
     }
 
     // --- loadout ---
@@ -1148,6 +1166,13 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
         CompoundTag equippedAddonTag = new CompoundTag();
         equippedAddons.forEach((perkId, addonId) -> equippedAddonTag.putString(perkId.toString(), addonId.toString()));
         tag.put("equippedAddons", equippedAddonTag);
+        CompoundTag presetTag = new CompoundTag();
+        for (int i = 0; i < PRESET_COUNT; i++) {
+            if (presets[i] != null) {
+                presetTag.put(String.valueOf(i), presets[i].save());
+            }
+        }
+        tag.put("presets", presetTag);
         tag.putFloat("grantedAbsorption", grantedAbsorption);
 
         tag.putInt("webLevel", webLevel);
@@ -1203,6 +1228,11 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
             if (perkId != null && addonId != null) {
                 equippedAddons.put(perkId, addonId);
             }
+        }
+        CompoundTag presetTag = tag.getCompound("presets");
+        for (int i = 0; i < PRESET_COUNT; i++) {
+            String key = String.valueOf(i);
+            presets[i] = presetTag.contains(key) ? LoadoutPreset.load(presetTag.getCompound(key)) : null;
         }
         grantedAbsorption = tag.getFloat("grantedAbsorption");
 

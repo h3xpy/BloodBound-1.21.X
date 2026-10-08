@@ -22,7 +22,10 @@ gives it, so the soulweb has space to breathe:
 
 - **Loadout** — every perk you have learned, listed alphabetically with a search box above them,
   and the four slots you can equip them into. Click a learned perk to slot it, click it again (or
-  click the slot) to take it off. Swap freely, any time.
+  click the slot) to take it off. Swap freely, any time. Under the slots, five **presets** keep
+  whole loadouts: right-click one to save what you have on, addons included; left-click to put it
+  back; shift and right-click to empty it. The preset matching what you wear is outlined. A preset
+  only ever equips what you still own.
 - **Addons** — one addon slot per equipped perk. The list keeps every addon of the same perk
   together.
 - **Soulweb** — branches of nodes radiating from the centre, holding perks and loot. Buying
@@ -92,8 +95,8 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | **Chained Up** | Active | Fire a fast shot with no gravity. What it hits is chained to an anchor where it stood, pulled back (never teleported) whenever it strays past **3/2.5/2** blocks, until the anchor has taken **6/10/14** damage. Cooldown **60/55/50** seconds on a hit, **25/23/21** on a miss. |
 | **Nullification** | Active | Hold the key 5 seconds still to lay a ritual of **500/1000/1500** charges over **20/25/30** blocks. Nothing can be placed in it and nothing broken — by hand, explosion, mob or anything else that removes a block; each block saved costs 10 charges per point of hardness. Empty, it holds 5 more seconds and breaks; 60 seconds without spending and it refills 5 a second. It can still be broken like any ritual. Cooldown **180/160/140** seconds. |
 | **Steady Hands** | Passive | Skill checks that pay out an amount (Surgical Suture, co-op healing, Tinkerer) open with a golden great zone at the start of the success zone, **15/20/25%** of its width. Landing in it raises what the check gives by **50/75/100%**. Guardian Angel's checks have none. |
-| **Holy Sanctum** | Active | Raise a bubble of **3/3.5/4** blocks that stays where it was raised. Nothing from outside gets in — blows, shots, creatures, players, hands reaching for the blocks inside — while what was inside may leave but not come back. It has **30/35/40** health, worn down by what it stops (shown on the HUD), and breaks after **12/14/16** seconds at most. The cooldown of **90/80/70** seconds starts once it breaks. |
-| **The Hanged Man** | Active | Press the key to turn your gravity upside down: you fall upwards and walk on the ceiling, model and view turned over, mouse and strafe keys mirrored to match. Press again to come back the right way up; the cooldown of **80/60/40** seconds only starts then. A fall under way is cancelled by either flip. |
+| **Holy Sanctum** | Active | Raise a bubble of **3/3.5/4** blocks that stays where it was raised. Everybody sees it: a shell of glowing gold hexagons that flares white where it is struck and turns red as it wears down. It can be struck by hand, from outside or inside, even by whoever raised it; a blow counts what the hand would deal. Nothing from outside gets in — blows, shots, creatures, players, primed TNT, anything thrown or ridden, hands reaching for the blocks inside — while what was inside may leave but not come back. It has **30/35/40** health, worn down by what it stops (shown on the HUD), and breaks after **12/14/16** seconds at most. The cooldown of **90/80/70** seconds starts once it breaks. |
+| **The Hanged Man** | Active | Press the key to turn your gravity upside down: you fall upwards and walk on the ceiling, model and view turned over, mouse and strafe keys mirrored to match. Press again to come back the right way up; the cooldown of **80/60/40** seconds only starts then. A fall under way is cancelled by either flip. Up there everything works mirrored: falling onto the ceiling hurts, its blocks act as the floor (ice, soul sand, honey, magma, slime and bed bounces), steps, ladders, swimming, creative flight, knockback and the dust of running and landing are turned over, the void lies above the world, and lying down in a bed sets you right (and starts the cooldown). |
 
 
 ## Marks
@@ -465,22 +468,24 @@ title and a sound, and the soulweb tab shows the compensation for the whole leve
 **Where they come from.** A source first rolls a rarity, then one offering of that rarity, all of
 them equally likely — so a new offering joins every source simply by having a rarity.
 
-| Rarity | Structure chest | Mob kill | Wandering trader | Cleric (journeyman) |
+| Rarity | Structure chest | Mob kill | Wandering trader | Cleric (up to expert) |
 |---|---|---|---|---|
-| Common | 1.5% | 3% | ~13%, 6 emeralds | Dried Flower ~23%, 12 emeralds |
-| Uncommon | 0.75% | 1.5% | ~9%, 12 emeralds | Fresh Grass ~10%, 24 emeralds |
-| Rare | 0.3% | 0.6% | ~6.5%, 24 emeralds | — |
-| Epic | 0.1% | 0.2% | ~2.2%, 40 emeralds | — |
-| Unstable | 0.02% | 0.04% | ~0.45%, 64 emeralds | — |
+| Common | 1.5% | 3% | ~27%, 6 emeralds | Dried Flower ~75%, 12 emeralds |
+| Uncommon | 0.75% | 1.5% | ~19%, 12 emeralds | Fresh Grass ~57%, 24 emeralds |
+| Rare | 0.3% | 0.6% | ~39%, 24 emeralds | — |
+| Epic | 0.1% | 0.2% | ~14%, 40 emeralds | — |
+| Unstable | 0.02% | 0.04% | ~3.4%, 64 emeralds | — |
 
 - **Structure chest:** per chest generated from any loot table under `chests/` (vanilla and modded
   structures alike), at most one offering per chest.
 - **Mob kill:** per hostile mob of more than 50 health killed by a player (ravager, elder guardian,
   warden, wither, modded bosses…), at most one per kill.
-- **Wandering trader / cleric:** the odds that a given trader or journeyman cleric offers one at
-  all. Three entries of each kind go into the trader's list, so one may sell several. The trader
-  sells common and uncommon ones twice, the rest once; the cleric three times, and
-  only those two offerings.
+- **Wandering trader / cleric:** the odds that a given trader, or a cleric that has reached expert,
+  offers one at all. Eight entries of each kind go into the trader's common list and three into
+  its rare one, so about three traders in four sell at least one offering and some sell several.
+  The cleric has one listing at apprentice, journeyman and expert, each always one of its two
+  offerings. The trader sells common and uncommon ones twice, the rest once; the cleric three
+  times, and only those two offerings. Traders and clerics that already had their trades keep them.
 
 Every chance and price is in `offering/Offerings.java`.
 

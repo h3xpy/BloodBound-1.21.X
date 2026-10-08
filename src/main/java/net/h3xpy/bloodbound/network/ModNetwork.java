@@ -2,7 +2,9 @@ package net.h3xpy.bloodbound.network;
 
 import net.h3xpy.bloodbound.client.ClientPayloadHandler;
 import net.h3xpy.bloodbound.data.PerkDataManager;
+import net.h3xpy.bloodbound.entity.SanctumBubbleEntity;
 import net.h3xpy.bloodbound.event.PerkActivationHandler;
+import net.h3xpy.bloodbound.perk.impl.HolySanctum;
 import net.h3xpy.bloodbound.heal.HealManager;
 import net.h3xpy.bloodbound.skillcheck.SkillCheckManager;
 import net.minecraft.resources.ResourceLocation;
@@ -32,6 +34,24 @@ public final class ModNetwork {
                         ? null
                         : ResourceLocation.tryParse(payload.perkId());
                 PerkDataManager.setLoadoutSlot(player, payload.slot(), perkId);
+            }
+        });
+
+        registrar.playToServer(SanctumHitPayload.TYPE, SanctumHitPayload.STREAM_CODEC, (payload, context) -> {
+            if (context.player() instanceof ServerPlayer player
+                    && player.level().getEntity(payload.entityId()) instanceof SanctumBubbleEntity bubble) {
+                HolySanctum.strike(player, bubble);
+            }
+        });
+
+        registrar.playToServer(PresetPayload.TYPE, PresetPayload.STREAM_CODEC, (payload, context) -> {
+            if (context.player() instanceof ServerPlayer player) {
+                switch (payload.action()) {
+                    case PresetPayload.LOAD -> PerkDataManager.loadPreset(player, payload.index());
+                    case PresetPayload.SAVE -> PerkDataManager.savePreset(player, payload.index());
+                    case PresetPayload.CLEAR -> PerkDataManager.clearPreset(player, payload.index());
+                    default -> { }
+                }
             }
         });
 

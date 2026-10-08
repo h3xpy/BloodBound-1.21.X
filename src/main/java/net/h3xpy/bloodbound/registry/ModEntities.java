@@ -7,6 +7,7 @@ import net.h3xpy.bloodbound.entity.BarbedWireEntity;
 import net.h3xpy.bloodbound.entity.ChainAnchorEntity;
 import net.h3xpy.bloodbound.entity.IceShellEntity;
 import net.h3xpy.bloodbound.entity.RitualEntity;
+import net.h3xpy.bloodbound.entity.SanctumBubbleEntity;
 import net.h3xpy.bloodbound.entity.TargetFoundEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
@@ -71,6 +72,16 @@ public final class ModEntities {
                     .updateInterval(20)
                     .noSummon()
                     .build("chain_anchor"));
+
+    /** What a Holy Sanctum looks like. Tracked from afar: a bubble is something you see coming. */
+    public static final Supplier<EntityType<SanctumBubbleEntity>> SANCTUM_BUBBLE =
+            ENTITY_TYPES.register("sanctum_bubble", () -> EntityType.Builder
+                    .<SanctumBubbleEntity>of(SanctumBubbleEntity::new, MobCategory.MISC)
+                    .sized(0.2F, 0.2F)
+                    .clientTrackingRange(10)
+                    .updateInterval(20)
+                    .noSummon()
+                    .build("sanctum_bubble"));
 
     private ModEntities() {}
 

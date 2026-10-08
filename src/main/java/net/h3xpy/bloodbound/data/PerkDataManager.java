@@ -145,6 +145,65 @@ public final class PerkDataManager {
         sync(player);
     }
 
+    // --- presets ---
+
+    /** Saves the loadout as it stands, with its fitted addons, into a preset. */
+    public static void savePreset(ServerPlayer player, int index) {
+        if (!isAtPerkTable(player) || index < 0 || index >= PlayerPerkData.PRESET_COUNT) {
+            return;
+        }
+        PlayerPerkData data = get(player);
+        data.setPreset(index, LoadoutPreset.of(data));
+        sync(player);
+        player.displayClientMessage(Component.translatable("bloodbound.message.preset_saved", index + 1)
+                .withStyle(ChatFormatting.GREEN), true);
+    }
+
+    public static void clearPreset(ServerPlayer player, int index) {
+        if (!isAtPerkTable(player) || index < 0 || index >= PlayerPerkData.PRESET_COUNT) {
+            return;
+        }
+        get(player).setPreset(index, null);
+        sync(player);
+        player.displayClientMessage(Component.translatable("bloodbound.message.preset_cleared", index + 1)
+                .withStyle(ChatFormatting.GRAY), true);
+    }
+
+    /**
+     * Puts a saved loadout back: each perk in its slot, each with the addon it had. Whatever the
+     * player no longer owns — a perk, an addon — is simply left out, so a preset can never equip
+     * anything that was not earned.
+     */
+    public static void loadPreset(ServerPlayer player, int index) {
+        if (!isAtPerkTable(player)) {
+            return;
+        }
+        PlayerPerkData data = get(player);
+        LoadoutPreset preset = data.preset(index);
+        if (preset == null) {
+            return;
+        }
+        for (int slot = 0; slot < PlayerPerkData.LOADOUT_SIZE; slot++) {
+            ResourceLocation perkId = preset.perk(slot);
+            data.setLoadoutSlot(slot, perkId != null && data.isUnlocked(perkId) ? perkId : null);
+        }
+        for (int slot = 0; slot < PlayerPerkData.LOADOUT_SIZE; slot++) {
+            ResourceLocation perkId = data.getLoadoutSlot(slot);
+            if (perkId == null) {
+                continue;
+            }
+            ResourceLocation addonId = preset.addon(perkId);
+            Addon addon = addonId == null ? null : AddonRegistry.get(addonId);
+            boolean owned = addon != null && addon.perkId().equals(perkId) && data.isAddonUnlocked(addonId);
+            data.setEquippedAddon(perkId, owned ? addonId : null);
+        }
+        sync(player);
+        player.displayClientMessage(Component.translatable("bloodbound.message.preset_loaded", index + 1)
+                .withStyle(ChatFormatting.GOLD), true);
+        player.level().playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_CHAIN.value(),
+                SoundSource.PLAYERS, 0.7F, 1.2F);
+    }
+
     // --- soulweb ---
 
     public static void purchaseNode(ServerPlayer player, int index) {

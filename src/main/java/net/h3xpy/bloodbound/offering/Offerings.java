@@ -53,22 +53,29 @@ public final class Offerings {
      * Wandering traders. Each trader draws five of its trades out of the common list; two entries
      * are added to it, one for common and uncommon offerings and one for the rest, and each picks
      * what it sells by these weights, in percent of the times it is drawn. Weights adding up to less
-     * than 100 mean it often sells nothing, and the trader simply draws another trade instead.
+     * than 100 mean it sometimes sells nothing, and the trader simply draws another trade instead.
+     * The large entry also goes into the trader's rare list, where its one rare trade comes from:
+     * with as many copies as there are here, nearly every trader sells one offering or more.
      */
     public static final double[] TRADER_SMALL_WEIGHTS = { 60.0D, 40.0D, 0.0D, 0.0D, 0.0D };
-    public static final double[] TRADER_LARGE_WEIGHTS = { 0.0D, 0.0D, 30.0D, 10.0D, 2.0D };
-    /** How many of each of those two entries go into the list: three, so roughly three times the odds. */
-    public static final int TRADER_LISTING_COPIES = 3;
+    public static final double[] TRADER_LARGE_WEIGHTS = { 0.0D, 0.0D, 55.0D, 18.0D, 4.0D };
+    /** How many of each of those two entries go into the common list. */
+    public static final int TRADER_LISTING_COPIES = 8;
+    /** How many copies of the large entry go into the rare list. */
+    public static final int TRADER_RARE_COPIES = 3;
     /** Emerald prices at the wandering trader, by rarity. */
     public static final int[] TRADER_PRICES = { 6, 12, 24, 40, 64 };
     /** How many times a trader sells the offering before running out. */
     public static final int TRADER_SMALL_USES = 2;
     public static final int TRADER_LARGE_USES = 1;
 
-    /** Clerics sell these two from journeyman level on, at twice the trader's price. */
-    public static final int CLERIC_LEVEL = 3;
-    public static final double DRIED_FLOWER_CLERIC_WEIGHT = 35.0D;
-    public static final double FRESH_GRASS_CLERIC_WEIGHT = 15.0D;
+    /**
+     * Clerics sell these two, at twice the trader's price, from apprentice to expert: one listing at
+     * each of those levels, and a listing always sells one or the other.
+     */
+    public static final int[] CLERIC_LEVELS = { 2, 3, 4 };
+    public static final double DRIED_FLOWER_CLERIC_WEIGHT = 60.0D;
+    public static final double FRESH_GRASS_CLERIC_WEIGHT = 40.0D;
     public static final int DRIED_FLOWER_CLERIC_PRICE = 12;
     public static final int FRESH_GRASS_CLERIC_PRICE = 24;
     public static final int CLERIC_USES = 3;
@@ -156,6 +163,13 @@ public final class Offerings {
                         TRADER_LARGE_USES, 1);
             });
         }
+        for (int i = 0; i < TRADER_RARE_COPIES; i++) {
+            event.getRareTrades().add((trader, random) -> {
+                AddonRarity rarity = rollRarity(random, TRADER_LARGE_WEIGHTS);
+                return rarity == null ? null : offer(pick(random, rarity), TRADER_PRICES[rarity.ordinal()],
+                        TRADER_LARGE_USES, 1);
+            });
+        }
     }
 
     @SubscribeEvent
@@ -163,7 +177,14 @@ public final class Offerings {
         if (event.getType() != VillagerProfession.CLERIC) {
             return;
         }
-        event.getTrades().get(CLERIC_LEVEL).add((VillagerTrades.ItemListing) (villager, random) -> {
+        for (int level : CLERIC_LEVELS) {
+            event.getTrades().get(level).add(clericListing());
+        }
+    }
+
+    /** Dried Flower or Fresh Grass, by their weights. */
+    private static VillagerTrades.ItemListing clericListing() {
+        return (villager, random) -> {
             double roll = random.nextDouble() * 100.0D;
             if (roll < DRIED_FLOWER_CLERIC_WEIGHT) {
                 return offer(make(ModItems.DRIED_FLOWER.get(), random), DRIED_FLOWER_CLERIC_PRICE,
@@ -174,7 +195,7 @@ public final class Offerings {
                         CLERIC_USES, CLERIC_XP);
             }
             return null;
-        });
+        };
     }
 
     @Nullable

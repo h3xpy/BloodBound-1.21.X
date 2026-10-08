@@ -4,6 +4,9 @@ BloodBound is a Dead by Daylight–style perk mod for **NeoForge 21.1.248 / Mine
 `net.h3xpy.bloodbound`. Soul shards buy nodes on a soulweb; perks are kept for good and equipped four
 at a time; addons attach to one perk each. `README.md` documents every perk, addon and system.
 
+**Before every task, read `LESSONS.md`**: mistakes already made on this project and how to avoid
+them. When you hit a new one, add a short entry there in the same pull request as the fix.
+
 ## Who you are working with
 
 The people working on this repo **do not code**. They describe what they want in French — usually a

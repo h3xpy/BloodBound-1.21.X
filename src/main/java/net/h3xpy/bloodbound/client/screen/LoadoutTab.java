@@ -9,29 +9,42 @@ import javax.annotation.Nullable;
 
 import net.h3xpy.bloodbound.client.ClientPerkData;
 import net.h3xpy.bloodbound.client.ModKeyMappings;
+import net.h3xpy.bloodbound.data.LoadoutPreset;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
+import net.h3xpy.bloodbound.network.PresetPayload;
 import net.h3xpy.bloodbound.network.SetLoadoutPayload;
+import net.h3xpy.bloodbound.perk.Addon;
+import net.h3xpy.bloodbound.perk.AddonRegistry;
 import net.h3xpy.bloodbound.perk.Perk;
 import net.h3xpy.bloodbound.perk.PerkRegistry;
 import net.h3xpy.bloodbound.perk.PerkType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
- * Loadout tab: learned perks on the left, the four equipped slots on the right.
+ * Loadout tab: learned perks on the left, the four equipped slots on the right, and under them the
+ * saved loadouts.
  * <p>
  * Clicking a learned perk equips it in the first free slot, clicking an equipped one takes it off,
- * and clicking a filled slot empties it.
+ * and clicking a filled slot empties it. A preset is loaded with a left click, overwritten with the
+ * loadout as it stands (addons included) with a right click, and emptied with shift and right click.
  */
 public class LoadoutTab {
 
     private static final int ENTRY_HEIGHT = 26;
+    /** The equipped slots are this tall when there is room, and no shorter than the minimum. */
     private static final int SLOT_HEIGHT = 34;
+    private static final int MIN_SLOT_HEIGHT = 24;
+    /** The presets: a label over one row of buttons, along the bottom of the slots column. */
+    private static final int PRESET_HEIGHT = 22;
+    private static final int PRESET_LABEL = 11;
+    private static final int PRESET_GAP = 3;
 
     private final PerkTableScreen screen;
     private int scrollOffset;
@@ -81,8 +94,30 @@ public class LoadoutTab {
         return screen.contentX() + listWidth() + 12;
     }
 
+    /** As tall as fits above the presets, up to the full height. */
+    private int slotHeight() {
+        int room = presetLabelY() - 4 - (screen.contentY() + 16);
+        return Math.clamp(room / PlayerPerkData.LOADOUT_SIZE - 2, MIN_SLOT_HEIGHT, SLOT_HEIGHT);
+    }
+
     private int slotY(int slot) {
-        return screen.contentY() + 16 + slot * (SLOT_HEIGHT + 2);
+        return screen.contentY() + 16 + slot * (slotHeight() + 2);
+    }
+
+    private int presetY() {
+        return screen.contentY() + screen.contentHeight() - PRESET_HEIGHT - 4;
+    }
+
+    private int presetLabelY() {
+        return presetY() - PRESET_LABEL;
+    }
+
+    private int presetWidth() {
+        return (slotWidth() - PRESET_GAP * (PlayerPerkData.PRESET_COUNT - 1)) / PlayerPerkData.PRESET_COUNT;
+    }
+
+    private int presetX(int index) {
+        return slotsX() + index * (presetWidth() + PRESET_GAP);
     }
 
     /** Perks the player has learned, alphabetical, narrowed to whatever is in the search box. */
@@ -155,6 +190,12 @@ public class LoadoutTab {
         for (int slot = 0; slot < PlayerPerkData.LOADOUT_SIZE; slot++) {
             renderSlot(graphics, data, slot, mouseX, mouseY);
         }
+
+        graphics.drawString(font, Component.translatable("bloodbound.loadout.presets"), slotsX(), presetLabelY(),
+                PerkTableScreen.COLOR_TEXT_DIM, false);
+        for (int index = 0; index < PlayerPerkData.PRESET_COUNT; index++) {
+            renderPreset(graphics, data, index, mouseX, mouseY);
+        }
     }
 
     private void renderEntry(GuiGraphics graphics, Perk perk, PlayerPerkData data, int x, int y, int mouseX,
@@ -183,35 +224,87 @@ public class LoadoutTab {
         var font = Minecraft.getInstance().font;
         int x = slotsX();
         int y = slotY(slot);
-        boolean hovered = isInside(mouseX, mouseY, x, y, slotWidth(), SLOT_HEIGHT);
+        int height = slotHeight();
+        boolean hovered = isInside(mouseX, mouseY, x, y, slotWidth(), height);
 
-        graphics.fill(x, y, x + slotWidth(), y + SLOT_HEIGHT, hovered ? 0xFF241016 : PerkTableScreen.COLOR_SLOT);
-        GuiUtil.drawBorder(graphics, x, y, slotWidth(), SLOT_HEIGHT, PerkTableScreen.COLOR_BORDER);
+        graphics.fill(x, y, x + slotWidth(), y + height, hovered ? 0xFF241016 : PerkTableScreen.COLOR_SLOT);
+        GuiUtil.drawBorder(graphics, x, y, slotWidth(), height, PerkTableScreen.COLOR_BORDER);
 
         ResourceLocation perkId = data.getLoadoutSlot(slot);
         Perk perk = PerkRegistry.get(perkId);
         if (perk == null) {
             graphics.drawString(font, Component.translatable("bloodbound.loadout.empty_slot", slot + 1)
-                    .withStyle(ChatFormatting.DARK_GRAY), x + 8, y + 13, PerkTableScreen.COLOR_TEXT_DIM, false);
+                    .withStyle(ChatFormatting.DARK_GRAY), x + 8, y + (height - 8) / 2, PerkTableScreen.COLOR_TEXT_DIM, false);
             return;
         }
 
         int tier = data.getUnlockedTier(perkId);
 
-        graphics.blitSprite(perk.icon(tier), x + 3, y + 3, 28, 28);
-        graphics.drawString(font, GuiUtil.fitToWidth(font, perk.displayName(), slotWidth() - 39),
-                x + 35, y + 8, PerkTableScreen.COLOR_TEXT, false);
+        int icon = height - 6;
+        int textX = x + icon + 7;
+        int nameY = y + height / 2 - 9;
+        graphics.blitSprite(perk.icon(tier), x + 3, y + 3, icon, icon);
+        graphics.drawString(font, GuiUtil.fitToWidth(font, perk.displayName(), slotWidth() - icon - 11),
+                textX, nameY, PerkTableScreen.COLOR_TEXT, false);
         graphics.drawString(font, Component.translatable("bloodbound.tier", GuiUtil.romanTier(tier)),
-                x + 35, y + 19, 0xFFD9A441, false);
+                textX, nameY + 11, 0xFFD9A441, false);
 
         // Each slot has its own activation key, but only an active perk does anything with it.
         if (perk.type() == PerkType.ACTIVE) {
             String key = ModKeyMappings.boundKeyLabel(slot);
             if (key != null) {
-                graphics.drawString(font, key, x + slotWidth() - 4 - font.width(key), y + 19,
+                graphics.drawString(font, key, x + slotWidth() - 4 - font.width(key), nameY + 11,
                         PerkTableScreen.COLOR_ACCENT, false);
             }
         }
+    }
+
+    /**
+     * One preset button: its number, and the perks it holds as a little two-by-two grid of icons.
+     * The one matching the loadout as it stands is outlined, so the player can see which is on.
+     */
+    private void renderPreset(GuiGraphics graphics, PlayerPerkData data, int index, int mouseX, int mouseY) {
+        var font = Minecraft.getInstance().font;
+        int x = presetX(index);
+        int y = presetY();
+        int width = presetWidth();
+        LoadoutPreset preset = data.preset(index);
+        boolean hovered = isInside(mouseX, mouseY, x, y, width, PRESET_HEIGHT);
+        boolean current = preset != null && matches(preset, data);
+
+        graphics.fill(x, y, x + width, y + PRESET_HEIGHT, hovered ? 0xFF241016 : PerkTableScreen.COLOR_SLOT);
+        GuiUtil.drawBorder(graphics, x, y, width, PRESET_HEIGHT,
+                current ? PerkTableScreen.COLOR_ACCENT : PerkTableScreen.COLOR_BORDER);
+        graphics.drawString(font, String.valueOf(index + 1), x + 3, y + 3,
+                preset == null ? PerkTableScreen.COLOR_TEXT_DIM : PerkTableScreen.COLOR_TEXT, false);
+
+        if (preset == null) {
+            graphics.drawCenteredString(font, "+", x + width / 2 + 3, y + 7, PerkTableScreen.COLOR_TEXT_DIM);
+            return;
+        }
+        int cell = 9;
+        int gridX = x + width - 2 * cell - 3;
+        for (int slot = 0; slot < PlayerPerkData.LOADOUT_SIZE; slot++) {
+            Perk perk = PerkRegistry.get(preset.perk(slot));
+            if (perk == null) {
+                continue;
+            }
+            int tier = Math.max(1, data.getUnlockedTier(perk.id()));
+            graphics.blitSprite(perk.icon(tier), gridX + (slot % 2) * (cell + 1), y + 2 + (slot / 2) * (cell + 1),
+                    cell, cell);
+        }
+    }
+
+    /** Whether a preset holds exactly the loadout and addons the player has on right now. */
+    private static boolean matches(LoadoutPreset preset, PlayerPerkData data) {
+        for (int slot = 0; slot < PlayerPerkData.LOADOUT_SIZE; slot++) {
+            ResourceLocation perkId = data.getLoadoutSlot(slot);
+            if (!java.util.Objects.equals(perkId, preset.perk(slot))
+                    || !java.util.Objects.equals(data.equippedAddon(perkId), preset.addon(perkId))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void renderScrollbar(GuiGraphics graphics, int total) {
@@ -248,6 +341,48 @@ public class LoadoutTab {
                         mouseX, mouseY);
             }
         }
+
+        int preset = presetAt(mouseX, mouseY);
+        if (preset >= 0) {
+            graphics.renderTooltip(Minecraft.getInstance().font, presetTooltip(data, preset), mouseX, mouseY);
+        }
+    }
+
+    private List<FormattedCharSequence> presetTooltip(PlayerPerkData data, int index) {
+        List<FormattedCharSequence> lines = new ArrayList<>();
+        GuiUtil.addLine(lines, Component.translatable("bloodbound.loadout.preset", index + 1)
+                .withStyle(ChatFormatting.WHITE));
+        LoadoutPreset preset = data.preset(index);
+        if (preset == null) {
+            GuiUtil.addLine(lines, Component.translatable("bloodbound.loadout.preset_empty")
+                    .withStyle(ChatFormatting.DARK_GRAY));
+        } else {
+            for (int slot = 0; slot < PlayerPerkData.LOADOUT_SIZE; slot++) {
+                Perk perk = PerkRegistry.get(preset.perk(slot));
+                if (perk == null) {
+                    continue;
+                }
+                GuiUtil.addLine(lines, perk.displayName().copy().withStyle(
+                        data.isUnlocked(perk.id()) ? ChatFormatting.GOLD : ChatFormatting.DARK_GRAY));
+                Addon addon = AddonRegistry.get(preset.addon(perk.id()));
+                if (addon != null) {
+                    GuiUtil.addLine(lines, Component.literal("  + ").append(addon.displayName())
+                            .withStyle(ChatFormatting.AQUA));
+                }
+            }
+        }
+        GuiUtil.addLine(lines, Component.empty());
+        if (preset != null) {
+            GuiUtil.addLine(lines, Component.translatable("bloodbound.loadout.preset_hint_load")
+                    .withStyle(ChatFormatting.DARK_GRAY));
+        }
+        GuiUtil.addLine(lines, Component.translatable("bloodbound.loadout.preset_hint_save")
+                .withStyle(ChatFormatting.DARK_GRAY));
+        if (preset != null) {
+            GuiUtil.addLine(lines, Component.translatable("bloodbound.loadout.preset_hint_clear")
+                    .withStyle(ChatFormatting.DARK_GRAY));
+        }
+        return lines;
     }
 
     private List<FormattedCharSequence> tooltipFor(Perk perk, PlayerPerkData data, boolean equipped) {
@@ -269,6 +404,17 @@ public class LoadoutTab {
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         PlayerPerkData data = ClientPerkData.get();
+
+        int preset = presetAt((int) mouseX, (int) mouseY);
+        if (preset >= 0) {
+            if (button == 1) {
+                PacketDistributor.sendToServer(new PresetPayload(preset,
+                        Screen.hasShiftDown() ? PresetPayload.CLEAR : PresetPayload.SAVE));
+            } else if (button == 0 && data.preset(preset) != null) {
+                PacketDistributor.sendToServer(new PresetPayload(preset, PresetPayload.LOAD));
+            }
+            return true;
+        }
 
         Perk perk = perkAt((int) mouseX, (int) mouseY);
         if (perk != null) {
@@ -326,8 +472,17 @@ public class LoadoutTab {
 
     private int slotAt(int mouseX, int mouseY) {
         for (int slot = 0; slot < PlayerPerkData.LOADOUT_SIZE; slot++) {
-            if (isInside(mouseX, mouseY, slotsX(), slotY(slot), slotWidth(), SLOT_HEIGHT)) {
+            if (isInside(mouseX, mouseY, slotsX(), slotY(slot), slotWidth(), slotHeight())) {
                 return slot;
+            }
+        }
+        return -1;
+    }
+
+    private int presetAt(int mouseX, int mouseY) {
+        for (int index = 0; index < PlayerPerkData.PRESET_COUNT; index++) {
+            if (isInside(mouseX, mouseY, presetX(index), presetY(), presetWidth(), PRESET_HEIGHT)) {
+                return index;
             }
         }
         return -1;

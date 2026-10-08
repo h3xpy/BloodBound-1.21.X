@@ -4,12 +4,15 @@
   "package": "net.h3xpy.bloodbound.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "BedBlockMixin",
     "EntityMixin",
     "LevelMixin",
     "LivingEntityMixin",
     "PlayerInvoker",
     "PlayerMixin",
-    "ServerGamePacketListenerImplAccessor"
+    "ServerGamePacketListenerImplAccessor",
+    "ServerGamePacketListenerImplMixin",
+    "SlimeBlockMixin"
   ],
   "client": [
     "client.LivingEntityRendererMixin",

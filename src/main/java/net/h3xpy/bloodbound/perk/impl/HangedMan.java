@@ -1,6 +1,7 @@
 package net.h3xpy.bloodbound.perk.impl;
 
 import net.h3xpy.bloodbound.BloodBound;
+import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.mixin.ServerGamePacketListenerImplAccessor;
 import net.h3xpy.bloodbound.perk.ModPerks;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityEvent;
+import net.neoforged.neoforge.event.entity.player.CanPlayerSleepEvent;
 
 /**
  * The Hanged Man: the slot key turns the bearer's gravity upside down, and a second press sets it
@@ -79,6 +81,27 @@ public final class HangedMan {
     public static void clear(ServerPlayer player) {
         if (isInverted(player)) {
             setRight(player);
+        }
+    }
+
+    /**
+     * A bed is lain in the right way up: sleeping on the ceiling would leave the player floating off
+     * the mattress all night. Lying down sets them right, and the perk's cooldown starts, as if they
+     * had pressed the key themselves.
+     */
+    @SubscribeEvent
+    public static void onSleep(CanPlayerSleepEvent event) {
+        ServerPlayer player = event.getEntity();
+        if (event.getProblem() != null || !isInverted(player)) {
+            return;
+        }
+        setRight(player);
+        PlayerPerkData data = PerkDataManager.get(player);
+        int tier = data.getActiveTier(ModPerks.HANGED_MAN);
+        if (tier > 0) {
+            data.setCooldown(ModPerks.HANGED_MAN.id(), player.level().getGameTime(),
+                    ModPerks.HANGED_MAN.cooldownTicks(tier));
+            PerkDataManager.sync(player);
         }
     }
 
