@@ -43,7 +43,8 @@ Several people push to this repo, each through their own Claude. Keep `main` rel
 - After a successful build, boot the dev client on a test world to prove loading and registration:
   1. Make sure no dev game is already running (a `java` process whose command line contains
      `fml.modFolders`). If one is, the user is playing: do not launch, do not kill it.
-  2. Find the world name in `run/saves/`.
+  2. Find the world name in `run/saves/`. If there is none yet (a fresh clone), launch `runClient`
+     without the quick-play arguments and ask the user to create a test world and tell you its name.
   3. Temporarily add after the `client()` line of the `runs` block in `build.gradle`:
      `programArgument '--quickPlaySingleplayer'` and `programArgument '<world>'`.
   4. Run `./gradlew runClient` in the background. Wait for `logged in with entity id` in
