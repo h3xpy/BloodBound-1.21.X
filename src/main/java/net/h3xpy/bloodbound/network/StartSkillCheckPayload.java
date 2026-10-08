@@ -9,8 +9,9 @@ import net.minecraft.resources.ResourceLocation;
 
 /**
  * Server to client: draw a skill check dial. The server keeps the authoritative timing.
+ * {@code greatWidth} is Steady Hands' great zone, from the start of the success zone, or 0.
  */
-public record StartSkillCheckPayload(int id, float zoneStart, float zoneWidth, int durationTicks)
+public record StartSkillCheckPayload(int id, float zoneStart, float zoneWidth, int durationTicks, float greatWidth)
         implements CustomPacketPayload {
     public static final Type<StartSkillCheckPayload> TYPE =
             new Type<>(ResourceLocation.fromNamespaceAndPath(BloodBound.MODID, "start_skill_check"));
@@ -21,6 +22,7 @@ public record StartSkillCheckPayload(int id, float zoneStart, float zoneWidth, i
                     ByteBufCodecs.FLOAT, StartSkillCheckPayload::zoneStart,
                     ByteBufCodecs.FLOAT, StartSkillCheckPayload::zoneWidth,
                     ByteBufCodecs.VAR_INT, StartSkillCheckPayload::durationTicks,
+                    ByteBufCodecs.FLOAT, StartSkillCheckPayload::greatWidth,
                     StartSkillCheckPayload::new);
 
     @Override

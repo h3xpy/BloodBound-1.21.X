@@ -21,6 +21,8 @@ import net.h3xpy.bloodbound.perk.impl.ChainedUp;
 import net.h3xpy.bloodbound.perk.impl.Eavesdrop;
 import net.h3xpy.bloodbound.perk.impl.Flashbang;
 import net.h3xpy.bloodbound.perk.impl.FragNade;
+import net.h3xpy.bloodbound.perk.impl.HangedMan;
+import net.h3xpy.bloodbound.perk.impl.HolySanctum;
 import net.h3xpy.bloodbound.perk.impl.HealingRunes;
 import net.h3xpy.bloodbound.perk.impl.IceBlock;
 import net.h3xpy.bloodbound.perk.impl.InevitableDeath;
@@ -90,7 +92,9 @@ public final class PerkActivationHandler {
             Map.entry(ModPerks.SHORT_CIRCUIT.id(), ShortCircuit::activate),
             Map.entry(ModPerks.BAD_OMEN.id(), BadOmen::activate),
             Map.entry(ModPerks.CHAINED_UP.id(), ChainedUp::activate),
-            Map.entry(ModPerks.NULLIFICATION.id(), Nullification::activate));
+            Map.entry(ModPerks.NULLIFICATION.id(), Nullification::activate),
+            Map.entry(ModPerks.HANGED_MAN.id(), HangedMan::activate),
+            Map.entry(ModPerks.HOLY_SANCTUM.id(), HolySanctum::activate));
 
     private PerkActivationHandler() {}
 

@@ -13,5 +13,13 @@ public enum SkillCheckContext {
     /** One step of a Tinkerer repair run. */
     TINKERER,
     /** One of the checks Guardian Angel asks for in exchange for a life. */
-    GUARDIAN
+    GUARDIAN;
+
+    /**
+     * Whether landing the check pays out an amount (health, durability) that can be scaled, which
+     * is what Steady Hands' great zone needs. Guardian Angel's checks only count.
+     */
+    public boolean rewardsAmount() {
+        return this != GUARDIAN;
+    }
 }

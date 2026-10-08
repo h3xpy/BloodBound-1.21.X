@@ -278,8 +278,12 @@ public final class HealManager {
         TeamSpirit.recordHealing(healer, target, amount);
     }
 
-    /** Result of a skill check raised during a heal. */
-    public static void onSkillCheckResult(ServerPlayer healer, boolean success) {
+    /**
+     * Result of a skill check raised during a heal.
+     *
+     * @param multiplier applied to the health a landed check puts in (Steady Hands' great zone)
+     */
+    public static void onSkillCheckResult(ServerPlayer healer, boolean success, float multiplier) {
         HealSession session = SESSIONS.get(healer.getUUID());
         if (session == null) {
             return;
@@ -288,7 +292,7 @@ public final class HealManager {
         long gameTime = healer.level().getGameTime();
 
         if (success) {
-            float amount = 1.0F + assistBonus(healer);
+            float amount = (1.0F + assistBonus(healer)) * multiplier;
             mend(healer, target, amount);
             return;
         }

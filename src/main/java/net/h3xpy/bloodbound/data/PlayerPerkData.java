@@ -1,29 +1,37 @@
 package net.h3xpy.bloodbound.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.offering.Offering;
+import net.h3xpy.bloodbound.offering.OfferingItem;
 import net.h3xpy.bloodbound.perk.Addon;
+import net.h3xpy.bloodbound.perk.AddonRegistry;
 import net.h3xpy.bloodbound.perk.Perk;
 import net.h3xpy.bloodbound.perk.PerkRegistry;
 import net.h3xpy.bloodbound.soulweb.Soulweb;
 import net.h3xpy.bloodbound.soulweb.SoulwebGenerator;
+import net.h3xpy.bloodbound.soulweb.WebModifiers;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
 /**
@@ -51,6 +59,13 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
     @Nullable
     private Soulweb soulweb;
     private int webLevel = 1;
+    /** The offering laid on the Perk Table, burnt when the current level is finished; empty for none. */
+    private ItemStack offering = ItemStack.EMPTY;
+    /** Owed by a Black Leaf that burnt: the next offering to burn stays on the table. */
+    private boolean keepNextOffering;
+    /** What happened to the offering at the last level's end, until someone tells the player. */
+    @Nullable
+    private BurnReport burnReport;
 
     // --- learned perks ---
 
@@ -402,11 +417,121 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
         return soulweb;
     }
 
-    /** Rolls a brand new web and bumps the level counter. */
+    /**
+     * Rolls a brand new web and bumps the level counter. The offering on the table, if any, is
+     * burnt here: it is the next level, and only that one, that it shapes. What happened is left in
+     * {@link #takeBurnReport} for whoever has the player at hand to tell them and pay them.
+     */
     public Soulweb rerollSoulweb(RandomSource random, RegistryAccess registries) {
         webLevel++;
-        soulweb = SoulwebGenerator.generate(random, registries, unlockedPerks, unlockedAddons, webLevel);
+        WebModifiers modifiers = burnOffering(random);
+        soulweb = SoulwebGenerator.generate(random, registries, unlockedPerks, unlockedAddons, webLevel, modifiers);
         return soulweb;
+    }
+
+    // --- offering ---
+
+    /** What became of the offering at the end of a level. */
+    public record BurnReport(ItemStack offering, boolean kept, int compensationShards) {}
+
+    /** The offering laid on the table for the next level; empty for none. */
+    public ItemStack offering() {
+        return offering;
+    }
+
+    /**
+     * Lays an offering on the table, or with an empty stack clears it.
+     *
+     * @return the one it replaces, which goes back to the player; empty for none
+     */
+    public ItemStack placeOffering(ItemStack stack) {
+        ItemStack previous = offering;
+        offering = stack.copyWithCount(stack.isEmpty() ? 0 : 1);
+        return previous;
+    }
+
+    /** Whether a Black Leaf has burnt and the next offering will outlast its burning. */
+    public boolean keepsNextOffering() {
+        return keepNextOffering;
+    }
+
+    /** What happened to the offering at the last level's end, once; null when there is nothing to tell. */
+    @Nullable
+    public BurnReport takeBurnReport() {
+        BurnReport report = burnReport;
+        burnReport = null;
+        return report;
+    }
+
+    /**
+     * Burns the offering on the table and works out what it does to the next level.
+     * <ul>
+     *   <li>A marked offering offers some of its marks, picked among those still possible; when none
+     *   are, the player is paid in shards instead.</li>
+     *   <li>A Black Leaf only promises that the next offering laid will not be used up.</li>
+     *   <li>That promise, once owed, keeps whatever offering burns next on the table.</li>
+     * </ul>
+     */
+    private WebModifiers burnOffering(RandomSource random) {
+        if (offering.isEmpty() || !(offering.getItem() instanceof OfferingItem item)) {
+            offering = ItemStack.EMPTY;
+            return WebModifiers.NONE;
+        }
+        OfferingItem.ensureMarked(offering, random);
+        Offering spec = item.offering();
+        ItemStack burnt = offering;
+
+        List<ResourceLocation> forcedPerks = List.of();
+        List<ResourceLocation> forcedAddons = List.of();
+        int compensation = 0;
+        if (spec.marks() != Offering.Marks.NONE) {
+            List<ResourceLocation> possible = new ArrayList<>();
+            for (ResourceLocation mark : OfferingItem.marks(offering)) {
+                if (spec.marks() == Offering.Marks.PERKS ? canOfferPerk(mark) : canOfferAddon(mark)) {
+                    possible.add(mark);
+                }
+            }
+            if (possible.isEmpty()) {
+                compensation = spec.compensationShards();
+            } else {
+                Collections.shuffle(possible, new Random(random.nextLong()));
+                List<ResourceLocation> picked = List.copyOf(possible.subList(0, Math.min(spec.guaranteed(),
+                        possible.size())));
+                if (spec.marks() == Offering.Marks.PERKS) {
+                    forcedPerks = picked;
+                } else {
+                    forcedAddons = picked;
+                }
+            }
+        }
+
+        boolean kept = false;
+        if (spec.preservesNext()) {
+            keepNextOffering = true;
+            offering = ItemStack.EMPTY;
+        } else if (keepNextOffering) {
+            keepNextOffering = false;
+            kept = true;
+        } else {
+            offering = ItemStack.EMPTY;
+        }
+        burnReport = new BurnReport(burnt.copy(), kept, compensation);
+
+        return new WebModifiers(BuiltInRegistries.ITEM.getKey(item), spec.discountPercent(),
+                spec.upgradeDiscountPercent(), spec.extraPerks(), spec.upgradesOnly(), spec.refundPercent(),
+                forcedPerks, forcedAddons, compensation);
+    }
+
+    /** Whether a web could still offer this perk: it exists and is not at its top tier yet. */
+    private boolean canOfferPerk(ResourceLocation perkId) {
+        return PerkRegistry.get(perkId) != null && unlockedPerks.getOrDefault(perkId, 0) < Perk.MAX_TIER;
+    }
+
+    /** Whether a web could offer this addon: the player owns its perk and not the addon yet. */
+    private boolean canOfferAddon(ResourceLocation addonId) {
+        Addon addon = AddonRegistry.get(addonId);
+        return addon != null && unlockedPerks.getOrDefault(addon.perkId(), 0) > 0
+                && !unlockedAddons.contains(addonId);
     }
 
     // --- transient dash state ---
@@ -416,6 +541,8 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
     private double dashX;
     private double dashZ;
     private long damageImmuneUntil;
+    /** End of the immunity the dash itself gave, which unlike Adrenaline's sends blows back. */
+    private long dashImmuneUntil;
 
     /** Starts a dash along the given horizontal direction. */
     public void startDash(int ticks, double dirX, double dirZ, long gameTime, int immunityTicks) {
@@ -423,6 +550,7 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
         this.dashX = dirX;
         this.dashZ = dirZ;
         this.damageImmuneUntil = gameTime + immunityTicks;
+        this.dashImmuneUntil = gameTime + immunityTicks;
     }
 
     public boolean isDashing() {
@@ -449,6 +577,11 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
 
     public boolean isDamageImmune(long gameTime) {
         return gameTime < damageImmuneUntil;
+    }
+
+    /** Whether the immunity in force came from a Close Call dash, for its reflection. */
+    public boolean isDashImmune(long gameTime) {
+        return gameTime < dashImmuneUntil;
     }
 
     /** Grants damage immunity without a dash, for Adrenaline. */
@@ -1018,6 +1151,10 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
         tag.putFloat("grantedAbsorption", grantedAbsorption);
 
         tag.putInt("webLevel", webLevel);
+        if (!offering.isEmpty()) {
+            tag.put("offering", offering.save(provider));
+        }
+        tag.putBoolean("keepNextOffering", keepNextOffering);
         if (soulweb != null) {
             tag.put("soulweb", soulweb.save(provider));
         }
@@ -1070,6 +1207,20 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
         grantedAbsorption = tag.getFloat("grantedAbsorption");
 
         webLevel = Math.max(1, tag.getInt("webLevel"));
+        offering = loadOffering(provider, tag);
+        keepNextOffering = tag.getBoolean("keepNextOffering");
         soulweb = tag.contains("soulweb") ? Soulweb.load(provider, tag.getCompound("soulweb")) : null;
+    }
+
+    /** The offering on the table; an earlier build kept only its item id, which still loads. */
+    private static ItemStack loadOffering(HolderLookup.Provider provider, CompoundTag tag) {
+        if (tag.contains("offering", Tag.TAG_COMPOUND)) {
+            return ItemStack.parseOptional(provider, tag.getCompound("offering"));
+        }
+        if (tag.contains("offering", Tag.TAG_STRING)) {
+            ResourceLocation id = ResourceLocation.tryParse(tag.getString("offering"));
+            return id == null ? ItemStack.EMPTY : new ItemStack(BuiltInRegistries.ITEM.get(id));
+        }
+        return ItemStack.EMPTY;
     }
 }

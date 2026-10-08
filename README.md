@@ -38,7 +38,7 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | Perk | Type | What it does |
 | --- | --- | --- |
 | **Perfect Landing** | Passive | Fall damage past 3 blocks is negated entirely. On landing, Speed III for **2/3/4** seconds, then a **40/30/20** second cooldown. |
-| **Close Call** | Active | At 5 hearts or less, dash ~4 blocks forward, immune to damage for the dash. Cooldown **12/8/6** seconds. |
+| **Close Call** | Active | At 5 hearts or less, dash ~4 blocks forward, immune to damage for the dash; any blow that lands in the meantime is sent back to its attacker. Cooldown **12/8/6** seconds. |
 | **Low Profile** | Passive | While sneaking, move as if under Speed **3/4/5** and gain night vision. Both end the instant you stand up. |
 | **Surgical Suture** | Active | A hard skill check: land it to heal **4/5/6** HP at no cooldown cost, miss it and go on cooldown for 30 seconds. Unlocks healing, and makes each skill check you land while healing someone heal them **1/2/3** HP extra. |
 | **Keep Fighting** | Active | Heals a nearby player **9/12/15** HP for **8/7/6** of your own, then leaves you Broken for **30/25/20** seconds. No cooldown — Broken is the price. |
@@ -67,7 +67,7 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | **Hunter's Instinct** | Passive | See the marks on the ground. Anything within **16/20/24** blocks that loses health to something other than you has its aura revealed to you for 7 seconds. |
 | **Barbed Wire** | Active | Hold the key **3/2.5/2** seconds without moving to lay a coil at **15/12/9%** opacity. Up to **1/2/3** out at once; a fourth takes the oldest. The first thing that walks in takes **4/6/8** damage, starts Bleeding on **12/10/8** charges and has its aura shown to you for 3 seconds — and the coil is spent. Unequipping the perk removes every coil. Coils stay down through a logout or a restart. An arrow or a thrown item takes a coil apart. Cooldown **45/40/35** seconds, paid only on a coil laid. |
 | **Panic Attack** | Passive | A player you hit has every skill check **30/40/50%** smaller and **22/33/44%** faster. No timer — it holds while you stay within **20/24/28** blocks, and ends for good the moment they get clear. |
-| **Out Of Breath** | Active | Lob a charge that walls only turn; it goes off on the floor, in a **1.5/2/2.5** block blast, leaving everything caught Exhausted **1/3/5** for **20/25/30** seconds. Cooldown **10/8/6** seconds. |
+| **Out Of Breath** | Active | Lob a charge that walls only turn; it goes off on the floor, in a **1.5/2/2.5** block blast, leaving everything caught Exhausted **1/3/5** for **20/25/30** seconds; anything already Exhausted also takes **6/7/8** damage. Cooldown **16/14/12** seconds. |
 | **Team Spirit** | Passive | Unlocks healing. One point of health earns the patient Haste **1/2/3** and Strength I for **60/70/80** seconds — but only within **16/20/24** blocks of you. Leave it and there are 3 seconds to come back before the boons are gone for good. |
 | **Beyond Vision** | Passive | Harmful effects on you are **80/85/90%** shorter, and whatever cast one has its aura revealed to you for as long as the effect was meant to last. You have 8 hearts instead of 10. |
 | **Healing Runes** | Active | Fire a slow rune that ignores gravity; the first living thing it touches is healed **3/4/5** HP. **5/6/7** runes, one back every **6/5.5/5** seconds. |
@@ -91,6 +91,9 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | **Bad Omen** | Active | Hold the key 5 seconds still to lay a ritual. Your other rituals within **48/64/80** blocks are **30/50/70%** wider, each works inside all of their circles, and none can be broken: whoever tries is shown the Bad Omen for 20 seconds. Rituals with charges hold **20/30/40%** more. Cooldown 180 seconds. |
 | **Chained Up** | Active | Fire a fast shot with no gravity. What it hits is chained to an anchor where it stood, pulled back (never teleported) whenever it strays past **3/2.5/2** blocks, until the anchor has taken **6/10/14** damage. Cooldown **60/55/50** seconds on a hit, **25/23/21** on a miss. |
 | **Nullification** | Active | Hold the key 5 seconds still to lay a ritual of **500/1000/1500** charges over **20/25/30** blocks. Nothing can be placed in it and nothing broken — by hand, explosion, mob or anything else that removes a block; each block saved costs 10 charges per point of hardness. Empty, it holds 5 more seconds and breaks; 60 seconds without spending and it refills 5 a second. It can still be broken like any ritual. Cooldown **180/160/140** seconds. |
+| **Steady Hands** | Passive | Skill checks that pay out an amount (Surgical Suture, co-op healing, Tinkerer) open with a golden great zone at the start of the success zone, **15/20/25%** of its width. Landing in it raises what the check gives by **50/75/100%**. Guardian Angel's checks have none. |
+| **Holy Sanctum** | Active | Raise a bubble of **3/3.5/4** blocks that stays where it was raised. Nothing from outside gets in — blows, shots, creatures, players, hands reaching for the blocks inside — while what was inside may leave but not come back. It has **30/35/40** health, worn down by what it stops (shown on the HUD), and breaks after **12/14/16** seconds at most. The cooldown of **90/80/70** seconds starts once it breaks. |
+| **The Hanged Man** | Active | Press the key to turn your gravity upside down: you fall upwards and walk on the ceiling, model and view turned over, mouse and strafe keys mirrored to match. Press again to come back the right way up; the cooldown of **80/60/40** seconds only starts then. A fall under way is cancelled by either flip. |
 
 
 ## Marks
@@ -423,6 +426,63 @@ adds diamonds, emeralds, golden apples, ender pearls, blaze rods, ghast tears, d
 experience drops, and **equipment rolled with up to 3 compatible enchantments** — iron sword and
 pickaxe, diamond axe and shovel, bow, crossbow, iron chestplate, diamond helmet and boots, plus
 enchanted books.
+
+## Offerings
+
+Right-click a Perk Table with an offering to lay it down; one at a time, so laying another hands the
+first back, and sneaking with empty hands takes it back. It belongs to the player, not the table.
+When the current web level is finished the offering burns, and it shapes the **next level only**.
+The soulweb tab shows the offering waiting (hover it for its marks) and what the current level was
+given. `/bloodbound web reroll` counts as finishing a level.
+
+Offerings share the addons' five rarities.
+
+| Offering | Rarity | Effect on the next level |
+|---|---|---|
+| **Dried Flower** | Common | Every price -5% (never below 1 shard). |
+| **Frozen Amaranth** | Common | Marked with 6 addons: 3 of them are sure to appear. None possible: 25 shards. |
+| **Strawberry Flower** | Common | Tier II and III perks -50% (on top of any other discount). |
+| **Fresh Grass** | Uncommon | Every price -10%. |
+| **Blooming Violet** | Uncommon | Marked with 3 perks: 1 of them is sure to appear (its next tier). None possible: 50 shards. |
+| **Fresh Amaranth** | Uncommon | Marked with 3 addons of Rare or above: 1 of them is sure to appear. None possible: 75 shards. |
+| **Dried Peppermint** | Uncommon | 1 more perk node. |
+| **Wild Tweedia** | Rare | Every price -20%. |
+| **Tied Peppermint** | Rare | 2 more perk nodes. |
+| **Yellow Cherry Blossom** | Rare | Finishing it refunds 50% of the shards spent on its last purchase. |
+| **Strawberry Leaves** | Rare | Every perk node is the next tier of a perk already owned (normal perks if none can be upgraded). |
+| **Cyananthus Bouquet** | Epic | Every price -40%. |
+| **Fresh Peppermint** | Epic | 3 more perk nodes. |
+| **Black Leaf** | Epic | Nothing itself; the next offering to burn takes effect and stays on the table. |
+| **Poisonous Berries** | Unstable | Every price -90%. |
+
+**Marks** are rolled when the offering is made (a chest, a kill, a trade) or, for the creative tab
+and `/give`, the first time it sits in an inventory. Perk marks are any perk; addon marks any addon
+of the minimum rarity. When it burns, a mark only counts if the web could offer it: a perk below
+Tier III, an addon for a perk the player owns and that they do not own yet. If none qualifies the
+offering is used up and pays its shards instead: the player is told in the chat, by an on-screen
+title and a sound, and the soulweb tab shows the compensation for the whole level.
+
+**Where they come from.** A source first rolls a rarity, then one offering of that rarity, all of
+them equally likely — so a new offering joins every source simply by having a rarity.
+
+| Rarity | Structure chest | Mob kill | Wandering trader | Cleric (journeyman) |
+|---|---|---|---|---|
+| Common | 1.5% | 3% | ~13%, 6 emeralds | Dried Flower ~23%, 12 emeralds |
+| Uncommon | 0.75% | 1.5% | ~9%, 12 emeralds | Fresh Grass ~10%, 24 emeralds |
+| Rare | 0.3% | 0.6% | ~6.5%, 24 emeralds | — |
+| Epic | 0.1% | 0.2% | ~2.2%, 40 emeralds | — |
+| Unstable | 0.02% | 0.04% | ~0.45%, 64 emeralds | — |
+
+- **Structure chest:** per chest generated from any loot table under `chests/` (vanilla and modded
+  structures alike), at most one offering per chest.
+- **Mob kill:** per hostile mob of more than 50 health killed by a player (ravager, elder guardian,
+  warden, wither, modded bosses…), at most one per kill.
+- **Wandering trader / cleric:** the odds that a given trader or journeyman cleric offers one at
+  all. Three entries of each kind go into the trader's list, so one may sell several. The trader
+  sells common and uncommon ones twice, the rest once; the cleric three times, and
+  only those two offerings.
+
+Every chance and price is in `offering/Offerings.java`.
 
 ## Two implementation notes
 

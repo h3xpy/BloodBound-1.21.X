@@ -9,6 +9,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * A generated web of nodes laid out as spokes around a centre.
@@ -25,6 +26,14 @@ public class Soulweb {
     private final int branchCount;
     private int chosenBranch;
     private int level;
+    /** The offering burnt for this level, or null. */
+    @Nullable
+    private ResourceLocation offering;
+    /** What that offering took off every price, as a percentage; 0 for none. */
+    private int discountPercent;
+    private int refundPercent;
+    /** Shards paid out instead, because none of that offering's marks could be offered. */
+    private int compensationShards;
 
     public Soulweb(List<SoulwebNode> nodes, int branchCount, int level) {
         this.nodes = new ArrayList<>(nodes);
@@ -43,6 +52,32 @@ public class Soulweb {
 
     public int chosenBranch() {
         return chosenBranch;
+    }
+
+    public int discountPercent() {
+        return discountPercent;
+    }
+
+    /** Share of the last purchase paid back when this level is finished, as a percentage. */
+    public int refundPercent() {
+        return refundPercent;
+    }
+
+    @Nullable
+    public ResourceLocation offering() {
+        return offering;
+    }
+
+    public int compensationShards() {
+        return compensationShards;
+    }
+
+    /** Records what the offering burnt for this level did to it. */
+    public void applyOffering(WebModifiers modifiers) {
+        this.offering = modifiers.offering();
+        this.discountPercent = modifiers.discountPercent();
+        this.refundPercent = modifiers.refundPercent();
+        this.compensationShards = modifiers.compensationShards();
     }
 
     public int level() {
@@ -109,6 +144,12 @@ public class Soulweb {
         tag.putInt("branchCount", branchCount);
         tag.putInt("chosenBranch", chosenBranch);
         tag.putInt("level", level);
+        tag.putInt("discount", discountPercent);
+        tag.putInt("refund", refundPercent);
+        tag.putInt("compensation", compensationShards);
+        if (offering != null) {
+            tag.putString("offering", offering.toString());
+        }
         ListTag list = new ListTag();
         for (SoulwebNode node : nodes) {
             list.add(node.save(provider));
@@ -125,6 +166,10 @@ public class Soulweb {
         }
         Soulweb web = new Soulweb(nodes, tag.getInt("branchCount"), tag.getInt("level"));
         web.chosenBranch = tag.getInt("chosenBranch");
+        web.discountPercent = tag.getInt("discount");
+        web.refundPercent = tag.getInt("refund");
+        web.compensationShards = tag.getInt("compensation");
+        web.offering = tag.contains("offering") ? ResourceLocation.tryParse(tag.getString("offering")) : null;
         return web;
     }
 }

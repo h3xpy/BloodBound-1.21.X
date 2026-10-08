@@ -262,7 +262,7 @@ public final class BloodBoundCommand {
                         .then(Commands.argument("targets", EntityArgument.players())
                                 .executes(context -> applyToPlayers(context, player -> {
                                     PlayerPerkData data = PerkDataManager.get(player);
-                                    data.rerollSoulweb(player.getRandom(), player.registryAccess());
+                                    PerkDataManager.rerollWeb(player, data);
                                 }, "bloodbound.command.web_rerolled"))))
                 .then(Commands.literal("level")
                         .then(Commands.argument("targets", EntityArgument.players())

@@ -4,7 +4,16 @@
   "package": "net.h3xpy.bloodbound.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "LevelMixin"
+    "EntityMixin",
+    "LevelMixin",
+    "LivingEntityMixin",
+    "PlayerInvoker",
+    "PlayerMixin",
+    "ServerGamePacketListenerImplAccessor"
+  ],
+  "client": [
+    "client.LivingEntityRendererMixin",
+    "client.MouseHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

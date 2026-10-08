@@ -21,6 +21,7 @@ public final class ModCreativeTabs {
                     .displayItems((parameters, output) -> {
                         output.accept(ModItems.SOUL_SHARD.get());
                         output.accept(ModBlocks.PERK_TABLE.get());
+                        ModItems.OFFERINGS.forEach(offering -> output.accept(offering.get()));
                     })
                     .build());
 

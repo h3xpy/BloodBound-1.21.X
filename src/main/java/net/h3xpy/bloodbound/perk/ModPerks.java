@@ -423,16 +423,17 @@ public final class ModPerks {
 
     /**
      * Lobs a charge that comes off the walls and only goes off when it finds the floor. Anything in
-     * the blast is left short of breath.
+     * the blast is left short of breath, and anything already short of it is hurt as well.
      * <p>Scaling: [0] blast radius in blocks, [1] Exhausted level, [2] its duration in seconds,
-     * [3] cooldown in seconds.
+     * [3] cooldown in seconds, [4] damage to whatever was already Exhausted.
      */
     public static final Perk OUT_OF_BREATH = PerkRegistry.register(Perk.builder("out_of_breath")
             .type(PerkType.ACTIVE)
             .scaling(1.5, 2, 2.5)
             .scaling(1, 3, 5)
             .scaling(20, 25, 30)
-            .scaling(10, 8, 6)
+            .scaling(16, 14, 12)
+            .scaling(6, 7, 8)
             .cooldown(3)
             .build());
 
@@ -495,6 +496,8 @@ public final class ModPerks {
     public static final int BREATH_LEVEL = 1;
     public static final int BREATH_DURATION = 2;
     public static final int BREATH_COOLDOWN = 3;
+    /** Damage dealt to whatever the blast catches already Exhausted. */
+    public static final int BREATH_DAMAGE = 4;
 
     /** How the charge flies: speed, the pull on it, its size, and how often it comes off a wall. */
     public static final double BREATH_SPEED = 1.1D;
@@ -879,6 +882,64 @@ public final class ModPerks {
             .scaling(180, 160, 140)
             .cooldown(2)
             .build());
+
+    /**
+     * Every skill check whose reward is an amount (a heal, a repair) opens with a "great" zone at
+     * the start of its success zone; landing in it raises that amount.
+     * <p>Scaling: [0] width of the great zone, as a percentage of the success zone, [1] bonus to
+     * the reward when it is hit, as a percentage.
+     */
+    public static final Perk STEADY_HANDS = PerkRegistry.register(Perk.builder("steady_hands")
+            .type(PerkType.PASSIVE)
+            .scaling(15, 20, 25)
+            .scaling(50, 75, 100)
+            .build());
+
+    /**
+     * The slot key turns the bearer's gravity upside down, view and model with it; a second press
+     * sets it right again, and only then does the cooldown start.
+     * <p>Scaling: [0] cooldown in seconds.
+     */
+    public static final Perk HANGED_MAN = PerkRegistry.register(Perk.builder("the_hanged_man")
+            .type(PerkType.ACTIVE)
+            .scaling(80, 60, 40)
+            .cooldown(0)
+            .build());
+
+    /**
+     * Raises a bubble where the player stands: nothing from outside gets in, blows and shots
+     * included, while what was inside may leave. It breaks when its health or its time runs out,
+     * and the cooldown starts then.
+     * <p>Scaling: [0] radius in blocks, [1] health, [2] seconds it lasts, [3] cooldown in seconds.
+     */
+    public static final Perk HOLY_SANCTUM = PerkRegistry.register(Perk.builder("holy_sanctum")
+            .type(PerkType.ACTIVE)
+            .scaling(3, 3.5, 4)
+            .scaling(30, 35, 40)
+            .scaling(12, 14, 16)
+            .scaling(90, 80, 70)
+            .cooldown(3)
+            .build());
+
+    // --- Holy Sanctum tuning ---
+    public static final int SANCTUM_RADIUS = 0;
+    public static final int SANCTUM_HEALTH = 1;
+    public static final int SANCTUM_DURATION = 2;
+    public static final int SANCTUM_COOLDOWN = 3;
+    /** How hard an intruder is pushed back out, in blocks per tick. */
+    public static final double SANCTUM_PUSH_SPEED = 0.6D;
+    /** How far past the shell the bubble watches for what is coming in. */
+    public static final double SANCTUM_WATCH_MARGIN = 4.0D;
+    /** What a stopped shot that is not an arrow (snowball, fireball, pearl…) costs the bubble. */
+    public static final float SANCTUM_OTHER_PROJECTILE_DAMAGE = 2.0F;
+
+    // --- Steady Hands tuning ---
+    public static final int STEADY_GREAT_WIDTH = 0;
+    public static final int STEADY_GREAT_BONUS = 1;
+
+    // --- Hanged Man tuning ---
+    /** Ticks the view takes to roll over, either way. */
+    public static final int HANGED_MAN_ROLL_TICKS = 8;
 
     // --- Nullification tuning ---
     public static final int NULL_CHARGES = 0;

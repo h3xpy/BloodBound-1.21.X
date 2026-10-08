@@ -16,6 +16,9 @@ import net.h3xpy.bloodbound.soulweb.Soulweb;
 import net.h3xpy.bloodbound.soulweb.SoulwebNode;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
+import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
+import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -178,13 +181,75 @@ public final class PerkDataManager {
 
         // Nothing left to buy on the committed branch, so the entity rebuilds the web.
         if (web.isExhausted()) {
-            data.rerollSoulweb(player.getRandom(), player.registryAccess());
+            // Yellow Cherry Blossom: finishing its level pays back part of the purchase that did it.
+            int refund = node.cost() * web.refundPercent() / 100;
+            if (refund > 0) {
+                giveShards(player, refund);
+                player.sendSystemMessage(Component.translatable("bloodbound.message.offering_refund", refund)
+                        .withStyle(ChatFormatting.GOLD));
+            }
+            rerollWeb(player, data);
             player.displayClientMessage(
                     Component.translatable("bloodbound.message.web_reset").withStyle(ChatFormatting.DARK_RED), true);
             player.level().playSound(null, player.blockPosition(), SoundEvents.WITHER_SPAWN,
                     SoundSource.PLAYERS, 0.25F, 1.6F);
         }
         sync(player);
+    }
+
+    /**
+     * Moves the player on to their next web level, burning the offering on the table, and tells
+     * them what it did — paying them, when its marks could no longer be offered.
+     */
+    public static void rerollWeb(ServerPlayer player, PlayerPerkData data) {
+        data.rerollSoulweb(player.getRandom(), player.registryAccess());
+        settleOffering(player, data);
+    }
+
+    /** Tells the player what became of their offering, if it burnt since they were last told. */
+    public static void settleOffering(ServerPlayer player, PlayerPerkData data) {
+        PlayerPerkData.BurnReport report = data.takeBurnReport();
+        if (report == null) {
+            return;
+        }
+        Component name = report.offering().getHoverName();
+        player.sendSystemMessage(Component.translatable(report.kept()
+                ? "bloodbound.message.offering_kept"
+                : "bloodbound.message.offering_burnt", name).withStyle(ChatFormatting.GOLD));
+        if (report.compensationShards() > 0) {
+            // Paid in shards rather than in nodes, which is easy to miss: say it in the chat, on screen
+            // and with a sound, and the soulweb tab keeps saying it for the whole level.
+            giveShards(player, report.compensationShards());
+            Component paid = Component.translatable("bloodbound.message.offering_compensation_title",
+                    report.compensationShards()).withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD);
+            player.sendSystemMessage(paid);
+            player.sendSystemMessage(Component.translatable("bloodbound.message.offering_compensated", name)
+                    .withStyle(ChatFormatting.GREEN));
+            player.connection.send(new ClientboundSetTitlesAnimationPacket(5, 50, 15));
+            player.connection.send(new ClientboundSetTitleTextPacket(Component.empty()));
+            player.connection.send(new ClientboundSetSubtitleTextPacket(paid));
+            player.level().playSound(null, player.blockPosition(), SoundEvents.PLAYER_LEVELUP,
+                    SoundSource.PLAYERS, 0.8F, 1.4F);
+        }
+        if (data.keepsNextOffering() && !report.kept()) {
+            player.sendSystemMessage(Component.translatable("bloodbound.message.offering_next_kept")
+                    .withStyle(ChatFormatting.DARK_PURPLE));
+        }
+        player.level().playSound(null, player.blockPosition(), SoundEvents.SOUL_ESCAPE.value(),
+                SoundSource.PLAYERS, 1.0F, 0.8F);
+    }
+
+    /** Hands the player soul shards, dropping at their feet whatever their inventory cannot hold. */
+    public static void giveShards(ServerPlayer player, int amount) {
+        while (amount > 0) {
+            int count = Math.min(amount, ModItems.SOUL_SHARD.get().getDefaultMaxStackSize());
+            ItemStack stack = new ItemStack(ModItems.SOUL_SHARD.get(), count);
+            if (!player.getInventory().add(stack)) {
+                player.drop(stack, false);
+            }
+            amount -= count;
+        }
+        syncInventory(player);
     }
 
     private static void grantReward(ServerPlayer player, PlayerPerkData data, NodeReward reward) {

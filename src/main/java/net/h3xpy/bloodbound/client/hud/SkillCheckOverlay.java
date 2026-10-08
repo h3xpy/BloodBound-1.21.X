@@ -25,6 +25,8 @@ public class SkillCheckOverlay implements LayeredDraw.Layer {
     private static final int COLOR_BACKING = 0x70000000;
     private static final int COLOR_TRACK = 0x66FFFFFF;
     private static final int COLOR_ZONE = 0xFFE8DCDC;
+    /** Steady Hands' great zone, and the flash for landing in it. */
+    private static final int COLOR_GREAT = 0xFFF2C14E;
     private static final int COLOR_NEEDLE = 0xFFB4232F;
     private static final int COLOR_HIT = 0xFF6BD46B;
     private static final int COLOR_MISS = 0xFFCC4444;
@@ -49,13 +51,18 @@ public class SkillCheckOverlay implements LayeredDraw.Layer {
         // Once resolved, the whole ring flashes the verdict for a few ticks.
         if (!active) {
             GuiUtil.drawRing(graphics, centerX, centerY, RADIUS + 3, RADIUS - 3,
-                    ClientSkillCheck.flashSuccess() ? COLOR_HIT : COLOR_MISS);
+                    ClientSkillCheck.flashGreat() ? COLOR_GREAT
+                            : ClientSkillCheck.flashSuccess() ? COLOR_HIT : COLOR_MISS);
             return;
         }
 
         float zoneStart = ClientSkillCheck.zoneStart();
         GuiUtil.drawArc(graphics, centerX, centerY, RADIUS, 6,
                 zoneStart, zoneStart + ClientSkillCheck.zoneWidth(), COLOR_ZONE);
+        if (ClientSkillCheck.greatWidth() > 0.0F) {
+            GuiUtil.drawArc(graphics, centerX, centerY, RADIUS, 6,
+                    zoneStart, zoneStart + ClientSkillCheck.greatWidth(), COLOR_GREAT);
+        }
 
         float progress = ClientSkillCheck.progress(deltaTracker.getGameTimeDeltaPartialTick(false));
         double angle = -Math.PI / 2.0D + progress * Math.PI * 2.0D;

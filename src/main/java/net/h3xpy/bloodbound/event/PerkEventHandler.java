@@ -35,6 +35,8 @@ import net.h3xpy.bloodbound.perk.impl.IceBlock;
 import net.h3xpy.bloodbound.perk.impl.InevitableDeath;
 import net.h3xpy.bloodbound.perk.impl.LowCostMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.NoOneGetsAway;
+import net.h3xpy.bloodbound.perk.impl.HangedMan;
+import net.h3xpy.bloodbound.perk.impl.HolySanctum;
 import net.h3xpy.bloodbound.perk.impl.Nullification;
 import net.h3xpy.bloodbound.perk.impl.Omniscience;
 import net.h3xpy.bloodbound.perk.impl.OutOfBreath;
@@ -54,6 +56,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -213,9 +217,27 @@ public final class PerkEventHandler {
             event.setCanceled(true);
             return;
         }
-        if (PerkDataManager.get(player).isDamageImmune(gameTime)) {
+        PlayerPerkData data = PerkDataManager.get(player);
+        if (data.isDamageImmune(gameTime)) {
             event.setCanceled(true);
+            if (data.isDashImmune(gameTime)) {
+                reflectDashHit(player, event.getSource(), event.getAmount());
+            }
         }
+    }
+
+    /**
+     * Close Call: a blow landed during the dash goes back to whoever threw it. Never a reflected
+     * one, or two dashing players hitting each other would bounce the same blow back and forth.
+     */
+    private static void reflectDashHit(ServerPlayer player, DamageSource source, float amount) {
+        if (source.is(DamageTypes.THORNS) || amount <= 0.0F
+                || !(source.getEntity() instanceof LivingEntity attacker) || attacker == player) {
+            return;
+        }
+        attacker.hurt(PerkDamageSource.of(player.damageSources().thorns(player), "close_call"), amount);
+        player.level().playSound(null, player.blockPosition(), SoundEvents.SHIELD_BLOCK,
+                SoundSource.PLAYERS, 0.8F, 1.3F);
     }
 
     // --- Low Profile, and dash upkeep ---
@@ -256,6 +278,7 @@ public final class PerkEventHandler {
         Nullification.tick(player, data, gameTime);
         ShortCircuit.tick(player, data, gameTime);
         Wireless.tick(player, data, gameTime);
+        HangedMan.tick(player, data);
         BleedingHandler.tickCure(player, gameTime);
         HuntersInstinctHandler.tick(player, data);
         Flashbang.tick(player, data, gameTime);
@@ -298,6 +321,7 @@ public final class PerkEventHandler {
         FragNade.tickGrenades(event.getServer());
         ShortCircuit.tickBeams(event.getServer());
         ChainedUp.tickShots(event.getServer());
+        HolySanctum.tick(event.getServer());
         UnderTheRadarHandler.tick(event.getServer());
         RitualManager.tick(event.getServer());
         long ritualTime = event.getServer().overworld().getGameTime();

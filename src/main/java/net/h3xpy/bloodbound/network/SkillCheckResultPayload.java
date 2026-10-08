@@ -8,9 +8,10 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
 /**
- * Server to client: the skill check is over. The client flashes the dial and clears it.
+ * Server to client: the skill check is over. The client flashes the dial and clears it, in gold
+ * when it landed in Steady Hands' great zone.
  */
-public record SkillCheckResultPayload(int id, boolean success) implements CustomPacketPayload {
+public record SkillCheckResultPayload(int id, boolean success, boolean great) implements CustomPacketPayload {
     public static final Type<SkillCheckResultPayload> TYPE =
             new Type<>(ResourceLocation.fromNamespaceAndPath(BloodBound.MODID, "skill_check_result"));
 
@@ -18,6 +19,7 @@ public record SkillCheckResultPayload(int id, boolean success) implements Custom
             StreamCodec.composite(
                     ByteBufCodecs.VAR_INT, SkillCheckResultPayload::id,
                     ByteBufCodecs.BOOL, SkillCheckResultPayload::success,
+                    ByteBufCodecs.BOOL, SkillCheckResultPayload::great,
                     SkillCheckResultPayload::new);
 
     @Override

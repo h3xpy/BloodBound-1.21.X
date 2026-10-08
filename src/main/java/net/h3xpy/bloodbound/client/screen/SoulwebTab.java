@@ -15,7 +15,9 @@ import net.h3xpy.bloodbound.perk.PerkRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -41,6 +43,12 @@ public class SoulwebTab {
     private static final int COLOR_NODE_FILL = 0xFF241016;
     private static final int COLOR_NODE_BLOCKED = 0xFF140E10;
     private static final int COLOR_NODE_TAKEN = 0xFF3A1018;
+    /** Offerings and the discounts they bring. */
+    private static final int COLOR_OFFERING = 0xFFF2C14E;
+    /** Shards paid out for an offering that could not take effect: it should not be missed. */
+    private static final int COLOR_COMPENSATION = 0xFF7CF07C;
+    /** How wide the offering's description may run in the corner. */
+    private static final int OFFERING_TEXT_WIDTH = 120;
 
     /** How many separation passes to run. Cheap at this node count, and this many settle the layout. */
     private static final int RELAX_PASSES = 40;
@@ -232,6 +240,7 @@ public class SoulwebTab {
 
         graphics.drawString(font, Component.translatable("bloodbound.soulweb.level", web.level()),
                 screen.contentX() + 4, screen.contentY() + 5, PerkTableScreen.COLOR_TEXT_DIM, false);
+        renderOfferings(graphics, web);
 
         renderLinks(graphics, web);
         renderCenter(graphics, web);
@@ -247,6 +256,55 @@ public class SoulwebTab {
                 screen.contentX() + screen.contentWidth() / 2,
                 screen.contentY() + screen.contentHeight() - 11,
                 PerkTableScreen.COLOR_TEXT_DIM);
+    }
+
+    /**
+     * The discount the current level was bought down by, under the level label, and the offering
+     * waiting on the table for the next one, in the top right corner.
+     */
+    private void renderOfferings(GuiGraphics graphics, Soulweb web) {
+        var font = Minecraft.getInstance().font;
+        int y = screen.contentY() + 16;
+        ResourceLocation burnt = web.offering();
+        if (burnt != null) {
+            ItemStack shown = new ItemStack(BuiltInRegistries.ITEM.get(burnt));
+            graphics.drawString(font, Component.translatable("bloodbound.soulweb.burnt", shown.getHoverName()),
+                    screen.contentX() + 4, y, COLOR_OFFERING, false);
+            y += 10;
+            // What it did, in its own words, kept to the corner so it stays clear of the web.
+            for (FormattedCharSequence line : font.split(
+                    Component.translatable(shown.getDescriptionId() + ".desc"), OFFERING_TEXT_WIDTH)) {
+                graphics.drawString(font, line, screen.contentX() + 4, y, PerkTableScreen.COLOR_TEXT_DIM, false);
+                y += 9;
+            }
+        }
+        if (web.compensationShards() > 0) {
+            graphics.drawString(font, Component.translatable("bloodbound.soulweb.compensation",
+                    web.compensationShards()), screen.contentX() + 4, y + 1, COLOR_COMPENSATION, false);
+        }
+
+        ItemStack waiting = ClientPerkData.get().offering();
+        if (waiting.isEmpty()) {
+            return;
+        }
+        int right = screen.contentX() + screen.contentWidth() - 4;
+        graphics.renderItem(waiting, right - 16, screen.contentY() + 2);
+        Component label = Component.translatable("bloodbound.soulweb.offering", waiting.getHoverName());
+        graphics.drawString(font, label, right - 20 - font.width(label), screen.contentY() + 6, COLOR_OFFERING, false);
+        if (ClientPerkData.get().keepsNextOffering()) {
+            Component kept = Component.translatable("bloodbound.soulweb.offering_kept");
+            graphics.drawString(font, kept, right - font.width(kept), screen.contentY() + 18, COLOR_OFFERING, false);
+        }
+    }
+
+    /** The waiting offering's tooltip, marks and all, when the mouse is over its icon. */
+    private void renderOfferingTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+        ItemStack waiting = ClientPerkData.get().offering();
+        int right = screen.contentX() + screen.contentWidth() - 4;
+        if (!waiting.isEmpty() && mouseX >= right - 16 && mouseX < right
+                && mouseY >= screen.contentY() + 2 && mouseY < screen.contentY() + 18) {
+            graphics.renderTooltip(Minecraft.getInstance().font, waiting, mouseX, mouseY);
+        }
     }
 
     private void renderLinks(GuiGraphics graphics, Soulweb web) {
@@ -380,6 +438,7 @@ public class SoulwebTab {
         if (web == null) {
             return;
         }
+        renderOfferingTooltip(graphics, mouseX, mouseY);
         int index = nodeAt(mouseX, mouseY);
         if (index < 0) {
             return;
