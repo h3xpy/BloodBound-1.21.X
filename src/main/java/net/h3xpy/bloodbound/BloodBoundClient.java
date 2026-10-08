@@ -3,6 +3,7 @@ package net.h3xpy.bloodbound;
 import net.h3xpy.bloodbound.client.ClientCameraShake;
 import net.h3xpy.bloodbound.client.ClientHangedMan;
 import net.h3xpy.bloodbound.client.ClientDrawSpeed;
+import net.h3xpy.bloodbound.client.ClientSanctumHits;
 import net.h3xpy.bloodbound.client.ClientEventHandler;
 import net.h3xpy.bloodbound.client.ClientUnderTheRadar;
 import net.h3xpy.bloodbound.client.ModKeyMappings;
@@ -17,6 +18,7 @@ import net.h3xpy.bloodbound.client.render.BarbedWireRenderer;
 import net.h3xpy.bloodbound.client.render.ChainAnchorRenderer;
 import net.h3xpy.bloodbound.client.render.IceShellRenderer;
 import net.h3xpy.bloodbound.client.render.RitualRenderer;
+import net.h3xpy.bloodbound.client.render.SanctumBubbleRenderer;
 import net.h3xpy.bloodbound.client.render.TargetFoundRenderer;
 import net.h3xpy.bloodbound.client.screen.PerkTableScreen;
 import net.h3xpy.bloodbound.registry.ModEntities;
@@ -54,6 +56,7 @@ public class BloodBoundClient {
         NeoForge.EVENT_BUS.register(ClientEventHandler.class);
         NeoForge.EVENT_BUS.register(ClientUnderTheRadar.class);
         NeoForge.EVENT_BUS.register(ClientDrawSpeed.class);
+        NeoForge.EVENT_BUS.register(ClientSanctumHits.class);
         NeoForge.EVENT_BUS.register(ClientCameraShake.class);
         NeoForge.EVENT_BUS.register(ClientHangedMan.class);
     }
@@ -74,6 +77,7 @@ public class BloodBoundClient {
         event.registerEntityRenderer(ModEntities.RITUAL.get(), RitualRenderer::new);
         event.registerEntityRenderer(ModEntities.ICE_SHELL.get(), IceShellRenderer::new);
         event.registerEntityRenderer(ModEntities.CHAIN_ANCHOR.get(), ChainAnchorRenderer::new);
+        event.registerEntityRenderer(ModEntities.SANCTUM_BUBBLE.get(), SanctumBubbleRenderer::new);
     }
 
     private static void registerGuiLayers(RegisterGuiLayersEvent event) {

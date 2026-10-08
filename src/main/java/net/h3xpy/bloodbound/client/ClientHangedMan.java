@@ -59,7 +59,11 @@ public final class ClientHangedMan {
         event.setRoll(event.getRoll() + 180.0F * amount);
     }
 
-    /** Left and right are swapped on a screen turned upside down; so are the strafe keys. */
+    /**
+     * Left and right are swapped on a screen turned upside down; so are the strafe keys. Swimming
+     * and flying, jump and sneak swap as well: jump goes towards the top of the screen and sneak
+     * towards the bottom, which upside down are the other way round in the world.
+     */
     @SubscribeEvent
     public static void onMovementInput(MovementInputUpdateEvent event) {
         if (!isFlipped()) {
@@ -70,6 +74,13 @@ public final class ClientHangedMan {
         boolean left = input.left;
         input.left = input.right;
         input.right = left;
+
+        if (event.getEntity().isInWater() || event.getEntity().isInLava()
+                || event.getEntity().getAbilities().flying) {
+            boolean jumping = input.jumping;
+            input.jumping = input.shiftKeyDown;
+            input.shiftKeyDown = jumping;
+        }
     }
 
     public static void reset() {
