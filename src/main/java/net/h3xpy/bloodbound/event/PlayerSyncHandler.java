@@ -22,6 +22,8 @@ import net.h3xpy.bloodbound.perk.impl.IceBlock;
 import net.h3xpy.bloodbound.perk.impl.InevitableDeath;
 import net.h3xpy.bloodbound.perk.impl.LowCostMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.NoOneGetsAway;
+import net.h3xpy.bloodbound.perk.impl.HangedMan;
+import net.h3xpy.bloodbound.perk.impl.HolySanctum;
 import net.h3xpy.bloodbound.perk.impl.Nullification;
 import net.h3xpy.bloodbound.perk.impl.Omniscience;
 import net.h3xpy.bloodbound.perk.impl.OutOfBreath;
@@ -98,6 +100,7 @@ public final class PlayerSyncHandler {
             MovementTracker.clear(player.getUUID());
             Omniscience.clear(player.getUUID());
             AchievementTracker.clear(player.getUUID());
+            HangedMan.clear(player);
         }
     }
 
@@ -122,6 +125,7 @@ public final class PlayerSyncHandler {
             BewareThePowerOfAnAngel.clear(player);
             BadOmen.clear(player);
             Nullification.clear(player);
+            HangedMan.clear(player);
         }
     }
 
@@ -145,6 +149,7 @@ public final class PlayerSyncHandler {
         RitualManager.clear();
         TrapRoster.clear();
         Nullification.clear();
+        HolySanctum.clear();
     }
 
     @SubscribeEvent

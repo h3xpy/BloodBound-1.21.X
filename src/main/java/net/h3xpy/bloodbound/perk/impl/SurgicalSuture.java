@@ -56,7 +56,11 @@ public final class SurgicalSuture {
     }
 
     /** Applies the outcome of a self-heal skill check. */
-    public static void onSelfHealResult(ServerPlayer player, SkillCheckContext context, boolean success) {
+    /**
+     * @param rewardMultiplier applied to what a landed check gives (Steady Hands' great zone)
+     */
+    public static void onSelfHealResult(ServerPlayer player, SkillCheckContext context, boolean success,
+            float rewardMultiplier) {
         PlayerPerkData data = PerkDataManager.get(player);
         int tier = data.getActiveTier(ModPerks.SURGICAL_SUTURE);
         if (tier <= 0) {
@@ -67,7 +71,7 @@ public final class SurgicalSuture {
         boolean isRetry = context == SkillCheckContext.SELF_HEAL_RETRY;
 
         if (success) {
-            applyReward(player, data, tier);
+            applyReward(player, data, tier, rewardMultiplier);
             AchievementTracker.onSutureLanded(player);
             // Landing the check outright costs nothing. Only Sterilizer's second chance carries a
             // cooldown, and a halved one at that.
@@ -96,7 +100,7 @@ public final class SurgicalSuture {
         PerkDataManager.sync(player);
     }
 
-    private static void applyReward(ServerPlayer player, PlayerPerkData data, int tier) {
+    private static void applyReward(ServerPlayer player, PlayerPerkData data, int tier, float multiplier) {
         // Gel Dressing turns a heal you did not need into absorption hearts.
         if (data.isAddonActive(ModAddons.GEL_DRESSING) && data.sutureUsedAtFullHealth()) {
             // The ceiling has to be raised first: max_absorption defaults to 0 on a player, and
@@ -104,7 +108,7 @@ public final class SurgicalSuture {
             ensureAbsorptionCeiling(player);
 
             float next = Math.min(ModAddons.GEL_ABSORPTION_MAX,
-                    player.getAbsorptionAmount() + ModAddons.GEL_ABSORPTION_PER_SUCCESS);
+                    player.getAbsorptionAmount() + ModAddons.GEL_ABSORPTION_PER_SUCCESS * multiplier);
             player.setAbsorptionAmount(next);
             data.setGrantedAbsorption(next);
             return;
@@ -114,6 +118,7 @@ public final class SurgicalSuture {
         if (data.isAddonActive(ModAddons.NEEDLE_AND_THREAD)) {
             heal *= ModAddons.NEEDLE_HEAL_MULTIPLIER;
         }
+        heal *= multiplier;
         if (heal > 0.0F) {
             player.heal(heal);
         }

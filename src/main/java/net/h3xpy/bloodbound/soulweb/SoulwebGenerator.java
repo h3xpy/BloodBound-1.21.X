@@ -86,6 +86,18 @@ public final class SoulwebGenerator {
      */
     public static Soulweb generate(RandomSource random, RegistryAccess registries,
             Map<ResourceLocation, Integer> unlockedPerks, Set<ResourceLocation> unlockedAddons, int level) {
+        return generate(random, registries, unlockedPerks, unlockedAddons, level, WebModifiers.NONE);
+    }
+
+    /**
+     * As above, shaped by the offering burnt for this level: forced perks and addons go on the web
+     * first, extra perk nodes come on top of the roll, and every price is cut by the discount once
+     * it has been worked out — level curve and swing included — never below a single shard.
+     */
+    public static Soulweb generate(RandomSource random, RegistryAccess registries,
+            Map<ResourceLocation, Integer> unlockedPerks, Set<ResourceLocation> unlockedAddons, int level,
+            WebModifiers modifiers) {
+        int discountPercent = modifiers.discountPercent();
         int branchCount = Config.SOULWEB_BRANCHES.getAsInt();
         int minDepth = Config.SOULWEB_MIN_DEPTH.getAsInt();
         int maxDepth = Math.max(minDepth, Config.SOULWEB_MAX_DEPTH.getAsInt());
@@ -101,15 +113,32 @@ public final class SoulwebGenerator {
         // Perks first. Only the next tier of each perk is ever offered, so tiers can only be taken
         // in order and the same perk can never show up twice on one web.
         List<NodeReward> perkRewards = availablePerkRewards(unlockedPerks);
+        // Strawberry Leaves: only the next tier of perks already owned, as long as there is any.
+        if (modifiers.upgradesOnly()
+                && perkRewards.stream().anyMatch(r -> r instanceof NodeReward.PerkReward perk && perk.tier() > 1)) {
+            perkRewards.removeIf(r -> r instanceof NodeReward.PerkReward perk && perk.tier() <= 1);
+        }
         Collections.shuffle(perkRewards, new Random(random.nextLong()));
+        // A marked perk goes to the front of the queue, so it is the first one handed a slot.
+        int forcedPerks = 0;
+        for (ResourceLocation forced : modifiers.forcedPerks()) {
+            for (int i = forcedPerks; i < perkRewards.size(); i++) {
+                if (perkRewards.get(i) instanceof NodeReward.PerkReward perk && forced.equals(perk.perkId())) {
+                    perkRewards.add(forcedPerks++, perkRewards.remove(i));
+                    break;
+                }
+            }
+        }
         // Every web owes the player at least MIN_PERK_NODES perks, as far as there are perks left
-        // to offer at all.
+        // to offer at all; the peppermints add theirs on top.
+        int rolledPerks = Math.max(GUARANTEED_PERK_NODES,
+                Math.max(MIN_PERK_NODES, 1 + random.nextInt(Config.SOULWEB_MAX_PERK_NODES.getAsInt())));
         int perkCount = perkRewards.isEmpty() ? 0
-                : Math.min(perkRewards.size(), Math.max(GUARANTEED_PERK_NODES,
-                        Math.max(MIN_PERK_NODES, 1 + random.nextInt(Config.SOULWEB_MAX_PERK_NODES.getAsInt()))));
+                : Math.min(perkRewards.size(), Math.max(forcedPerks, rolledPerks) + modifiers.extraPerks());
         List<Integer> perkSlots = pickSpreadSlots(random, slots, branchCount, perkCount, List.of());
 
-        List<NodeReward> addonRewards = pickAddonRewards(random, unlockedPerks, unlockedAddons);
+        List<NodeReward> addonRewards = pickAddonRewards(random, unlockedPerks, unlockedAddons,
+                modifiers.forcedAddons());
         List<Integer> addonSlots = pickSpreadSlots(random, slots, branchCount, addonRewards.size(), perkSlots);
 
         int rareChance = rareChancePercent(level);
@@ -148,12 +177,22 @@ public final class SoulwebGenerator {
 
             int onCurve = (int) Math.max(1L, Math.round(scaleToLevel(baseCost, finalCost, level) * priceScale));
             int price = priceWithVariation(random, onCurve, level);
+            // Strawberry Flower: Tier II and III perks come cheaper still.
+            if (modifiers.upgradeDiscountPercent() > 0 && reward instanceof NodeReward.PerkReward perk
+                    && perk.tier() > 1) {
+                price = Math.max(1, (int) Math.round(price * (100 - modifiers.upgradeDiscountPercent()) / 100.0D));
+            }
+            if (discountPercent > 0) {
+                price = Math.max(1, (int) Math.round(price * (100 - discountPercent) / 100.0D));
+            }
             nodes.add(new SoulwebNode(branch, depth, price, reward,
                     layoutAngle(random, branch, branchCount, depth),
                     BASE_RADIUS + (depth - 1) * RADIUS_STEP));
         }
 
-        return new Soulweb(nodes, branchCount, level);
+        Soulweb web = new Soulweb(nodes, branchCount, level);
+        web.applyOffering(modifiers);
+        return web;
     }
 
     /**
@@ -232,8 +271,11 @@ public final class SoulwebGenerator {
         }
         Collections.shuffle(branchOrder, new Random(random.nextLong()));
 
-        // Two passes, so more rewards than branches still get placed.
-        for (int pass = 0; pass < 2 && chosen.size() < count; pass++) {
+        // As many passes as it takes, so more rewards than branches still get placed — an offering
+        // can ask for more of them than two to a branch.
+        boolean placedAny = true;
+        while (placedAny && chosen.size() < count) {
+            placedAny = false;
             for (int branch : branchOrder) {
                 if (chosen.size() >= count) {
                     break;
@@ -246,6 +288,7 @@ public final class SoulwebGenerator {
                 }
                 if (!candidates.isEmpty()) {
                     chosen.add(candidates.get(random.nextInt(candidates.size())));
+                    placedAny = true;
                 }
             }
         }
@@ -268,7 +311,8 @@ public final class SoulwebGenerator {
      * less often. Only addons for perks the player owns, and does not already have, are eligible.
      */
     private static List<NodeReward> pickAddonRewards(RandomSource random,
-            Map<ResourceLocation, Integer> unlockedPerks, Set<ResourceLocation> unlockedAddons) {
+            Map<ResourceLocation, Integer> unlockedPerks, Set<ResourceLocation> unlockedAddons,
+            List<ResourceLocation> forced) {
         List<Addon> pool = new ArrayList<>();
         for (Addon addon : AddonRegistry.all()) {
             if (unlockedPerks.getOrDefault(addon.perkId(), 0) > 0 && !unlockedAddons.contains(addon.id())) {
@@ -276,13 +320,21 @@ public final class SoulwebGenerator {
             }
         }
 
+        // Addons an offering marked come first, whatever the weights say.
         List<NodeReward> rewards = new ArrayList<>();
+        for (ResourceLocation id : forced) {
+            Addon addon = AddonRegistry.get(id);
+            if (addon != null && pool.remove(addon)) {
+                rewards.add(new NodeReward.AddonReward(addon.id()));
+            }
+        }
+
         // At least one, so a web always has an addon on it whenever one is eligible at all.
         // Rolled from the floor upwards rather than from zero: addons were turning up far too rarely
         // for how much of the mod they are.
-        int wanted = Math.min(pool.size(), MIN_ADDON_NODES
-                + random.nextInt(Math.max(1, Config.SOULWEB_MAX_ADDON_NODES.getAsInt() - MIN_ADDON_NODES + 1)));
-        for (int i = 0; i < wanted; i++) {
+        int wanted = Math.min(pool.size() + rewards.size(), Math.max(rewards.size(), MIN_ADDON_NODES
+                + random.nextInt(Math.max(1, Config.SOULWEB_MAX_ADDON_NODES.getAsInt() - MIN_ADDON_NODES + 1))));
+        while (rewards.size() < wanted) {
             Addon picked = weightedPick(random, pool);
             if (picked == null) {
                 break;

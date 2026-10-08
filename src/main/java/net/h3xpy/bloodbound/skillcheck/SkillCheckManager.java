@@ -90,7 +90,20 @@ public final class SkillCheckManager {
         float span = MAX_ZONE_END - MIN_ZONE_START - zoneWidth;
         float zoneStart = MIN_ZONE_START + (span <= 0 ? 0 : player.getRandom().nextFloat() * span);
 
-        ActiveSkillCheck check = new ActiveSkillCheck(nextId++, context, zoneStart, zoneWidth, duration);
+        // Steady Hands: the opening slice of the zone is worth more, on any check that pays an amount.
+        // Taken from the zone as it finally stands, so whatever narrowed it narrows this too.
+        float greatWidth = 0.0F;
+        float greatMultiplier = 1.0F;
+        int steady = data.getActiveTier(ModPerks.STEADY_HANDS);
+        if (steady > 0 && context.rewardsAmount()) {
+            greatWidth = zoneWidth
+                    * (float) ModPerks.STEADY_HANDS.value(ModPerks.STEADY_GREAT_WIDTH, steady) / 100.0F;
+            greatMultiplier = 1.0F
+                    + (float) ModPerks.STEADY_HANDS.value(ModPerks.STEADY_GREAT_BONUS, steady) / 100.0F;
+        }
+
+        ActiveSkillCheck check = new ActiveSkillCheck(nextId++, context, zoneStart, zoneWidth, duration,
+                greatWidth, greatMultiplier);
         if (panic > 0) {
             ServerPlayer rattler = PanicAttackHandler.attackerAffecting(player);
             check.setPanickedBy(rattler == null ? null : rattler.getUUID());
@@ -98,7 +111,7 @@ public final class SkillCheckManager {
         ACTIVE.put(player.getUUID(), check);
 
         PacketDistributor.sendToPlayer(player, new StartSkillCheckPayload(
-                check.id(), check.zoneStart(), check.zoneWidth(), check.durationTicks()));
+                check.id(), check.zoneStart(), check.zoneWidth(), check.durationTicks(), check.greatWidth()));
         player.playNotifySound(SoundEvents.NOTE_BLOCK_PLING.value(), SoundSource.PLAYERS, 0.6F, 1.6F);
     }
 
@@ -110,7 +123,7 @@ public final class SkillCheckManager {
         }
         check.tick();
         if (check.isExpired()) {
-            resolve(player, check, false);
+            resolve(player, check, false, false);
         }
     }
 
@@ -128,14 +141,14 @@ public final class SkillCheckManager {
                 ? clientProgress
                 : serverProgress;
 
-        resolve(player, check, check.isInZone(progress));
+        resolve(player, check, check.isInZone(progress), check.isGreat(progress));
     }
 
     /** Drops any running check without resolving it, e.g. when a heal is interrupted. */
     public static void cancel(ServerPlayer player) {
         ActiveSkillCheck check = ACTIVE.remove(player.getUUID());
         if (check != null) {
-            PacketDistributor.sendToPlayer(player, new SkillCheckResultPayload(check.id(), false));
+            PacketDistributor.sendToPlayer(player, new SkillCheckResultPayload(check.id(), false, false));
         }
     }
 
@@ -149,25 +162,32 @@ public final class SkillCheckManager {
         cancel(player);
     }
 
-    private static void resolve(ServerPlayer player, ActiveSkillCheck check, boolean success) {
+    private static void resolve(ServerPlayer player, ActiveSkillCheck check, boolean success, boolean great) {
         ACTIVE.remove(player.getUUID());
+        // What the reward is multiplied by: Steady Hands' bonus on a great, nothing otherwise.
+        float multiplier = success && great ? check.greatMultiplier() : 1.0F;
         if (!success && check.panickedBy() != null && player.getServer() != null) {
             ServerPlayer rattler = player.getServer().getPlayerList().getPlayer(check.panickedBy());
             if (rattler != null) {
                 ModAdvancements.grant(rattler, ModAdvancements.AWW_TOO_BAD);
             }
         }
-        PacketDistributor.sendToPlayer(player, new SkillCheckResultPayload(check.id(), success));
+        PacketDistributor.sendToPlayer(player,
+                new SkillCheckResultPayload(check.id(), success, success && great));
 
-        player.playNotifySound(
-                success ? SoundEvents.EXPERIENCE_ORB_PICKUP : SoundEvents.ITEM_BREAK,
-                SoundSource.PLAYERS, 0.7F, success ? 1.4F : 0.8F);
+        if (success && great) {
+            player.playNotifySound(SoundEvents.NOTE_BLOCK_BELL.value(), SoundSource.PLAYERS, 0.8F, 1.8F);
+        } else {
+            player.playNotifySound(
+                    success ? SoundEvents.EXPERIENCE_ORB_PICKUP : SoundEvents.ITEM_BREAK,
+                    SoundSource.PLAYERS, 0.7F, success ? 1.4F : 0.8F);
+        }
 
         switch (check.context()) {
             case SELF_HEAL, SELF_HEAL_RETRY ->
-                    SurgicalSuture.onSelfHealResult(player, check.context(), success);
-            case HEAL -> HealManager.onSkillCheckResult(player, success);
-            case TINKERER -> Tinkerer.onSkillCheckResult(player, success);
+                    SurgicalSuture.onSelfHealResult(player, check.context(), success, multiplier);
+            case HEAL -> HealManager.onSkillCheckResult(player, success, multiplier);
+            case TINKERER -> Tinkerer.onSkillCheckResult(player, success, multiplier);
             case GUARDIAN -> GuardianAngelHandler.onSkillCheckResult(player, success);
         }
     }

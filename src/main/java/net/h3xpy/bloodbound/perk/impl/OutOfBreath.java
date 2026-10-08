@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.h3xpy.bloodbound.advancement.ModAdvancements;
+import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.event.BankShotHandler;
 import net.h3xpy.bloodbound.perk.ModPerks;
@@ -19,6 +20,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
@@ -171,9 +173,23 @@ public final class OutOfBreath {
                     ModAdvancements.grant(owner, ModAdvancements.THATS_SICK);
                 }
             }
+            // Read before the new dose goes on, or everybody caught would count as already Exhausted.
+            boolean alreadyExhausted = victim.hasEffect(ModEffects.EXHAUSTED);
             victim.addEffect(new MobEffectInstance(ModEffects.EXHAUSTED, duration, level_ - 1,
                     false, true, true));
+            if (alreadyExhausted) {
+                victim.hurt(PerkDamageSource.of(blastSource(level, shot), "out_of_breath"),
+                        (float) ModPerks.OUT_OF_BREATH.value(ModPerks.BREATH_DAMAGE, shot.tier));
+            }
         }
+    }
+
+    /** Magic damage, credited to the thrower when they are still around. */
+    private static DamageSource blastSource(ServerLevel level, Shot shot) {
+        ServerPlayer owner = level.getServer().getPlayerList().getPlayer(shot.ownerId);
+        return owner != null
+                ? level.damageSources().indirectMagic(owner, owner)
+                : level.damageSources().magic();
     }
 
     /** Drops anything still in the air for a player who has left. */

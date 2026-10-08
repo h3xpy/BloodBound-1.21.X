@@ -33,6 +33,7 @@ public final class ClientEventHandler {
         ClientFragPreview.tick(minecraft);
         ClientOmniscience.tick();
         ClientFallHandler.tick(minecraft);
+        ClientHangedMan.tick(minecraft);
 
         boolean inGame = minecraft.player != null && minecraft.screen == null;
 
@@ -99,6 +100,7 @@ public final class ClientEventHandler {
         ClientMarks.reset();
         ClientEffectCharges.reset();
         ClientUnderTheRadar.reset();
+        ClientHangedMan.reset();
         healHeld = false;
         Arrays.fill(SLOT_HELD, false);
         Arrays.fill(SLOT_HELD_TICKS, 0);

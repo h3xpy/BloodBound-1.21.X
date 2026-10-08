@@ -95,7 +95,7 @@ public final class Tinkerer {
     }
 
     /** A Tinkerer skill check resolved. */
-    public static void onSkillCheckResult(ServerPlayer player, boolean success) {
+    public static void onSkillCheckResult(ServerPlayer player, boolean success, float multiplier) {
         Session session = SESSIONS.get(player.getUUID());
         if (session == null) {
             return;
@@ -121,6 +121,8 @@ public final class Tinkerer {
         if (data.isAddonActive(ModAddons.GRIP_WRENCH)) {
             repair += ModAddons.GRIP_WRENCH_BONUS;
         }
+        // Steady Hands' great zone.
+        repair *= multiplier;
         int restored = Math.max(1, Math.round(maxDamage * repair));
         stack.setDamageValue(Math.max(0, stack.getDamageValue() - restored));
 

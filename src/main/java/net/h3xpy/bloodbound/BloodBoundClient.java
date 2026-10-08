@@ -1,6 +1,7 @@
 package net.h3xpy.bloodbound;
 
 import net.h3xpy.bloodbound.client.ClientCameraShake;
+import net.h3xpy.bloodbound.client.ClientHangedMan;
 import net.h3xpy.bloodbound.client.ClientDrawSpeed;
 import net.h3xpy.bloodbound.client.ClientEventHandler;
 import net.h3xpy.bloodbound.client.ClientUnderTheRadar;
@@ -54,6 +55,7 @@ public class BloodBoundClient {
         NeoForge.EVENT_BUS.register(ClientUnderTheRadar.class);
         NeoForge.EVENT_BUS.register(ClientDrawSpeed.class);
         NeoForge.EVENT_BUS.register(ClientCameraShake.class);
+        NeoForge.EVENT_BUS.register(ClientHangedMan.class);
     }
 
     private static void registerScreens(RegisterMenuScreensEvent event) {

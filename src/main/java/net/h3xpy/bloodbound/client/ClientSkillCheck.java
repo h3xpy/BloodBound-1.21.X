@@ -16,12 +16,15 @@ public final class ClientSkillCheck {
     private static int id = -1;
     private static float zoneStart;
     private static float zoneWidth;
+    /** Steady Hands' great zone, from the start of the success zone; 0 when there is none. */
+    private static float greatWidth;
     private static int durationTicks;
     private static int elapsedTicks;
     private static boolean answered;
 
     private static int flashTicks;
     private static boolean flashSuccess;
+    private static boolean flashGreat;
 
     private ClientSkillCheck() {}
 
@@ -29,6 +32,7 @@ public final class ClientSkillCheck {
         id = payload.id();
         zoneStart = payload.zoneStart();
         zoneWidth = payload.zoneWidth();
+        greatWidth = payload.greatWidth();
         durationTicks = payload.durationTicks();
         elapsedTicks = 0;
         answered = false;
@@ -39,6 +43,7 @@ public final class ClientSkillCheck {
         if (payload.id() == id) {
             id = -1;
             flashSuccess = payload.success();
+            flashGreat = payload.great();
             flashTicks = FLASH_TICKS;
         }
     }
@@ -75,6 +80,14 @@ public final class ClientSkillCheck {
 
     public static boolean flashSuccess() {
         return flashSuccess;
+    }
+
+    public static boolean flashGreat() {
+        return flashGreat;
+    }
+
+    public static float greatWidth() {
+        return greatWidth;
     }
 
     /** Needle position in 0..1, smoothed between ticks. */

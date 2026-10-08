@@ -33,13 +33,18 @@ import net.h3xpy.bloodbound.network.ModNetwork;
 import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.perk.impl.FragNade;
+import net.h3xpy.bloodbound.perk.impl.HangedMan;
+import net.h3xpy.bloodbound.offering.Offerings;
+import net.h3xpy.bloodbound.perk.impl.HolySanctum;
 import net.h3xpy.bloodbound.perk.impl.Nullification;
 import net.h3xpy.bloodbound.perk.impl.Wireless;
 import net.h3xpy.bloodbound.registry.ModAttachments;
 import net.h3xpy.bloodbound.registry.ModBlocks;
 import net.h3xpy.bloodbound.registry.ModCreativeTabs;
 import net.h3xpy.bloodbound.registry.ModEffects;
+import net.h3xpy.bloodbound.registry.ModDataComponents;
 import net.h3xpy.bloodbound.registry.ModEntities;
+import net.h3xpy.bloodbound.registry.ModLootModifiers;
 import net.h3xpy.bloodbound.registry.ModItems;
 import net.h3xpy.bloodbound.registry.ModMenus;
 import net.h3xpy.bloodbound.ritual.RitualManager;
@@ -71,6 +76,8 @@ public class BloodBound {
         ModAttachments.register(modEventBus);
         ModEffects.register(modEventBus);
         ModEntities.register(modEventBus);
+        ModLootModifiers.register(modEventBus);
+        ModDataComponents.register(modEventBus);
 
         modEventBus.addListener(ModNetwork::register);
 
@@ -103,6 +110,9 @@ public class BloodBound {
         NeoForge.EVENT_BUS.register(Wireless.class);
         NeoForge.EVENT_BUS.register(DrawSpeed.class);
         NeoForge.EVENT_BUS.register(Nullification.class);
+        NeoForge.EVENT_BUS.register(HangedMan.class);
+        NeoForge.EVENT_BUS.register(HolySanctum.class);
+        NeoForge.EVENT_BUS.register(Offerings.class);
         NeoForge.EVENT_BUS.addListener(BloodBoundCommand::register);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
