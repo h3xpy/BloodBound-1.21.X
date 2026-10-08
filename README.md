@@ -4,6 +4,9 @@ A Dead by Daylight style perk system for Minecraft 1.21.1 (NeoForge 21.1.248).
 
 Kill mobs for **soul shards**, spend them on a **soulweb**, and keep the perks you learn for good.
 
+> **Contribuer au projet :** suivre [CONTRIBUTING.md](CONTRIBUTING.md) (procédure pas à pas, en
+> français, sans avoir besoin de savoir coder).
+
 ## How it plays
 
 **Soul shards.** Every mob kill rolls a shard drop: 10% nothing, 40% one, 25% two, 15% three, 7% four,
