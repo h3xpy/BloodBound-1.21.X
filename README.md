@@ -97,6 +97,7 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | **Steady Hands** | Passive | Skill checks that pay out an amount (Surgical Suture, co-op healing, Tinkerer) open with a golden great zone at the start of the success zone, **15/20/25%** of its width. Landing in it raises what the check gives by **50/75/100%**. Guardian Angel's checks have none. |
 | **Holy Sanctum** | Active | Raise a bubble of **3/3.5/4** blocks that stays where it was raised. Everybody sees it: a shell of glowing gold hexagons that flares white where it is struck and turns red as it wears down. It can be struck by hand, from outside or inside, even by whoever raised it; a blow counts what the hand would deal. Nothing from outside gets in — blows, shots, creatures, players, primed TNT, anything thrown or ridden, hands reaching for the blocks inside — while what was inside may leave but not come back. It has **30/35/40** health, worn down by what it stops (shown on the HUD), and breaks after **12/14/16** seconds at most. The cooldown of **90/80/70** seconds starts once it breaks. |
 | **The Hanged Man** | Active | Press the key to turn your gravity upside down: you fall upwards and walk on the ceiling, model and view turned over, mouse and strafe keys mirrored to match. Press again to come back the right way up; the cooldown of **80/60/40** seconds only starts then. A fall under way is cancelled by either flip. Up there everything works mirrored: falling onto the ceiling hurts, its blocks act as the floor (ice, soul sand, honey, magma, slime and bed bounces), steps, ladders, swimming, creative flight, knockback and the dust of running and landing are turned over, the void lies above the world, and lying down in a bed sets you right (and starts the cooldown). |
+| **Spring Pad** | Active | Hold the key **2/1.5/1** seconds still to set a pad; up to **1/2/3** out, a new one takes the oldest. It arms after 2 seconds; whatever steps on it, you included, is thrown violently the way it is looking: straight up about 33 blocks high, level ahead about 24 blocks away (never flatter than 20°, so looking down still leaves the ground), at most once a second, and it breaks after **2/3/4** launches. Cooldown **20/15/10** seconds after setting one. |
 
 
 ## Marks
@@ -322,6 +323,22 @@ you already own and addons you do not.
 | **Ink Bottle** | Healing Runes | Uncommon | Runes fly twice as fast. |
 | **Lucky Charm** | Healing Runes | Rare | Three runes in a triangle instead of one, each healing 33% less. |
 | **Decorated Leaf** | Healing Runes | Epic | A rune fired at your own feet heals you for half; runes heal anybody else 50% more. |
+| **Safety Protocol** | Spring Pad | Rare | Being thrown by your own pad never costs you fall damage. |
+| **Votive Candle** | Holy Sanctum | Common | The bubble has 25% more health and stands 2 seconds longer. |
+| **Stained Glass** | Holy Sanctum | Rare | 30% of the damage the bubble takes goes back to whoever dealt it (never to its owner). |
+| **Saint's Relic** | Holy Sanctum | Epic | Every creature and player inside has Regeneration I. |
+| **Cracked Halo** | Holy Sanctum | Unstable | The bubble follows you, but is 50% smaller with 70% less health. |
+| **Frayed Rope** | The Hanged Man | Common | The cooldown is 25% shorter. |
+| **Upturned Hourglass** | The Hanged Man | Uncommon | No fall damage while upside down; coming back the right way up is not covered. |
+| **Tarot Card XII** | The Hanged Man | Epic | Turning over turns every creature and player within 8 blocks too, for 5 seconds. |
+| **Upside Down Card** | The Hanged Man | Unstable | No cooldown, but the landing after each flip deals double damage. |
+| **Copper Coil** | Short Circuit | Common | The charge is 15% shorter. |
+| **Capacitor** | Short Circuit | Rare | A broken-off charge keeps 50% of its progress for 10 seconds. |
+| **Red LED** | Short Circuit | Epic | As it grows, the cylinder bends towards your crosshair. |
+| **Rusty Nail** | Barbed Wire | Common | Coils deal 2 more damage. |
+| **Fence Pliers** | Barbed Wire | Uncommon | Coils are laid 50% faster. |
+| **Dirty Blade** | Barbed Wire | Rare | Whatever a coil catches has Slowness II for as long as it bleeds. |
+| **Reinforced Wire** | Barbed Wire | Epic | A coil catches twice before it is spent, 2 seconds apart. |
 
 ## Rituals
 

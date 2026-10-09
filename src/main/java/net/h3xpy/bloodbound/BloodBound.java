@@ -36,6 +36,7 @@ import net.h3xpy.bloodbound.perk.impl.FragNade;
 import net.h3xpy.bloodbound.perk.impl.HangedMan;
 import net.h3xpy.bloodbound.offering.Offerings;
 import net.h3xpy.bloodbound.perk.impl.HolySanctum;
+import net.h3xpy.bloodbound.perk.impl.SpringPad;
 import net.h3xpy.bloodbound.perk.impl.Nullification;
 import net.h3xpy.bloodbound.perk.impl.Wireless;
 import net.h3xpy.bloodbound.registry.ModAttachments;
@@ -112,6 +113,7 @@ public class BloodBound {
         NeoForge.EVENT_BUS.register(Nullification.class);
         NeoForge.EVENT_BUS.register(HangedMan.class);
         NeoForge.EVENT_BUS.register(HolySanctum.class);
+        NeoForge.EVENT_BUS.register(SpringPad.class);
         NeoForge.EVENT_BUS.register(Offerings.class);
         NeoForge.EVENT_BUS.addListener(BloodBoundCommand::register);
 

@@ -34,6 +34,7 @@ import net.h3xpy.bloodbound.perk.impl.OutOfBreath;
 import net.h3xpy.bloodbound.perk.impl.PatchUp;
 import net.h3xpy.bloodbound.perk.impl.ShortCircuit;
 import net.h3xpy.bloodbound.perk.impl.SinOfObliviousness;
+import net.h3xpy.bloodbound.perk.impl.SpringPad;
 import net.h3xpy.bloodbound.perk.impl.SurgicalSuture;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
 import net.h3xpy.bloodbound.perk.impl.Tinkerer;
@@ -94,7 +95,8 @@ public final class PerkActivationHandler {
             Map.entry(ModPerks.CHAINED_UP.id(), ChainedUp::activate),
             Map.entry(ModPerks.NULLIFICATION.id(), Nullification::activate),
             Map.entry(ModPerks.HANGED_MAN.id(), HangedMan::activate),
-            Map.entry(ModPerks.HOLY_SANCTUM.id(), HolySanctum::activate));
+            Map.entry(ModPerks.HOLY_SANCTUM.id(), HolySanctum::activate),
+            Map.entry(ModPerks.SPRING_PAD.id(), SpringPad::activate));
 
     private PerkActivationHandler() {}
 
@@ -199,6 +201,9 @@ public final class PerkActivationHandler {
             BadOmen.setHolding(player, holding);
         } else if (perk.id().equals(ModPerks.NULLIFICATION.id())) {
             Nullification.setHolding(player, holding);
+        } else if (perk.id().equals(ModPerks.SPRING_PAD.id())) {
+            // Laying a pad is a moment of holding still with the key down.
+            SpringPad.setHolding(player, holding);
         }
     }
 

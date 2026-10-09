@@ -1,13 +1,18 @@
 package net.h3xpy.bloodbound.perk.impl;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.entity.BarbedWireEntity;
+import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.registry.ModEffects;
 import net.h3xpy.bloodbound.ritual.TrapRoster;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
@@ -16,6 +21,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -101,6 +109,9 @@ public final class BarbedWire {
         }
 
         int needed = ModPerks.BARBED_WIRE.ticks(ModPerks.BARBED_SETUP, setup.tier);
+        if (data.isAddonActive(ModAddons.FENCE_PLIERS)) {
+            needed = Math.round(needed * ModAddons.FENCE_PLIERS_SETUP);
+        }
         setup.ticksHeld++;
 
         if (setup.ticksHeld % 4 == 0) {
@@ -139,6 +150,47 @@ public final class BarbedWire {
     public static void clear(UUID playerId) {
         SETTING.remove(playerId);
         TrapRoster.removeAll(BarbedWireEntity.KIND, playerId);
+    }
+
+    // --- Dirty Blade: slowed for as long as the bleeding lasts ---
+
+    /** Victims of a Dirty Blade coil, slowed until their Bleeding is gone. */
+    private static final Set<LivingEntity> DIRTY = new HashSet<>();
+
+    public static void slowWhileBleeding(LivingEntity victim) {
+        DIRTY.add(victim);
+        topUpSlow(victim);
+    }
+
+    /** Keeps every Dirty Blade victim slowed while they bleed. Called once a tick for the whole server. */
+    public static void tickDirty() {
+        if (DIRTY.isEmpty()) {
+            return;
+        }
+        Iterator<LivingEntity> iterator = DIRTY.iterator();
+        while (iterator.hasNext()) {
+            LivingEntity victim = iterator.next();
+            if (victim.isRemoved() || !victim.isAlive() || !victim.hasEffect(ModEffects.BLEEDING)) {
+                iterator.remove();
+                continue;
+            }
+            topUpSlow(victim);
+        }
+    }
+
+    /** Slowness II in short slices, so it ends within a moment of the bleeding. */
+    private static void topUpSlow(LivingEntity victim) {
+        MobEffectInstance slow = victim.getEffect(MobEffects.MOVEMENT_SLOWDOWN);
+        int amplifier = ModAddons.DIRTY_BLADE_SLOW_LEVEL - 1;
+        if (slow == null || (slow.getAmplifier() <= amplifier && slow.getDuration() < ModAddons.DIRTY_BLADE_SLOW_TICKS / 2)) {
+            victim.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, ModAddons.DIRTY_BLADE_SLOW_TICKS,
+                    amplifier, false, true, true));
+        }
+    }
+
+    /** Forgets every Dirty Blade victim, on server shutdown. */
+    public static void clearDirty() {
+        DIRTY.clear();
     }
 
     /** A logout: the work in hand is dropped, the coils already down stay where they are. */

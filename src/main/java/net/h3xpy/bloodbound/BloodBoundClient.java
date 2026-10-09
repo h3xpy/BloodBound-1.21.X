@@ -16,6 +16,7 @@ import net.h3xpy.bloodbound.client.model.IceShellModel;
 import net.h3xpy.bloodbound.client.model.TargetFoundModel;
 import net.h3xpy.bloodbound.client.render.BarbedWireRenderer;
 import net.h3xpy.bloodbound.client.render.ChainAnchorRenderer;
+import net.h3xpy.bloodbound.client.render.SpringPadRenderer;
 import net.h3xpy.bloodbound.client.render.IceShellRenderer;
 import net.h3xpy.bloodbound.client.render.RitualRenderer;
 import net.h3xpy.bloodbound.client.render.SanctumBubbleRenderer;
@@ -77,6 +78,7 @@ public class BloodBoundClient {
         event.registerEntityRenderer(ModEntities.RITUAL.get(), RitualRenderer::new);
         event.registerEntityRenderer(ModEntities.ICE_SHELL.get(), IceShellRenderer::new);
         event.registerEntityRenderer(ModEntities.CHAIN_ANCHOR.get(), ChainAnchorRenderer::new);
+        event.registerEntityRenderer(ModEntities.SPRING_PAD.get(), SpringPadRenderer::new);
         event.registerEntityRenderer(ModEntities.SANCTUM_BUBBLE.get(), SanctumBubbleRenderer::new);
     }
 

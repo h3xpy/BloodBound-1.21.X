@@ -9,10 +9,12 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.entity.SanctumBubbleEntity;
 import net.h3xpy.bloodbound.network.PerkChargesPayload;
+import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -26,6 +28,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -60,11 +64,16 @@ public final class HolySanctum {
         private final UUID ownerId;
         private final ResourceKey<Level> dimension;
         private final int tier;
-        private final Vec3 center;
+        /** Moves only with Cracked Halo, which carries the bubble along with its owner. */
+        private Vec3 center;
         private final double radius;
         private final float maxHealth;
         private float health;
         private int ticksLeft;
+        /** What the addon fitted when it went up made of it; it keeps that whatever happens after. */
+        private final boolean follows;
+        private final boolean reflects;
+        private final boolean blesses;
         /** Whatever was inside when it went up, and has not left since. */
         private final Set<UUID> insiders = new HashSet<>();
         /** The shell everybody sees. */
@@ -76,10 +85,26 @@ public final class HolySanctum {
             this.dimension = owner.level().dimension();
             this.tier = tier;
             this.center = owner.position().add(0.0D, owner.getBbHeight() / 2.0D, 0.0D);
-            this.radius = ModPerks.HOLY_SANCTUM.value(ModPerks.SANCTUM_RADIUS, tier);
-            this.maxHealth = (float) ModPerks.HOLY_SANCTUM.value(ModPerks.SANCTUM_HEALTH, tier);
-            this.health = maxHealth;
-            this.ticksLeft = ModPerks.HOLY_SANCTUM.ticks(ModPerks.SANCTUM_DURATION, tier);
+            PlayerPerkData data = PerkDataManager.get(owner);
+            this.follows = data.isAddonActive(ModAddons.CRACKED_HALO);
+            this.reflects = data.isAddonActive(ModAddons.STAINED_GLASS);
+            this.blesses = data.isAddonActive(ModAddons.SAINT_RELIC);
+
+            double radius = ModPerks.HOLY_SANCTUM.value(ModPerks.SANCTUM_RADIUS, tier);
+            float health = (float) ModPerks.HOLY_SANCTUM.value(ModPerks.SANCTUM_HEALTH, tier);
+            int ticks = ModPerks.HOLY_SANCTUM.ticks(ModPerks.SANCTUM_DURATION, tier);
+            if (data.isAddonActive(ModAddons.VOTIVE_CANDLE)) {
+                health *= ModAddons.VOTIVE_CANDLE_HEALTH;
+                ticks += ModAddons.VOTIVE_CANDLE_EXTRA_TICKS;
+            }
+            if (follows) {
+                radius *= ModAddons.CRACKED_HALO_RADIUS;
+                health *= ModAddons.CRACKED_HALO_HEALTH;
+            }
+            this.radius = radius;
+            this.maxHealth = health;
+            this.health = health;
+            this.ticksLeft = ticks;
         }
 
         private boolean contains(Vec3 point) {
@@ -102,6 +127,8 @@ public final class HolySanctum {
     private static final double GOLDEN_ANGLE = Math.PI * (3.0D - Math.sqrt(5.0D));
 
     private static final List<Bubble> BUBBLES = new ArrayList<>();
+    /** Set while a reflected blow lands, so a second bubble does not send it straight back. */
+    private static boolean reflecting;
     /** Players whose inventory has to be shown the block they were not allowed to place. */
     private static final Set<ServerPlayer> RESYNC = new HashSet<>();
 
@@ -149,11 +176,42 @@ public final class HolySanctum {
                 shatter(server, level, bubble);
                 continue;
             }
+            if (bubble.follows) {
+                follow(server, level, bubble);
+            }
             guard(level, bubble);
+            if (bubble.blesses && bubble.ticksLeft % 20 == 0) {
+                bless(level, bubble);
+            }
             if (bubble.health <= 0.0F) {
                 iterator.remove();
                 shatter(server, level, bubble);
                 continue;
+            }
+        }
+    }
+
+    /**
+     * Cracked Halo: the bubble keeps its owner at its heart, wherever they go. An owner who is gone
+     * or in another world leaves it standing where it was.
+     */
+    private static void follow(MinecraftServer server, ServerLevel level, Bubble bubble) {
+        ServerPlayer owner = server.getPlayerList().getPlayer(bubble.ownerId);
+        if (owner == null || owner.level() != level || !owner.isAlive()) {
+            return;
+        }
+        bubble.center = owner.position().add(0.0D, owner.getBbHeight() / 2.0D, 0.0D);
+        if (bubble.visual != null) {
+            bubble.visual.setPos(bubble.center);
+        }
+    }
+
+    /** Saint's Relic: everything inside regenerates, topped up every second. */
+    private static void bless(ServerLevel level, Bubble bubble) {
+        for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, bubble.area(), bubble::contains)) {
+            if (living.isAlive() && !living.isSpectator()) {
+                living.addEffect(new MobEffectInstance(MobEffects.REGENERATION, ModAddons.SAINT_RELIC_TICKS, 0,
+                        false, true, true));
             }
         }
     }
@@ -241,7 +299,7 @@ public final class HolySanctum {
                 ? (float) Mth.ceil(arrow.getDeltaMovement().length() * arrow.getBaseDamage())
                 : ModPerks.SANCTUM_OTHER_PROJECTILE_DAMAGE;
         projectile.discard();
-        hit(level, bubble, damage, now);
+        hit(level, bubble, damage, now, projectile.getOwner());
     }
 
     /** Whether a straight line from outside the bubble reaches into it. */
@@ -275,7 +333,8 @@ public final class HolySanctum {
         for (Bubble bubble : BUBBLES) {
             if (bubble.dimension == victim.level().dimension() && bubble.contains(victim) && !bubble.contains(origin)) {
                 event.setCanceled(true);
-                hit((ServerLevel) victim.level(), bubble, event.getAmount(), victim.getBoundingBox().getCenter());
+                hit((ServerLevel) victim.level(), bubble, event.getAmount(), victim.getBoundingBox().getCenter(),
+                        event.getSource().getEntity());
                 return;
             }
         }
@@ -396,12 +455,16 @@ public final class HolySanctum {
         player.resetAttackStrengthTicker();
         player.swing(InteractionHand.MAIN_HAND, true);
         if (damage > 0.0F) {
-            hit((ServerLevel) player.level(), bubble, damage, eyes.add(player.getLookAngle().scale(bubble.radius)));
+            hit((ServerLevel) player.level(), bubble, damage, eyes.add(player.getLookAngle().scale(bubble.radius)),
+                    player);
         }
     }
 
-    private static void hit(ServerLevel level, Bubble bubble, float damage, Vec3 near) {
+    private static void hit(ServerLevel level, Bubble bubble, float damage, Vec3 near, @Nullable Entity attacker) {
         bubble.health -= damage;
+        if (bubble.reflects) {
+            reflect(level, bubble, damage, attacker);
+        }
         Vec3 towards = near.subtract(bubble.center);
         if (bubble.visual != null) {
             bubble.visual.onHit(towards, Math.max(0.0F, bubble.health) / bubble.maxHealth);
@@ -415,6 +478,31 @@ public final class HolySanctum {
         ServerPlayer owner = level.getServer().getPlayerList().getPlayer(bubble.ownerId);
         if (owner != null && bubble.health > 0.0F) {
             sendHealth(owner, bubble);
+        }
+    }
+
+    /**
+     * Stained Glass: part of the blow goes back to whoever struck. Never to the bubble's own owner,
+     * who may well be hitting it on purpose, and never back off another reflection.
+     */
+    private static void reflect(ServerLevel level, Bubble bubble, float damage, @Nullable Entity attacker) {
+        if (reflecting) {
+            return;
+        }
+        if (!(attacker instanceof LivingEntity struck) || !struck.isAlive() || struck.getUUID().equals(bubble.ownerId)) {
+            return;
+        }
+        float back = damage * ModAddons.STAINED_GLASS_REFLECT;
+        if (back <= 0.0F) {
+            return;
+        }
+        ServerPlayer owner = level.getServer().getPlayerList().getPlayer(bubble.ownerId);
+        DamageSource base = owner != null ? level.damageSources().thorns(owner) : level.damageSources().magic();
+        reflecting = true;
+        try {
+            struck.hurt(PerkDamageSource.of(base, "stained_glass"), back);
+        } finally {
+            reflecting = false;
         }
     }
 
