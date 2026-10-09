@@ -5,9 +5,13 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import net.h3xpy.bloodbound.damage.PerkDamageSource;
+import net.h3xpy.bloodbound.data.PerkDataManager;
+import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.effect.BleedingHandler;
 import net.h3xpy.bloodbound.event.AuraRevealHandler;
+import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.perk.impl.BarbedWire;
 import net.h3xpy.bloodbound.registry.ModEntities;
 import net.h3xpy.bloodbound.ritual.TrapRoster;
 import net.minecraft.ChatFormatting;
@@ -56,6 +60,12 @@ public class BarbedWireEntity extends Entity implements TrapRoster.Trap {
     private int tier = 1;
     private long placedAt;
     private int triggerCooldown;
+    /** What the addons fitted when it was laid made of it, kept so they hold while the owner is away. */
+    private float bonusDamage;
+    private boolean dirtyBlade;
+    /** Catches left before the coil is spent: one, or two with Reinforced Wire. */
+    private int catchesLeft = 1;
+    private int reloadTicks = TRIGGER_COOLDOWN;
 
     public BarbedWireEntity(EntityType<? extends BarbedWireEntity> type, Level level) {
         super(type, level);
@@ -67,6 +77,15 @@ public class BarbedWireEntity extends Entity implements TrapRoster.Trap {
         this.ownerId = owner.getUUID();
         this.tier = tier;
         this.placedAt = level.getGameTime();
+        PlayerPerkData data = PerkDataManager.get(owner);
+        if (data.isAddonActive(ModAddons.RUSTY_NAIL)) {
+            this.bonusDamage = ModAddons.RUSTY_NAIL_DAMAGE;
+        }
+        this.dirtyBlade = data.isAddonActive(ModAddons.DIRTY_BLADE);
+        if (data.isAddonActive(ModAddons.REINFORCED_WIRE)) {
+            this.catchesLeft = ModAddons.REINFORCED_WIRE_CATCHES;
+            this.reloadTicks = ModAddons.REINFORCED_WIRE_RELOAD_TICKS;
+        }
         applyTier();
     }
 
@@ -112,19 +131,27 @@ public class BarbedWireEntity extends Entity implements TrapRoster.Trap {
         }
     }
 
-    /** Something walked in. A coil only ever goes off once: it is gone the moment it does. */
+    /**
+     * Something walked in. A coil goes off once and is gone; with Reinforced Wire, twice,
+     * a moment apart.
+     */
     private void trigger(ServerLevel level, LivingEntity victim) {
-        triggerCooldown = TRIGGER_COOLDOWN;
-        discard();
+        triggerCooldown = reloadTicks;
+        if (--catchesLeft <= 0) {
+            discard();
+        }
 
         ServerPlayer owner = ownerId == null ? null : level.getServer().getPlayerList().getPlayer(ownerId);
-        float damage = (float) ModPerks.BARBED_WIRE.value(ModPerks.BARBED_DAMAGE, tier);
+        float damage = (float) ModPerks.BARBED_WIRE.value(ModPerks.BARBED_DAMAGE, tier) + bonusDamage;
         DamageSource source = owner != null
                 ? level.damageSources().playerAttack(owner)
                 : level.damageSources().generic();
         victim.hurt(PerkDamageSource.of(source, "barbed_wire"), damage);
 
         BleedingHandler.apply(victim, ModPerks.BARBED_WIRE.intValue(ModPerks.BARBED_BLEED, tier));
+        if (dirtyBlade) {
+            BarbedWire.slowWhileBleeding(victim);
+        }
 
         level.playSound(null, blockPosition(), SoundEvents.SWEET_BERRY_BUSH_BREAK,
                 SoundSource.PLAYERS, 0.8F, 0.7F);
@@ -201,6 +228,10 @@ public class BarbedWireEntity extends Entity implements TrapRoster.Trap {
         ownerId = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
         tier = Math.max(1, tag.getInt("Tier"));
         placedAt = tag.getLong("PlacedAt");
+        bonusDamage = tag.getFloat("BonusDamage");
+        dirtyBlade = tag.getBoolean("DirtyBlade");
+        catchesLeft = tag.contains("CatchesLeft") ? tag.getInt("CatchesLeft") : 1;
+        reloadTicks = tag.contains("ReloadTicks") ? tag.getInt("ReloadTicks") : TRIGGER_COOLDOWN;
         applyTier();
     }
 
@@ -211,5 +242,9 @@ public class BarbedWireEntity extends Entity implements TrapRoster.Trap {
         }
         tag.putInt("Tier", tier);
         tag.putLong("PlacedAt", placedAt);
+        tag.putFloat("BonusDamage", bonusDamage);
+        tag.putBoolean("DirtyBlade", dirtyBlade);
+        tag.putInt("CatchesLeft", catchesLeft);
+        tag.putInt("ReloadTicks", reloadTicks);
     }
 }

@@ -664,6 +664,135 @@ public final class ModAddons {
     /** How close to the thrower's feet a rune has to break for it to count as thrown at them. */
     public static final double DECORATED_LEAF_FEET_RANGE = 1.5D;
 
+    // --- Spring Pad ---
+
+    /** Your own pad never costs you the landing. */
+    public static final Addon SAFETY_PROTOCOL = AddonRegistry.register(
+            Addon.of("safety_protocol", ModPerks.SPRING_PAD, AddonRarity.RARE));
+
+    // --- Safety Protocol tuning ---
+    /** How long after a launch the landing is still covered, should it never come. */
+    public static final int SAFETY_PROTOCOL_TICKS = 200;
+
+    // --- Holy Sanctum ---
+
+    /** More health, and a little longer. */
+    public static final Addon VOTIVE_CANDLE = AddonRegistry.register(
+            Addon.of("votive_candle", ModPerks.HOLY_SANCTUM, AddonRarity.COMMON));
+
+    /** Part of every blow the bubble takes goes back to whoever struck it. */
+    public static final Addon STAINED_GLASS = AddonRegistry.register(
+            Addon.of("stained_glass", ModPerks.HOLY_SANCTUM, AddonRarity.RARE));
+
+    /** Everything inside regenerates. */
+    public static final Addon SAINT_RELIC = AddonRegistry.register(
+            Addon.of("saint_relic", ModPerks.HOLY_SANCTUM, AddonRarity.EPIC));
+
+    /** The bubble follows its owner, much smaller and much frailer. */
+    public static final Addon CRACKED_HALO = AddonRegistry.register(
+            Addon.of("cracked_halo", ModPerks.HOLY_SANCTUM, AddonRarity.UNSTABLE));
+
+    // --- Votive Candle tuning ---
+    public static final float VOTIVE_CANDLE_HEALTH = 1.25F;
+    public static final int VOTIVE_CANDLE_EXTRA_TICKS = 40;
+
+    // --- Stained Glass tuning ---
+    public static final float STAINED_GLASS_REFLECT = 0.30F;
+
+    // --- Saint's Relic tuning ---
+    /** Regeneration I, topped up while inside; long enough that it never flickers off between top-ups. */
+    public static final int SAINT_RELIC_TICKS = 60;
+
+    // --- Cracked Halo tuning ---
+    public static final double CRACKED_HALO_RADIUS = 0.5D;
+    public static final float CRACKED_HALO_HEALTH = 0.3F;
+
+    // --- The Hanged Man ---
+
+    /** A shorter cooldown. */
+    public static final Addon FRAYED_ROPE = AddonRegistry.register(
+            Addon.of("frayed_rope", ModPerks.HANGED_MAN, AddonRarity.COMMON));
+
+    /** No fall damage while upside down. */
+    public static final Addon UPTURNED_HOURGLASS = AddonRegistry.register(
+            Addon.of("upturned_hourglass", ModPerks.HANGED_MAN, AddonRarity.UNCOMMON));
+
+    /** Everything around is turned over too, for a few seconds. */
+    public static final Addon TAROT_CARD_XII = AddonRegistry.register(
+            Addon.of("tarot_card_xii", ModPerks.HANGED_MAN, AddonRarity.EPIC));
+
+    /** No cooldown at all, but the fall after a flip hurts twice as much. */
+    public static final Addon UPSIDE_DOWN_CARD = AddonRegistry.register(
+            Addon.of("upside_down_card", ModPerks.HANGED_MAN, AddonRarity.UNSTABLE));
+
+    // --- Frayed Rope tuning ---
+    public static final float FRAYED_ROPE_COOLDOWN = 0.75F;
+
+    // --- Tarot Card XII tuning ---
+    public static final double TAROT_CARD_RADIUS = 8.0D;
+    public static final int TAROT_CARD_TICKS = 100;
+
+    // --- Upside Down Card tuning ---
+    public static final float UPSIDE_DOWN_CARD_FALL = 2.0F;
+
+    // --- Short Circuit ---
+
+    /** A quicker charge. */
+    public static final Addon COPPER_COIL = AddonRegistry.register(
+            Addon.of("copper_coil", ModPerks.SHORT_CIRCUIT, AddonRarity.COMMON));
+
+    /** A broken charge keeps half its progress for a while. */
+    public static final Addon CAPACITOR = AddonRegistry.register(
+            Addon.of("capacitor", ModPerks.SHORT_CIRCUIT, AddonRarity.RARE));
+
+    /** The cylinder bends after the crosshair as it grows. */
+    public static final Addon RED_LED = AddonRegistry.register(
+            Addon.of("red_led", ModPerks.SHORT_CIRCUIT, AddonRarity.EPIC));
+
+    // --- Copper Coil tuning ---
+    public static final float COPPER_COIL_CHARGE = 0.85F;
+
+    // --- Capacitor tuning ---
+    public static final float CAPACITOR_KEPT = 0.5F;
+    public static final int CAPACITOR_TICKS = 200;
+
+    // --- Red LED tuning ---
+    /** How far the growing tip turns towards the crosshair each tick, as a share of the way. */
+    public static final double RED_LED_STEER = 0.15D;
+
+    // --- Barbed Wire ---
+
+    /** More damage. */
+    public static final Addon RUSTY_NAIL = AddonRegistry.register(
+            Addon.of("rusty_nail", ModPerks.BARBED_WIRE, AddonRarity.COMMON));
+
+    /** Laid twice as fast. */
+    public static final Addon FENCE_PLIERS = AddonRegistry.register(
+            Addon.of("fence_pliers", ModPerks.BARBED_WIRE, AddonRarity.UNCOMMON));
+
+    /** Slowness II for as long as the victim bleeds. */
+    public static final Addon DIRTY_BLADE = AddonRegistry.register(
+            Addon.of("dirty_blade", ModPerks.BARBED_WIRE, AddonRarity.RARE));
+
+    /** A coil catches twice before it is spent. */
+    public static final Addon REINFORCED_WIRE = AddonRegistry.register(
+            Addon.of("reinforced_wire", ModPerks.BARBED_WIRE, AddonRarity.EPIC));
+
+    // --- Rusty Nail tuning ---
+    public static final float RUSTY_NAIL_DAMAGE = 2.0F;
+
+    // --- Fence Pliers tuning ---
+    public static final float FENCE_PLIERS_SETUP = 0.5F;
+
+    // --- Dirty Blade tuning ---
+    /** Slowness II, topped up while the victim bleeds. */
+    public static final int DIRTY_BLADE_SLOW_TICKS = 30;
+    public static final int DIRTY_BLADE_SLOW_LEVEL = 2;
+
+    // --- Reinforced Wire tuning ---
+    public static final int REINFORCED_WIRE_CATCHES = 2;
+    public static final int REINFORCED_WIRE_RELOAD_TICKS = 40;
+
     // --- Wire Spool tuning ---
     /** Multiplier on how fast the reserve fills. */
     public static final double WIRE_SPOOL_REGEN = 1.75D;

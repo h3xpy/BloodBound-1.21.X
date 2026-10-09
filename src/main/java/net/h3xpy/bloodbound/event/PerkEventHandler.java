@@ -42,6 +42,7 @@ import net.h3xpy.bloodbound.perk.impl.Omniscience;
 import net.h3xpy.bloodbound.perk.impl.OutOfBreath;
 import net.h3xpy.bloodbound.perk.impl.ShortCircuit;
 import net.h3xpy.bloodbound.perk.impl.SinOfObliviousness;
+import net.h3xpy.bloodbound.perk.impl.SpringPad;
 import net.h3xpy.bloodbound.perk.impl.SurgicalSuture;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
 import net.h3xpy.bloodbound.perk.impl.TeamSpirit;
@@ -266,6 +267,7 @@ public final class PerkEventHandler {
         BewareThePowerOfAnAngel.tick(player, data, gameTime);
         CatchingUp.tick(player, data, gameTime);
         BarbedWire.tick(player, data, gameTime);
+        SpringPad.tick(player, data, gameTime);
         TeamSpirit.tick(player, data, gameTime);
         HealingRunes.tick(player, data, gameTime);
         BeyondVisionHandler.tick(player, data);
@@ -322,6 +324,8 @@ public final class PerkEventHandler {
         ShortCircuit.tickBeams(event.getServer());
         ChainedUp.tickShots(event.getServer());
         HolySanctum.tick(event.getServer());
+        HangedMan.tickTurned(event.getServer());
+        BarbedWire.tickDirty();
         UnderTheRadarHandler.tick(event.getServer());
         RitualManager.tick(event.getServer());
         long ritualTime = event.getServer().overworld().getGameTime();

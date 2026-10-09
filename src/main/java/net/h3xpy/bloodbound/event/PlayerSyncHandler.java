@@ -29,6 +29,7 @@ import net.h3xpy.bloodbound.perk.impl.Omniscience;
 import net.h3xpy.bloodbound.perk.impl.OutOfBreath;
 import net.h3xpy.bloodbound.perk.impl.ShortCircuit;
 import net.h3xpy.bloodbound.perk.impl.SinOfObliviousness;
+import net.h3xpy.bloodbound.perk.impl.SpringPad;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
 import net.h3xpy.bloodbound.perk.impl.TeamSpirit;
 import net.h3xpy.bloodbound.perk.impl.Tinkerer;
@@ -75,6 +76,7 @@ public final class PlayerSyncHandler {
             GabrielsBowHandler.clear(player.getUUID());
             MarkManager.clear(player.getUUID());
             BarbedWire.logout(player.getUUID());
+            SpringPad.logout(player.getUUID());
             OutOfBreath.clear(player.getUUID());
             HealingRunes.clear(player.getUUID());
             TeamSpirit.clear(player.getUUID());
@@ -150,6 +152,8 @@ public final class PlayerSyncHandler {
         TrapRoster.clear();
         Nullification.clear();
         HolySanctum.clear();
+        HangedMan.clearTurned();
+        BarbedWire.clearDirty();
     }
 
     @SubscribeEvent

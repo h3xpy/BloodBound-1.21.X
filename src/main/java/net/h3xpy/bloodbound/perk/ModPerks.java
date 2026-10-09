@@ -921,6 +921,40 @@ public final class ModPerks {
             .cooldown(3)
             .build());
 
+    /**
+     * Hold the key still to lay a pad that throws whatever steps on it high into the air, its
+     * layer included, a few times before it gives.
+     * <p>Scaling: [0] seconds of setting up, [1] pads out at once, [2] cooldown in seconds,
+     * [3] launches before it breaks.
+     */
+    public static final Perk SPRING_PAD = PerkRegistry.register(Perk.builder("spring_pad")
+            .type(PerkType.ACTIVE)
+            .scaling(2, 1.5, 1)
+            .scaling(1, 2, 3)
+            .scaling(20, 15, 10)
+            .scaling(2, 3, 4)
+            .cooldown(2)
+            .build());
+
+    // --- Spring Pad tuning ---
+    public static final int SPRING_SETUP = 0;
+    public static final int SPRING_TRAPS = 1;
+    public static final int SPRING_COOLDOWN = 2;
+    public static final int SPRING_LAUNCHES = 3;
+    /** How long a fresh pad takes to arm. */
+    public static final int SPRING_ARM_TICKS = 40;
+    /** Ticks between two launches from the same pad. */
+    public static final int SPRING_RELOAD_TICKS = 20;
+    /**
+     * The launch: this fast, in blocks per tick, along where the one thrown is looking: straight up
+     * goes about 33 blocks high, level ahead about 24 blocks away. Anything flatter than the minimum
+     * angle, looking down included, is thrown at the minimum, so nobody is just shoved along the ground.
+     */
+    public static final double SPRING_LAUNCH_SPEED = 2.7D;
+    public static final double SPRING_MIN_ANGLE = 20.0D;
+    /** The pad's footprint, in blocks, past its own edge. */
+    public static final double SPRING_RADIUS = 0.15D;
+
     // --- Holy Sanctum tuning ---
     public static final int SANCTUM_RADIUS = 0;
     public static final int SANCTUM_HEALTH = 1;
