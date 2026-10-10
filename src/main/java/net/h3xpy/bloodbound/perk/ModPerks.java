@@ -936,6 +936,51 @@ public final class ModPerks {
             .cooldown(2)
             .build());
 
+    /**
+     * Being watched sharpens you: while another player or a creature has its eyes on you, you move,
+     * hit, recover and dig faster, and for a moment after.
+     * <p>Scaling: [0] every bonus, as a percentage.
+     */
+    public static final Perk VIGILANCE = PerkRegistry.register(Perk.builder("vigilance")
+            .type(PerkType.PASSIVE)
+            .scaling(10, 15, 20)
+            .build());
+
+    /**
+     * Hold the key a few seconds with a melee weapon in hand to coat it; the next thing it hits takes
+     * more damage and is thrown harder, and a player has every perk turned off for a while.
+     * <p>Scaling: [0] seconds the perks stay off, [1] cooldown in seconds, [2] extra damage of the
+     * coated hit, as a percentage.
+     */
+    public static final Perk REACTIVE_COMPOUND = PerkRegistry.register(Perk.builder("reactive_compound")
+            .type(PerkType.ACTIVE)
+            .scaling(10, 12.5, 15)
+            .scaling(45, 40, 35)
+            .scaling(10, 15, 20)
+            .cooldown(1)
+            .build());
+
+    // --- Vigilance tuning ---
+    public static final int VIGILANCE_BONUS = 0;
+    /** How far another player's gaze reaches, and a creature's. */
+    public static final double VIGILANCE_PLAYER_RANGE = 48.0D;
+    public static final double VIGILANCE_MOB_RANGE = 24.0D;
+    /** How close to dead on a gaze has to be, as the cosine of the angle off (about 8 degrees). */
+    public static final double VIGILANCE_GAZE_COSINE = 0.99D;
+    /** How long the bonuses outlast the gaze. */
+    public static final int VIGILANCE_LINGER_TICKS = 20;
+    /** How often the gazes are looked for. */
+    public static final int VIGILANCE_CHECK_TICKS = 5;
+
+    // --- Reactive Compound tuning ---
+    public static final int REACTIVE_DISABLE = 0;
+    public static final int REACTIVE_COOLDOWN = 1;
+    public static final int REACTIVE_DAMAGE = 2;
+    /** How much harder the coated hit throws what it hits. */
+    public static final double REACTIVE_KNOCKBACK = 1.5D;
+    /** How long the coating takes, the key held throughout. */
+    public static final int REACTIVE_COAT_TICKS = 60;
+
     // --- Spring Pad tuning ---
     public static final int SPRING_SETUP = 0;
     public static final int SPRING_TRAPS = 1;

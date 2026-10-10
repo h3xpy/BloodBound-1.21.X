@@ -172,6 +172,11 @@ public final class TargetFound {
 
     public static void tick(ServerPlayer player, PlayerPerkData data, long gameTime) {
         if (data.getActiveTier(ModPerks.TARGET_FOUND) <= 0) {
+            if (data.hasEquipped(ModPerks.TARGET_FOUND)) {
+                // Only disabled for a while: the wires stay down, the one being laid does not.
+                SETTING.remove(player.getUUID());
+                return;
+            }
             // Out of the loadout, and every wire goes with it.
             if (TrapRoster.hasAny(TargetFoundEntity.KIND, player.getUUID()) || PENDING.containsKey(player.getUUID())
                     || SETTING.containsKey(player.getUUID())) {

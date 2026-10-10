@@ -30,7 +30,9 @@ import net.h3xpy.bloodbound.perk.impl.Omniscience;
 import net.h3xpy.bloodbound.perk.impl.OutOfBreath;
 import net.h3xpy.bloodbound.perk.impl.ShortCircuit;
 import net.h3xpy.bloodbound.perk.impl.SinOfObliviousness;
+import net.h3xpy.bloodbound.perk.impl.ReactiveCompound;
 import net.h3xpy.bloodbound.perk.impl.SpringPad;
+import net.h3xpy.bloodbound.perk.impl.Vigilance;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
 import net.h3xpy.bloodbound.perk.impl.TeamSpirit;
 import net.h3xpy.bloodbound.perk.impl.Tinkerer;
@@ -79,6 +81,8 @@ public final class PlayerSyncHandler {
             BarbedWire.logout(player.getUUID());
             SpringPad.logout(player.getUUID());
             QuestTracker.clear(player.getUUID());
+            Vigilance.clear(player);
+            ReactiveCompound.clear(player.getUUID());
             OutOfBreath.clear(player.getUUID());
             HealingRunes.clear(player.getUUID());
             TeamSpirit.clear(player.getUUID());
@@ -130,6 +134,8 @@ public final class PlayerSyncHandler {
             BadOmen.clear(player);
             Nullification.clear(player);
             QuestTracker.clear(player.getUUID());
+            Vigilance.clear(player);
+            ReactiveCompound.cancel(player);
             HangedMan.clear(player);
         }
     }

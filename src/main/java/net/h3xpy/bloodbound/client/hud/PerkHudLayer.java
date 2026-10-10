@@ -18,6 +18,7 @@ import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.perk.Perk;
 import net.h3xpy.bloodbound.perk.PerkRegistry;
 import net.h3xpy.bloodbound.perk.PerkType;
+import net.h3xpy.bloodbound.perk.impl.Vigilance;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -45,6 +46,8 @@ public class PerkHudLayer implements LayeredDraw.Layer {
 
     /** Used for a live window such as a Broken Movement Device return point, never a cooldown. */
     private static final int COLOR_WINDOW = 0xFF4CD6E0;
+    /** Vigilance's slot while it is in effect. */
+    private static final int COLOR_LIT = 0xFFF2C14E;
 
     /** Used for a streak count, such as Nasty Blade's tokens. */
     private static final int COLOR_TOKENS = 0xFFE7C74A;
@@ -125,10 +128,18 @@ public class PerkHudLayer implements LayeredDraw.Layer {
         boolean ready = remaining <= 0;
         boolean counting = window > 0;
 
-        graphics.fill(x, y, x + SLOT_SIZE, y + SLOT_SIZE, 0xA0000000);
-        GuiUtil.drawBorder(graphics, x, y, SLOT_SIZE, SLOT_SIZE,
-                counting ? COLOR_WINDOW : (ready ? 0xFFB4232F : 0xFF3A2226));
+        // Reactive Compound has every perk off: the icons go grey until it wears off.
+        boolean disabled = ClientPerkData.get().arePerksDisabled();
+        // Vigilance lights up while its bearer is being watched.
+        boolean lit = !disabled && perk.id().equals(ModPerks.VIGILANCE.id()) && Vigilance.isClientActive();
 
+        graphics.fill(x, y, x + SLOT_SIZE, y + SLOT_SIZE, lit ? 0xA0806020 : 0xA0000000);
+        GuiUtil.drawBorder(graphics, x, y, SLOT_SIZE, SLOT_SIZE, disabled ? 0xFF3A3A3A
+                : lit ? COLOR_LIT : counting ? COLOR_WINDOW : (ready ? 0xFFB4232F : 0xFF3A2226));
+
+        if (disabled) {
+            graphics.setColor(0.35F, 0.35F, 0.35F, 1.0F);
+        }
         graphics.blitSprite(perk.icon(tier), x + 2, y + 2, 16, 16);
 
         // The addon rides alongside its perk, smaller so the perk stays the thing you read first.
@@ -138,6 +149,7 @@ public class PerkHudLayer implements LayeredDraw.Layer {
             graphics.blitSprite(addon.icon(), textX, addonY, ADDON_ICON_SIZE, ADDON_ICON_SIZE);
             textX += ADDON_ICON_SIZE + 3;
         }
+        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         // Only active perks respond to a key, so only they advertise one.
         if (perk.type() == PerkType.ACTIVE) {

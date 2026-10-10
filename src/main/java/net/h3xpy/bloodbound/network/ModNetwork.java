@@ -72,6 +72,15 @@ public final class ModNetwork {
                     }
                 });
 
+        registrar.playToClient(AngelWingsPayload.TYPE, AngelWingsPayload.STREAM_CODEC,
+                (payload, context) -> ClientPayloadHandler.handleAngelWings(payload));
+
+        registrar.playToClient(VigilancePayload.TYPE, VigilancePayload.STREAM_CODEC,
+                (payload, context) -> ClientPayloadHandler.handleVigilance(payload));
+
+        registrar.playToClient(ReactiveCompoundPayload.TYPE, ReactiveCompoundPayload.STREAM_CODEC,
+                (payload, context) -> ClientPayloadHandler.handleReactiveCompound(payload));
+
         registrar.playToClient(WikiPayload.TYPE, WikiPayload.STREAM_CODEC,
                 (payload, context) -> ClientPayloadHandler.handleWiki(payload));
 

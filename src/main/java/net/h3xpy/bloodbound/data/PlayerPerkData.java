@@ -74,6 +74,10 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
     private final Set<ResourceLocation> claimedAchievements = new LinkedHashSet<>();
     /** Running totals towards advancements that add up over time, by name. Kept for good. */
     private final Map<String, Float> questProgress = new HashMap<>();
+    /** Reactive Compound: every perk is off until this game time. Saved, so a relog does not lift it. */
+    private long perksDisabledUntil;
+    /** Whether that is in force; kept as a flag so getActiveTier needs no clock. */
+    private boolean perksDisabled;
 
     // --- learned perks ---
 
@@ -184,8 +188,47 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
     }
 
     /** As above, by id. */
+    /** The tier a perk works at right now: 0 when it is not equipped, or while perks are disabled. */
     public int getActiveTier(@Nullable ResourceLocation perkId) {
-        return perkId != null && isEquipped(perkId) ? getUnlockedTier(perkId) : 0;
+        return perkId != null && !perksDisabled && isEquipped(perkId) ? getUnlockedTier(perkId) : 0;
+    }
+
+    /**
+     * Whether a perk sits in the loadout, disabled or not. What a perk leaves in the world (traps,
+     * wires) is only taken away when it leaves the loadout, not while Reactive Compound has it off.
+     */
+    public boolean hasEquipped(Perk perk) {
+        return isEquipped(perk.id()) && getUnlockedTier(perk.id()) > 0;
+    }
+
+    // --- disabled perks (Reactive Compound) ---
+
+    /** Turns every perk off until this long from now; a longer disable already running is kept. */
+    public void disablePerks(long gameTime, int ticks) {
+        perksDisabledUntil = Math.max(perksDisabledUntil, gameTime + ticks);
+        perksDisabled = gameTime < perksDisabledUntil;
+    }
+
+    /**
+     * Brings the disabled flag up to date.
+     *
+     * @return true when it changed, so the client needs telling
+     */
+    public boolean updatePerksDisabled(long gameTime) {
+        boolean now = gameTime < perksDisabledUntil;
+        if (now == perksDisabled) {
+            return false;
+        }
+        perksDisabled = now;
+        return true;
+    }
+
+    public boolean arePerksDisabled() {
+        return perksDisabled;
+    }
+
+    public long perksDisabledUntil() {
+        return perksDisabledUntil;
     }
 
     /** Whether any equipped perk unlocks the co-op healing ability. */
@@ -1211,6 +1254,8 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
         CompoundTag progressTag = new CompoundTag();
         questProgress.forEach(progressTag::putFloat);
         tag.put("questProgress", progressTag);
+        tag.putLong("perksDisabledUntil", perksDisabledUntil);
+        tag.putBoolean("perksDisabled", perksDisabled);
         if (soulweb != null) {
             tag.put("soulweb", soulweb.save(provider));
         }
@@ -1278,6 +1323,8 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
                 claimedAchievements.add(id);
             }
         }
+        perksDisabledUntil = tag.getLong("perksDisabledUntil");
+        perksDisabled = tag.getBoolean("perksDisabled");
         questProgress.clear();
         CompoundTag progressTag = tag.getCompound("questProgress");
         for (String key : progressTag.getAllKeys()) {

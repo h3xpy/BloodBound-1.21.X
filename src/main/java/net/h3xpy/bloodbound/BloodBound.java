@@ -37,8 +37,11 @@ import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.perk.impl.FragNade;
 import net.h3xpy.bloodbound.perk.impl.HangedMan;
 import net.h3xpy.bloodbound.offering.Offerings;
+import net.h3xpy.bloodbound.perk.impl.BewareThePowerOfAnAngel;
 import net.h3xpy.bloodbound.perk.impl.HolySanctum;
+import net.h3xpy.bloodbound.perk.impl.ReactiveCompound;
 import net.h3xpy.bloodbound.perk.impl.SpringPad;
+import net.h3xpy.bloodbound.perk.impl.Vigilance;
 import net.h3xpy.bloodbound.perk.impl.Nullification;
 import net.h3xpy.bloodbound.perk.impl.Wireless;
 import net.h3xpy.bloodbound.registry.ModAttachments;
@@ -118,6 +121,9 @@ public class BloodBound {
         NeoForge.EVENT_BUS.register(SpringPad.class);
         NeoForge.EVENT_BUS.register(HostileWoundsHandler.class);
         NeoForge.EVENT_BUS.register(QuestTracker.class);
+        NeoForge.EVENT_BUS.register(Vigilance.class);
+        NeoForge.EVENT_BUS.register(ReactiveCompound.class);
+        NeoForge.EVENT_BUS.register(BewareThePowerOfAnAngel.class);
         NeoForge.EVENT_BUS.register(Offerings.class);
         NeoForge.EVENT_BUS.addListener(BloodBoundCommand::register);
 
