@@ -101,6 +101,7 @@ public final class ClientEventHandler {
         ClientEffectCharges.reset();
         ClientUnderTheRadar.reset();
         ClientHangedMan.reset();
+        ClientWiki.reset();
         healHeld = false;
         Arrays.fill(SLOT_HELD, false);
         Arrays.fill(SLOT_HELD_TICKS, 0);

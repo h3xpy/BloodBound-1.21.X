@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.damage.ModDamageTypes;
 import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
@@ -54,6 +55,8 @@ public final class ShortCircuit {
     /** Particles spent on the cylinder per block of its length each tick, and the most in one tick. */
     private static final double PARTICLES_PER_BLOCK = 0.8D;
     private static final int MAX_PARTICLES = 60;
+    /** Kills one cylinder needs for Bip. */
+    private static final int BIP_KILLS = 4;
     /** How hard the camera shakes, in degrees, and for how long: the shooter as it goes off, anyone caught while inside. */
     private static final float SHOOTER_SHAKE = 2.5F;
     private static final int SHOOTER_SHAKE_TICKS = 20;
@@ -78,6 +81,8 @@ public final class ShortCircuit {
         private final double interval;
         private double length;
         private int lingerLeft = ModPerks.CIRCUIT_LINGER_TICKS;
+        /** What it has killed, for Bip. */
+        private int kills;
         /** When each entity inside is next due a hit, in game ticks with the fraction kept. */
         private final Map<Integer, Double> nextHit = new HashMap<>();
 
@@ -258,6 +263,10 @@ public final class ShortCircuit {
             beam.nextHit.put(victim.getId(), Math.max(due + beam.interval, now + beam.interval - 1.0D));
             victim.invulnerableTime = 0;
             victim.hurt(source, ModPerks.CIRCUIT_DAMAGE);
+            // Bip: four killed by the one cylinder.
+            if (!victim.isAlive() && ++beam.kills == BIP_KILLS && owner != null) {
+                ModAdvancements.grant(owner, ModAdvancements.BIP);
+            }
             if (victim instanceof ServerPlayer shaken) {
                 PacketDistributor.sendToPlayer(shaken, new CameraShakePayload(VICTIM_SHAKE, VICTIM_SHAKE_TICKS));
             }

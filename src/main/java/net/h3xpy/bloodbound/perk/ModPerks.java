@@ -947,11 +947,11 @@ public final class ModPerks {
     public static final int SPRING_RELOAD_TICKS = 20;
     /**
      * The launch: this fast, in blocks per tick, along where the one thrown is looking: straight up
-     * goes about 33 blocks high, level ahead about 24 blocks away. Anything flatter than the minimum
-     * angle, looking down included, is thrown at the minimum, so nobody is just shoved along the ground.
+     * goes about 33 blocks high. Whatever the look, it never goes up slower than the minimum, which
+     * is 20 blocks high; looking ahead, or down, adds distance on top of that.
      */
     public static final double SPRING_LAUNCH_SPEED = 2.7D;
-    public static final double SPRING_MIN_ANGLE = 20.0D;
+    public static final double SPRING_MIN_UP = 2.0D;
     /** The pad's footprint, in blocks, past its own edge. */
     public static final double SPRING_RADIUS = 0.15D;
 

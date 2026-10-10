@@ -6,6 +6,7 @@ import java.util.List;
 import net.h3xpy.bloodbound.BloodBound;
 import net.h3xpy.bloodbound.advancement.AchievementTracker;
 import net.h3xpy.bloodbound.advancement.ModAdvancements;
+import net.h3xpy.bloodbound.advancement.QuestTracker;
 import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
@@ -214,8 +215,13 @@ public final class PerkEventHandler {
         }
         long gameTime = player.level().getGameTime();
         // Ice Block: the ice takes the blow, and breaks doing it.
+        // Chilly: read before the ice takes it, since only a blow that would have killed counts.
+        boolean lethal = event.getAmount() >= player.getHealth() + player.getAbsorptionAmount();
         if (IceBlock.absorbDamage(player, gameTime)) {
             event.setCanceled(true);
+            if (lethal) {
+                ModAdvancements.grant(player, ModAdvancements.CHILLY);
+            }
             return;
         }
         PlayerPerkData data = PerkDataManager.get(player);
@@ -268,6 +274,7 @@ public final class PerkEventHandler {
         CatchingUp.tick(player, data, gameTime);
         BarbedWire.tick(player, data, gameTime);
         SpringPad.tick(player, data, gameTime);
+        QuestTracker.tick(player, data, gameTime);
         TeamSpirit.tick(player, data, gameTime);
         HealingRunes.tick(player, data, gameTime);
         BeyondVisionHandler.tick(player, data);
@@ -326,6 +333,10 @@ public final class PerkEventHandler {
         HolySanctum.tick(event.getServer());
         HangedMan.tickTurned(event.getServer());
         BarbedWire.tickDirty();
+        long serverTime = event.getServer().overworld().getGameTime();
+        if (serverTime % 20L == 0L) {
+            QuestTracker.prune(serverTime);
+        }
         UnderTheRadarHandler.tick(event.getServer());
         RitualManager.tick(event.getServer());
         long ritualTime = event.getServer().overworld().getGameTime();

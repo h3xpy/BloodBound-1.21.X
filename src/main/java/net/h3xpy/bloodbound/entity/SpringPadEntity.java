@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.advancement.QuestTracker;
 import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.perk.impl.SpringPad;
 import net.h3xpy.bloodbound.registry.ModEntities;
@@ -101,18 +102,22 @@ public class SpringPadEntity extends Entity implements TrapRoster.Trap {
      */
     private void launch(ServerLevel level, List<LivingEntity> riders) {
         for (LivingEntity rider : riders) {
-            // Along where the one thrown is looking: up for height, level for distance. Never flatter
-            // than the minimum angle, so looking down still leaves the ground.
+            // Along where the one thrown is looking: up for height, level for distance. Looking down
+            // counts as looking level, and the climb never drops under the minimum, so every launch
+            // goes at least 20 blocks high.
             float yaw = rider.getYHeadRot() * Mth.DEG_TO_RAD;
-            double angle = Math.toRadians(Mth.clamp(-rider.getXRot(), ModPerks.SPRING_MIN_ANGLE, 90.0D));
+            double angle = Math.toRadians(Mth.clamp(-rider.getXRot(), 0.0D, 90.0D));
             double forward = Math.cos(angle) * ModPerks.SPRING_LAUNCH_SPEED;
-            rider.setDeltaMovement(new Vec3(-Mth.sin(yaw) * forward, Math.sin(angle) * ModPerks.SPRING_LAUNCH_SPEED,
-                    Mth.cos(yaw) * forward));
+            double up = Math.max(ModPerks.SPRING_MIN_UP, Math.sin(angle) * ModPerks.SPRING_LAUNCH_SPEED);
+            rider.setDeltaMovement(new Vec3(-Mth.sin(yaw) * forward, up, Mth.cos(yaw) * forward));
             rider.hurtMarked = true;
             rider.hasImpulse = true;
             rider.resetFallDistance();
             if (rider instanceof ServerPlayer player && player.getUUID().equals(ownerId)) {
                 SpringPad.onOwnerLaunched(player);
+            }
+            if (ownerId != null) {
+                QuestTracker.onPadLaunch(getUUID(), ownerId, rider, level.getGameTime());
             }
         }
         level.playSound(null, blockPosition(), SoundEvents.SLIME_BLOCK_FALL, SoundSource.PLAYERS, 1.0F, 0.6F);

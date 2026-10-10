@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:tier3_perk",
+  "display": {
+    "icon": { "id": "minecraft:nether_star" },
+    "title": { "translate": "advancement.bloodbound.completionist.title" },
+    "description": { "translate": "advancement.bloodbound.completionist.description" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

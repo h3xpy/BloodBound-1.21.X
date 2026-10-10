@@ -70,6 +70,10 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
     /** What happened to the offering at the last level's end, until someone tells the player. */
     @Nullable
     private BurnReport burnReport;
+    /** Advancements whose quest board reward has been taken. Kept for good, like the advancements. */
+    private final Set<ResourceLocation> claimedAchievements = new LinkedHashSet<>();
+    /** Running totals towards advancements that add up over time, by name. Kept for good. */
+    private final Map<String, Float> questProgress = new HashMap<>();
 
     // --- learned perks ---
 
@@ -445,6 +449,27 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
         WebModifiers modifiers = burnOffering(random);
         soulweb = SoulwebGenerator.generate(random, registries, unlockedPerks, unlockedAddons, webLevel, modifiers);
         return soulweb;
+    }
+
+    // --- quest board ---
+
+    /** Whether an advancement's reward has already been taken from the quest board. */
+    public boolean isAchievementClaimed(ResourceLocation id) {
+        return claimedAchievements.contains(id);
+    }
+
+    /** A running total kept for an advancement (blocks saved, health given…); 0 until something is added. */
+    public float questProgress(String key) {
+        return questProgress.getOrDefault(key, 0.0F);
+    }
+
+    /** Adds to a running total kept for an advancement (blocks saved, health given…), and returns the new total. */
+    public float addQuestProgress(String key, float amount) {
+        return questProgress.merge(key, amount, Float::sum);
+    }
+
+    public void markAchievementClaimed(ResourceLocation id) {
+        claimedAchievements.add(id);
     }
 
     // --- offering ---
@@ -1180,6 +1205,12 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
             tag.put("offering", offering.save(provider));
         }
         tag.putBoolean("keepNextOffering", keepNextOffering);
+        ListTag claimedList = new ListTag();
+        claimedAchievements.forEach(id -> claimedList.add(StringTag.valueOf(id.toString())));
+        tag.put("claimedAchievements", claimedList);
+        CompoundTag progressTag = new CompoundTag();
+        questProgress.forEach(progressTag::putFloat);
+        tag.put("questProgress", progressTag);
         if (soulweb != null) {
             tag.put("soulweb", soulweb.save(provider));
         }
@@ -1239,6 +1270,19 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
         webLevel = Math.max(1, tag.getInt("webLevel"));
         offering = loadOffering(provider, tag);
         keepNextOffering = tag.getBoolean("keepNextOffering");
+        claimedAchievements.clear();
+        ListTag claimedList = tag.getList("claimedAchievements", Tag.TAG_STRING);
+        for (int i = 0; i < claimedList.size(); i++) {
+            ResourceLocation id = ResourceLocation.tryParse(claimedList.getString(i));
+            if (id != null) {
+                claimedAchievements.add(id);
+            }
+        }
+        questProgress.clear();
+        CompoundTag progressTag = tag.getCompound("questProgress");
+        for (String key : progressTag.getAllKeys()) {
+            questProgress.put(key, progressTag.getFloat(key));
+        }
         soulweb = tag.contains("soulweb") ? Soulweb.load(provider, tag.getCompound("soulweb")) : null;
     }
 

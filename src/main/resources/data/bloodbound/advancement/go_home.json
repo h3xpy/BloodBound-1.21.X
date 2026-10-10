@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:tier1_perk",
+  "display": {
+    "icon": { "id": "minecraft:slime_block" },
+    "title": { "translate": "advancement.bloodbound.go_home.title" },
+    "description": { "translate": "advancement.bloodbound.go_home.description" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

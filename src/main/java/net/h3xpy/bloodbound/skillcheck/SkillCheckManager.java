@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.advancement.QuestTracker;
 import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
@@ -181,6 +182,11 @@ public final class SkillCheckManager {
             player.playNotifySound(
                     success ? SoundEvents.EXPERIENCE_ORB_PICKUP : SoundEvents.ITEM_BREAK,
                     SoundSource.PLAYERS, 0.7F, success ? 1.4F : 0.8F);
+        }
+
+        // I AM A SURGEON: only checks that had a great zone keep or break the streak.
+        if (check.greatWidth() > 0.0F) {
+            QuestTracker.onGreatZoneCheck(player, success && great);
         }
 
         switch (check.context()) {
