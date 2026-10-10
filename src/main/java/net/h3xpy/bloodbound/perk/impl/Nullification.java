@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.advancement.QuestTracker;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.network.PerkChargesPayload;
@@ -191,6 +192,9 @@ public final class Nullification {
         record.lastSpentAt = level.getGameTime();
         if (ritual.charges() > 0.0F && !ritual.spend(hardness * ModPerks.NULL_COST_PER_HARDNESS)) {
             record.emptySince = level.getGameTime();
+        }
+        if (level.getServer() != null) {
+            QuestTracker.onBlockSaved(level.getServer(), ritual.ownerId());
         }
     }
 

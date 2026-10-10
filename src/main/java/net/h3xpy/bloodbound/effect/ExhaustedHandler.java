@@ -44,6 +44,8 @@ public final class ExhaustedHandler {
         private boolean winded;
         private int spendTicks;
         private int refillTicks;
+        /** A bar sized outright rather than by the effect's level; 0 when the level decides. */
+        private int fixedMax;
 
         private Stamina(int charges) {
             this.charges = charges;
@@ -58,6 +60,50 @@ public final class ExhaustedHandler {
     public static int maxCharges(int amplifier) {
         int level = amplifier + 1;
         return Math.max(1, BASE_CHARGES - (level - 1) / 2);
+    }
+
+    /**
+     * How big a bar is: what it was sized at outright, if it was, unless a stronger dose landed on
+     * top since; otherwise what the effect's level says.
+     */
+    private static int maxOf(Stamina stamina, int amplifier) {
+        if (stamina == null || stamina.fixedMax <= 0) {
+            return maxCharges(amplifier);
+        }
+        return amplifier == 0 ? stamina.fixedMax : Math.min(stamina.fixedMax, maxCharges(amplifier));
+    }
+
+    /**
+     * Exhausts an entity with a bar of exactly this many charges, full, for this long — used where
+     * the size is rolled rather than taken from a level. Landing on an exhaustion already running, it
+     * keeps the smaller bar and the longer time.
+     */
+    public static void applyCharges(LivingEntity entity, int charges, int durationTicks) {
+        MobEffectInstance current = entity.getEffect(ModEffects.EXHAUSTED);
+        Stamina stamina = STAMINA.get(entity.getUUID());
+        if (current == null) {
+            entity.addEffect(new MobEffectInstance(ModEffects.EXHAUSTED, durationTicks, 0, false, true, true));
+            if (!entity.hasEffect(ModEffects.EXHAUSTED)) {
+                return;
+            }
+            stamina = new Stamina(charges);
+            stamina.fixedMax = charges;
+            STAMINA.put(entity.getUUID(), stamina);
+            return;
+        }
+        // Lengthened in place: removing and re-adding would read as the exhaustion ending.
+        if (current.getDuration() < durationTicks) {
+            EffectDurations.set(entity, current, durationTicks);
+        }
+        int existing = maxOf(stamina, current.getAmplifier());
+        if (charges < existing) {
+            if (stamina == null) {
+                stamina = new Stamina(charges);
+                STAMINA.put(entity.getUUID(), stamina);
+            }
+            stamina.fixedMax = charges;
+            stamina.charges = Math.min(stamina.charges, charges);
+        }
     }
 
     /** Charges needed back before the sprint returns, never more than the bar holds. */
@@ -123,7 +169,8 @@ public final class ExhaustedHandler {
             return;
         }
 
-        int max = maxCharges(effect.getAmplifier());
+        Stamina known = STAMINA.get(entity.getUUID());
+        int max = maxOf(known, effect.getAmplifier());
         Stamina stamina = STAMINA.computeIfAbsent(entity.getUUID(), id -> new Stamina(max));
         // A stronger dose landing on top shrinks the bar under it.
         stamina.charges = Math.min(stamina.charges, max);

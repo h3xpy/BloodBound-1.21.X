@@ -15,6 +15,11 @@ import net.h3xpy.bloodbound.network.RemoveMarksPayload;
 import net.h3xpy.bloodbound.network.SkillCheckResultPayload;
 import net.h3xpy.bloodbound.network.StartSkillCheckPayload;
 import net.h3xpy.bloodbound.network.SyncPerkDataPayload;
+import net.h3xpy.bloodbound.network.AngelWingsPayload;
+import net.h3xpy.bloodbound.network.ReactiveCompoundPayload;
+import net.h3xpy.bloodbound.network.VigilancePayload;
+import net.h3xpy.bloodbound.network.WikiPayload;
+import net.h3xpy.bloodbound.perk.impl.Vigilance;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /**
@@ -48,6 +53,22 @@ public final class ClientPayloadHandler {
 
     public static void handleAuraReveal(AuraRevealPayload payload) {
         ClientAuraReveal.reveal(payload.entityId(), payload.durationTicks());
+    }
+
+    public static void handleAngelWings(AngelWingsPayload payload) {
+        ClientAngelWings.set(payload);
+    }
+
+    public static void handleVigilance(VigilancePayload payload) {
+        Vigilance.setClientBonus(payload.bonus());
+    }
+
+    public static void handleReactiveCompound(ReactiveCompoundPayload payload) {
+        ClientReactiveCompound.setPhase(payload.phase());
+    }
+
+    public static void handleWiki(WikiPayload payload) {
+        ClientWiki.set(payload);
     }
 
     public static void handlePerkCharges(PerkChargesPayload payload) {

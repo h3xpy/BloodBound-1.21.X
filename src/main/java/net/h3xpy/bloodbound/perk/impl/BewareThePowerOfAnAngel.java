@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.network.AngelWingsPayload;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.event.PerkEventHandler;
@@ -19,6 +20,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
@@ -72,6 +75,15 @@ public final class BewareThePowerOfAnAngel {
             player.hurtMarked = true;
             TAKEOFF_AT.put(id, player.level().getGameTime());
             takeOff(player, data);
+        }
+    }
+
+    /** Somebody coming within sight of a flyer is told the wings are out, or they would not see them. */
+    @SubscribeEvent
+    public static void onStartTracking(PlayerEvent.StartTracking event) {
+        if (event.getTarget() instanceof ServerPlayer flyer && event.getEntity() instanceof ServerPlayer watcher
+                && PerkDataManager.get(flyer).isAngelWinged()) {
+            PacketDistributor.sendToPlayer(watcher, new AngelWingsPayload(flyer.getId(), true));
         }
     }
 
@@ -151,6 +163,8 @@ public final class BewareThePowerOfAnAngel {
             return;
         }
         data.setAngelWinged(winged);
+        // The wings are drawn on everybody's screen, the flyer's own third person view included.
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new AngelWingsPayload(player.getId(), winged));
 
         if (winged) {
             player.getAbilities().mayfly = true;

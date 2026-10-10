@@ -4,12 +4,14 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.registry.ModEntities;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -32,6 +34,9 @@ import org.joml.Vector3f;
  * It belongs to one fight, not to the world, so it is not saved.
  */
 public class ChainAnchorEntity extends Entity {
+
+    /** How long a chain has to hold for Ya Ain't Going Nowhere. */
+    private static final int HELD_FOR_ACHIEVEMENT_TICKS = 20 * 20;
 
     private static final DustParticleOptions LINK = new DustParticleOptions(new Vector3f(0.55F, 0.55F, 0.6F), 0.8F);
     /** How far apart the particles drawing the chain are. */
@@ -103,6 +108,14 @@ public class ChainAnchorEntity extends Entity {
 
         if (tickCount % 2 == 0) {
             drawChain(level, anchor.add(0.0D, 0.3D, 0.0D), victim.position().add(0.0D, victim.getBbHeight() * 0.5D, 0.0D));
+        }
+
+        // Ya Ain't Going Nowhere: held twenty seconds.
+        if (tickCount == HELD_FOR_ACHIEVEMENT_TICKS) {
+            ServerPlayer owner = level.getServer().getPlayerList().getPlayer(ownerId);
+            if (owner != null) {
+                ModAdvancements.grant(owner, ModAdvancements.YA_AINT_GOING_NOWHERE);
+            }
         }
     }
 

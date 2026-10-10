@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:root",
+  "display": {
+    "icon": { "id": "minecraft:fermented_spider_eye" },
+    "title": { "translate": "advancement.bloodbound.bad_luck.title" },
+    "description": { "translate": "advancement.bloodbound.bad_luck.description" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

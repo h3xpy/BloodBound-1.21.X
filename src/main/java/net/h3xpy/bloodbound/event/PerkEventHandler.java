@@ -6,6 +6,7 @@ import java.util.List;
 import net.h3xpy.bloodbound.BloodBound;
 import net.h3xpy.bloodbound.advancement.AchievementTracker;
 import net.h3xpy.bloodbound.advancement.ModAdvancements;
+import net.h3xpy.bloodbound.advancement.QuestTracker;
 import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
@@ -42,7 +43,9 @@ import net.h3xpy.bloodbound.perk.impl.Omniscience;
 import net.h3xpy.bloodbound.perk.impl.OutOfBreath;
 import net.h3xpy.bloodbound.perk.impl.ShortCircuit;
 import net.h3xpy.bloodbound.perk.impl.SinOfObliviousness;
+import net.h3xpy.bloodbound.perk.impl.ReactiveCompound;
 import net.h3xpy.bloodbound.perk.impl.SpringPad;
+import net.h3xpy.bloodbound.perk.impl.Vigilance;
 import net.h3xpy.bloodbound.perk.impl.SurgicalSuture;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
 import net.h3xpy.bloodbound.perk.impl.TeamSpirit;
@@ -52,6 +55,8 @@ import net.h3xpy.bloodbound.registry.ModEffects;
 import net.h3xpy.bloodbound.ritual.RitualManager;
 import net.h3xpy.bloodbound.skillcheck.SkillCheckManager;
 import net.h3xpy.bloodbound.stats.PerkUsageStats;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -214,8 +219,13 @@ public final class PerkEventHandler {
         }
         long gameTime = player.level().getGameTime();
         // Ice Block: the ice takes the blow, and breaks doing it.
+        // Chilly: read before the ice takes it, since only a blow that would have killed counts.
+        boolean lethal = event.getAmount() >= player.getHealth() + player.getAbsorptionAmount();
         if (IceBlock.absorbDamage(player, gameTime)) {
             event.setCanceled(true);
+            if (lethal) {
+                ModAdvancements.grant(player, ModAdvancements.CHILLY);
+            }
             return;
         }
         PlayerPerkData data = PerkDataManager.get(player);
@@ -251,6 +261,15 @@ public final class PerkEventHandler {
         PlayerPerkData data = PerkDataManager.get(player);
         long gameTime = player.level().getGameTime();
 
+        // Reactive Compound's disable running out, first, so every perk below sees it lifted.
+        if (data.updatePerksDisabled(gameTime)) {
+            PerkDataManager.sync(player);
+            if (!data.arePerksDisabled()) {
+                player.displayClientMessage(Component.translatable("bloodbound.message.reactive_compound_lifted")
+                        .withStyle(ChatFormatting.GREEN), true);
+            }
+        }
+
         tickLowProfile(player, data);
         tickDash(player, data);
         tickLightbringer(player, data, gameTime);
@@ -268,6 +287,9 @@ public final class PerkEventHandler {
         CatchingUp.tick(player, data, gameTime);
         BarbedWire.tick(player, data, gameTime);
         SpringPad.tick(player, data, gameTime);
+        QuestTracker.tick(player, data, gameTime);
+        Vigilance.tick(player, data, gameTime);
+        ReactiveCompound.tick(player, data, gameTime);
         TeamSpirit.tick(player, data, gameTime);
         HealingRunes.tick(player, data, gameTime);
         BeyondVisionHandler.tick(player, data);
@@ -326,6 +348,10 @@ public final class PerkEventHandler {
         HolySanctum.tick(event.getServer());
         HangedMan.tickTurned(event.getServer());
         BarbedWire.tickDirty();
+        long serverTime = event.getServer().overworld().getGameTime();
+        if (serverTime % 20L == 0L) {
+            QuestTracker.prune(serverTime);
+        }
         UnderTheRadarHandler.tick(event.getServer());
         RitualManager.tick(event.getServer());
         long ritualTime = event.getServer().overworld().getGameTime();
@@ -464,7 +490,8 @@ public final class PerkEventHandler {
      * predictable and stops a stacked group from erasing cooldowns outright.
      */
     private static void tickLightbringer(ServerPlayer player, PlayerPerkData data, long gameTime) {
-        double rate = strongestNearbyAura(player);
+        // Vigilance speeds recovery the same way while its bearer is being watched.
+        double rate = strongestNearbyAura(player) + Vigilance.bonus(player, data);
         if (rate <= 0.0D) {
             return;
         }

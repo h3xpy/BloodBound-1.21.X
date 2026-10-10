@@ -6,6 +6,7 @@ import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.network.ActivatePerkPayload;
 import net.h3xpy.bloodbound.network.HealInputPayload;
 import net.h3xpy.bloodbound.network.SlotKeyPayload;
+import net.h3xpy.bloodbound.perk.impl.Vigilance;
 import net.minecraft.client.Minecraft;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
@@ -34,6 +35,7 @@ public final class ClientEventHandler {
         ClientOmniscience.tick();
         ClientFallHandler.tick(minecraft);
         ClientHangedMan.tick(minecraft);
+        ClientReactiveCompound.tick(minecraft);
 
         boolean inGame = minecraft.player != null && minecraft.screen == null;
 
@@ -101,6 +103,10 @@ public final class ClientEventHandler {
         ClientEffectCharges.reset();
         ClientUnderTheRadar.reset();
         ClientHangedMan.reset();
+        ClientWiki.reset();
+        ClientReactiveCompound.reset();
+        ClientAngelWings.reset();
+        Vigilance.setClientBonus(0.0F);
         healHeld = false;
         Arrays.fill(SLOT_HELD, false);
         Arrays.fill(SLOT_HELD_TICKS, 0);

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.advancement.QuestTracker;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.entity.TargetFoundEntity;
@@ -51,14 +52,17 @@ public final class TargetFound {
         private final Vec3 position;
         private final long opensAt;
         private final long closesAt;
+        /** What tripped it, for Gotcha. */
+        private final UUID victimId;
         private boolean announced;
 
-        private Pending(TargetFoundEntity wire, long opensAt, long closesAt) {
+        private Pending(TargetFoundEntity wire, long opensAt, long closesAt, UUID victimId) {
             this.wire = wire;
             this.dimension = wire.level().dimension();
             this.position = wire.position();
             this.opensAt = opensAt;
             this.closesAt = closesAt;
+            this.victimId = victimId;
         }
     }
 
@@ -115,6 +119,7 @@ public final class TargetFound {
         level.sendParticles(ParticleTypes.PORTAL, player.getX(), player.getY() + 1.0D, player.getZ(),
                 30, 0.3D, 0.6D, 0.3D, 0.2D);
         player.teleportTo(pending.position.x, pending.position.y, pending.position.z);
+        QuestTracker.onTargetTeleport(player, pending.victimId, gameTime);
         player.resetFallDistance();
         level.playSound(null, player.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.8F, 1.2F);
         player.displayClientMessage(Component.translatable("bloodbound.message.target_found_arrived")
@@ -157,7 +162,7 @@ public final class TargetFound {
 
         // A newer trip replaces the one still waiting; that older wire has had its chance.
         Pending previous = PENDING.put(owner.getUUID(), new Pending(wire, now + delay,
-                now + delay + ModPerks.TARGET_WINDOW_TICKS));
+                now + delay + ModPerks.TARGET_WINDOW_TICKS, victim.getUUID()));
         if (previous != null && previous.wire != wire) {
             previous.wire.discard();
         }
@@ -167,6 +172,11 @@ public final class TargetFound {
 
     public static void tick(ServerPlayer player, PlayerPerkData data, long gameTime) {
         if (data.getActiveTier(ModPerks.TARGET_FOUND) <= 0) {
+            if (data.hasEquipped(ModPerks.TARGET_FOUND)) {
+                // Only disabled for a while: the wires stay down, the one being laid does not.
+                SETTING.remove(player.getUUID());
+                return;
+            }
             // Out of the loadout, and every wire goes with it.
             if (TrapRoster.hasAny(TargetFoundEntity.KIND, player.getUUID()) || PENDING.containsKey(player.getUUID())
                     || SETTING.containsKey(player.getUUID())) {

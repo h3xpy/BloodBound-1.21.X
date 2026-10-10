@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.advancement.QuestTracker;
 import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
@@ -138,6 +139,9 @@ public final class HolySanctum {
         Bubble bubble = new Bubble(player, tier);
         for (Entity inside : player.serverLevel().getEntitiesOfClass(Entity.class, bubble.area(), bubble::contains)) {
             bubble.insiders.add(inside.getUUID());
+            if (inside instanceof LivingEntity sheltered) {
+                QuestTracker.onSheltered(player, sheltered);
+            }
         }
         BUBBLES.add(bubble);
         bubble.visual = new SanctumBubbleEntity(player.serverLevel(), bubble.center, bubble.radius);

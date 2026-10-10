@@ -65,7 +65,7 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | **Guardian Angel** | Passive | A blow that would kill you instead leaves you at **20/40/60%** health, glowing gold for everyone to see. Somewhere between **6-10/10-14/14-18** seconds later a run of skill checks begins: land **9/8/7** of them and you walk away, cooldown **360/300/240** seconds. Miss one and the blow catches up with you. |
 | **Flashbang** | Active | Throw a grenade that comes off one wall and goes off 2 seconds later, beeping faster as it goes. Anything looking at the blast is Flashed for 4 seconds, a second less for every 10 blocks away — a wall or a turned back is cover. Cooldown **30/25/20** seconds. |
 | **Advanced Movement Device** | Active | Fire a shot and be teleported to wherever it stops: it comes off the first wall and stops at the second. Shots draw on a self-refilling reserve of **200/400/600** charges, at most **100/200/300** per shot. Speed **1.95/2.1/2.25**. |
-| **Beware The Power Of An Angel** | Active | Press the key to spread your wings and fly, press again to fold them. 3 charges a second until you land; **12/18/24** charges, one back every 2 seconds, and only on the ground. |
+| **Beware The Power Of An Angel** | Active | Press the key to spread your wings and fly, press again to fold them. 3 charges a second until you land; **12/18/24** charges, one back every 2 seconds, and only on the ground. While the wings are out, everybody sees them on your back. |
 | **Catching Up** | Passive | See the marks on the ground. Stepping on marks that are not yours grants Speed I, lingering **3/4/5** seconds after the trail ends. You also walk **10/13/16%** faster while neither sprinting nor crouched. |
 | **Hunter's Instinct** | Passive | See the marks on the ground. Anything within **16/20/24** blocks that loses health to something other than you has its aura revealed to you for 7 seconds. |
 | **Barbed Wire** | Active | Hold the key **3/2.5/2** seconds without moving to lay a coil at **15/12/9%** opacity. Up to **1/2/3** out at once; a fourth takes the oldest. The first thing that walks in takes **4/6/8** damage, starts Bleeding on **12/10/8** charges and has its aura shown to you for 3 seconds — and the coil is spent. Unequipping the perk removes every coil. Coils stay down through a logout or a restart. An arrow or a thrown item takes a coil apart. Cooldown **45/40/35** seconds, paid only on a coil laid. |
@@ -97,7 +97,9 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | **Steady Hands** | Passive | Skill checks that pay out an amount (Surgical Suture, co-op healing, Tinkerer) open with a golden great zone at the start of the success zone, **15/20/25%** of its width. Landing in it raises what the check gives by **50/75/100%**. Guardian Angel's checks have none. |
 | **Holy Sanctum** | Active | Raise a bubble of **3/3.5/4** blocks that stays where it was raised. Everybody sees it: a shell of glowing gold hexagons that flares white where it is struck and turns red as it wears down. It can be struck by hand, from outside or inside, even by whoever raised it; a blow counts what the hand would deal. Nothing from outside gets in — blows, shots, creatures, players, primed TNT, anything thrown or ridden, hands reaching for the blocks inside — while what was inside may leave but not come back. It has **30/35/40** health, worn down by what it stops (shown on the HUD), and breaks after **12/14/16** seconds at most. The cooldown of **90/80/70** seconds starts once it breaks. |
 | **The Hanged Man** | Active | Press the key to turn your gravity upside down: you fall upwards and walk on the ceiling, model and view turned over, mouse and strafe keys mirrored to match. Press again to come back the right way up; the cooldown of **80/60/40** seconds only starts then. A fall under way is cancelled by either flip. Up there everything works mirrored: falling onto the ceiling hurts, its blocks act as the floor (ice, soul sand, honey, magma, slime and bed bounces), steps, ladders, swimming, creative flight, knockback and the dust of running and landing are turned over, the void lies above the world, and lying down in a bed sets you right (and starts the cooldown). |
-| **Spring Pad** | Active | Hold the key **2/1.5/1** seconds still to set a pad; up to **1/2/3** out, a new one takes the oldest. It arms after 2 seconds; whatever steps on it, you included, is thrown violently the way it is looking: straight up about 33 blocks high, level ahead about 24 blocks away (never flatter than 20°, so looking down still leaves the ground), at most once a second, and it breaks after **2/3/4** launches. Cooldown **20/15/10** seconds after setting one. |
+| **Spring Pad** | Active | Hold the key **2/1.5/1** seconds still to set a pad; up to **1/2/3** out, a new one takes the oldest. It arms after 2 seconds; whatever steps on it, you included, is thrown violently the way it is looking: always at least 20 blocks high; looking up sends it higher (about 33 straight up), looking ahead or down sends it farther (about 29 blocks), at most once a second, and it breaks after **2/3/4** launches. Cooldown **20/15/10** seconds after setting one. |
+| **Vigilance** | Passive | While another player looks right at you (within 48 blocks), or a hostile creature does, or anything hunts you in plain view (within 24): **10/15/20%** faster movement, damage, cooldown and harmful-effect recovery, and block breaking. Lasts 1 second past the gaze; the HUD icon lights up while on. |
+| **Reactive Compound** | Active | Hold the key 3 seconds with a melee weapon (sword, axe, trident, mace) in hand, unable to attack, to coat it — both arms show in first person, the blade swings flat and a vial is poured over it. Switching items loses the coat. The next thing it hits takes **10/15/20%** more damage and 50% more knockback; a player also has every perk off for **10/12.5/15** seconds (their HUD icons grey out; traps already laid stay). Cooldown **45/40/35** seconds after the hit. |
 
 
 ## Marks
@@ -364,7 +366,7 @@ counting traps in unloaded chunks against the limit.
 
 ## Advancements
 
-Thirty-eight of them, on their own tab. They are datapack advancements whose only criterion is
+Sixty-two of them, on their own tab. They are datapack advancements whose only criterion is
 `impossible`, handed out from `ModAdvancements` — when the soulweb pays out, or from the perks
 themselves for the feats — so nothing else can trip them, and a perk granted by command does not
 count. Feats that take more than one moment (surviving, a kill that must follow something) are
@@ -410,6 +412,59 @@ tracked in `AchievementTracker`; nothing half done survives a logout.
 | **Aww.. Too Bad** | Someone missing a skill check under your Panic Attack |
 | **Get In There!** | Someone carrying your Team Spirit killing 10 or mining 50 blocks without losing it |
 | **I Don't Think So** | Beyond Vision cutting a harmful effect down |
+| **Collector** | Owning 10 different perks |
+| **Completionist** | Having 5 perks at Tier III |
+| **Full Kit** | Equipping 4 perks, each with an addon |
+| **Unstable Genius** | Owning 3 unstable addons |
+| **Weaver** / **P25** / **P50** / **P100** | Reaching soulweb level 10 / 25 / 50 / 100 |
+| **Green Thumb** | Burning 10 offerings |
+| **Bad Luck** | Being Exhausted, Broken and Bleeding all at once |
+| **Shard Hoarder** | Carrying 500 soul shards |
+| **Go Home!** | The same Spring Pad throwing 3 players or creatures to their death (a fall within 15 seconds of the launch) |
+| **Don't Worry, I'm Here** | Raising Holy Sanctum around another player at 8 HP or less |
+| **Upside Down** | 5 minutes straight upside down by your own Hanged Man |
+| **I AM A SURGEON** | 5 Steady Hands great zones in a row; a miss or a plain hit on a check with a great zone breaks the streak |
+| **Bip** | 4 killed by one Short Circuit cylinder |
+| **Watch Your Step** | The same target caught by 2 of your coils more than 5 blocks apart, within 20 seconds |
+| **Ya Ain't Going Nowhere** | A Chained Up chain holding for 20 seconds |
+| **Not On My Watch** | 1000 blocks saved in total by your Nullification (counted while you are online) |
+| **Chilly** | Ice Block taking a blow that would have killed you |
+| **Execution** | Killing something your Final Blow has left Broken |
+| **Gotcha** | Hitting what tripped your Target Found within 3 seconds of teleporting |
+| **Herbalist** | 100 HP put into other players in total while carrying Green Herbs |
+| **Still Standing** | 60 seconds straight at or under Relentless's threshold, Wooden Sword not counting |
+
+## Quest board (the Wiki tab)
+
+The Perk Table's fourth tab lists every perk, owned or not — dimmed when not — with its description,
+its addons (owned or not), and the advancements filed under it; a General page holds the rest. Stars,
+1 to 5, show how much a perk or addon is worn **in this world** next to the most worn of its kind:
+5 from 60% of it, 4 from 35%, 3 from 15%, 2 from 5%, 1 below that or never.
+
+An earned advancement can be **claimed once** at the table; a gold "!" marks entries with a reward
+waiting. What it pays depends on its difficulty:
+
+| Difficulty | Reward |
+| --- | --- |
+| Easy | 15 soul shards |
+| Medium | 40 soul shards |
+| Hard | 60 soul shards + a common (60%) or uncommon (40%) offering |
+| Legendary | 120 soul shards + a rare (70%), epic (25%) or unstable (5%) offering |
+
+Each advancement's difficulty and perk is set in `advancement/AchievementRewards.java`.
+
+## Hostile wounds
+
+A player hurt by any hostile creature — by its hand or by a shot it fired — may come away wounded.
+Each is rolled on its own, on every blow that actually hurts:
+
+| Chance | Effect |
+| --- | --- |
+| 4% | Exhausted, a bar of 2 to 10 charges, for 5 to 40 seconds |
+| 3% | Broken, for 5 to 25 seconds |
+| 2% | Bleeding, 6 to 20 charges |
+
+An effect already running is never shortened, and an Exhausted bar already smaller is kept.
 
 ## Soulweb rules
 
