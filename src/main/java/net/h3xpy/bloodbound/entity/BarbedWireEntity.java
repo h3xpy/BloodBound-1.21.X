@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.advancement.QuestTracker;
 import net.h3xpy.bloodbound.damage.PerkDamageSource;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
@@ -163,6 +164,7 @@ public class BarbedWireEntity extends Entity implements TrapRoster.Trap {
                     victim.getName()).withStyle(ChatFormatting.RED), true);
             AuraRevealHandler.reveal(owner, victim, ModPerks.BARBED_REVEAL_TICKS);
         }
+        QuestTracker.onCoilCaught(owner, ownerId, victim, blockPosition(), level.getGameTime());
     }
 
     /** The wire coming apart, whether it was shot or smothered. */

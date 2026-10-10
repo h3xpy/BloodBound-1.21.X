@@ -1,10 +1,18 @@
 package net.h3xpy.bloodbound.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.advancement.AchievementRewards;
 import net.h3xpy.bloodbound.advancement.ModAdvancements;
+import net.h3xpy.bloodbound.advancement.QuestTracker;
 import net.h3xpy.bloodbound.menu.PerkTableMenu;
 import net.h3xpy.bloodbound.network.SyncPerkDataPayload;
+import net.h3xpy.bloodbound.network.WikiPayload;
 import net.h3xpy.bloodbound.perk.Addon;
 import net.h3xpy.bloodbound.perk.AddonRegistry;
 import net.h3xpy.bloodbound.perk.Perk;
@@ -14,6 +22,7 @@ import net.h3xpy.bloodbound.registry.ModItems;
 import net.h3xpy.bloodbound.soulweb.NodeReward;
 import net.h3xpy.bloodbound.soulweb.Soulweb;
 import net.h3xpy.bloodbound.soulweb.SoulwebNode;
+import net.h3xpy.bloodbound.stats.PerkUsageStats;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
@@ -44,6 +53,8 @@ public final class PerkDataManager {
     public static void sync(ServerPlayer player) {
         PlayerPerkData data = get(player);
         PacketDistributor.sendToPlayer(player, new SyncPerkDataPayload(data.serializeNBT(player.registryAccess())));
+        // Whatever just changed may have completed a collection goal: perks, addons, loadout, web level.
+        QuestTracker.checkCollection(player);
     }
 
     // --- soul shards ---
@@ -271,6 +282,7 @@ public final class PerkDataManager {
         if (report == null) {
             return;
         }
+        QuestTracker.onOfferingBurnt(player);
         Component name = report.offering().getHoverName();
         player.sendSystemMessage(Component.translatable(report.kept()
                 ? "bloodbound.message.offering_kept"
@@ -296,6 +308,29 @@ public final class PerkDataManager {
         }
         player.level().playSound(null, player.blockPosition(), SoundEvents.SOUL_ESCAPE.value(),
                 SoundSource.PLAYERS, 1.0F, 0.8F);
+    }
+
+    /**
+     * Sends the wiki tab what only the server knows: every perk's and addon's stars in this world,
+     * and the BloodBound advancements this player has earned.
+     */
+    public static void sendWiki(ServerPlayer player) {
+        PerkUsageStats stats = PerkUsageStats.get(player.server);
+        Map<ResourceLocation, Integer> perkStars = new HashMap<>();
+        for (Perk perk : PerkRegistry.all()) {
+            perkStars.put(perk.id(), stats.perkStars(perk.id()));
+        }
+        Map<ResourceLocation, Integer> addonStars = new HashMap<>();
+        for (Addon addon : AddonRegistry.all()) {
+            addonStars.put(addon.id(), stats.addonStars(addon.id()));
+        }
+        List<ResourceLocation> earned = new ArrayList<>();
+        for (AchievementRewards.Entry entry : AchievementRewards.all()) {
+            if (AchievementRewards.isDone(player, entry.id())) {
+                earned.add(entry.id());
+            }
+        }
+        PacketDistributor.sendToPlayer(player, new WikiPayload(perkStars, addonStars, earned));
     }
 
     /** Hands the player soul shards, dropping at their feet whatever their inventory cannot hold. */

@@ -1,5 +1,6 @@
 package net.h3xpy.bloodbound.event;
 
+import net.h3xpy.bloodbound.advancement.QuestTracker;
 import net.h3xpy.bloodbound.advancement.AchievementTracker;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.effect.BleedingHandler;
@@ -77,6 +78,7 @@ public final class PlayerSyncHandler {
             MarkManager.clear(player.getUUID());
             BarbedWire.logout(player.getUUID());
             SpringPad.logout(player.getUUID());
+            QuestTracker.clear(player.getUUID());
             OutOfBreath.clear(player.getUUID());
             HealingRunes.clear(player.getUUID());
             TeamSpirit.clear(player.getUUID());
@@ -127,6 +129,7 @@ public final class PlayerSyncHandler {
             BewareThePowerOfAnAngel.clear(player);
             BadOmen.clear(player);
             Nullification.clear(player);
+            QuestTracker.clear(player.getUUID());
             HangedMan.clear(player);
         }
     }
@@ -154,6 +157,7 @@ public final class PlayerSyncHandler {
         HolySanctum.clear();
         HangedMan.clearTurned();
         BarbedWire.clearDirty();
+        QuestTracker.clearAll();
     }
 
     @SubscribeEvent

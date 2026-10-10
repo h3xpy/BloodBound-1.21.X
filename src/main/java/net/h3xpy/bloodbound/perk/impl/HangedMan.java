@@ -79,7 +79,7 @@ public final class HangedMan {
     }
 
     /** Whether this player turned themselves over with the perk, rather than being turned by a card. */
-    private static boolean isSelfInverted(LivingEntity living) {
+    public static boolean isSelfInverted(LivingEntity living) {
         AttributeInstance gravity = living.getAttribute(Attributes.GRAVITY);
         return gravity != null && gravity.hasModifier(GRAVITY_ID);
     }

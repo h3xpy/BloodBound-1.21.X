@@ -91,6 +91,7 @@ public class PerkTableBlock extends Block {
             data.getOrCreateSoulweb(serverPlayer.getRandom(), serverPlayer.registryAccess());
             // A web left spent by an older build is rolled over right there, offering and all.
             PerkDataManager.settleOffering(serverPlayer, data);
+            PerkDataManager.sendWiki(serverPlayer);
             PerkDataManager.sync(serverPlayer);
         }
 

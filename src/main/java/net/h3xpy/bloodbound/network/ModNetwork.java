@@ -1,9 +1,11 @@
 package net.h3xpy.bloodbound.network;
 
+import net.h3xpy.bloodbound.advancement.AchievementRewards;
 import net.h3xpy.bloodbound.client.ClientPayloadHandler;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.entity.SanctumBubbleEntity;
 import net.h3xpy.bloodbound.event.PerkActivationHandler;
+import net.h3xpy.bloodbound.menu.PerkTableMenu;
 import net.h3xpy.bloodbound.perk.impl.HolySanctum;
 import net.h3xpy.bloodbound.heal.HealManager;
 import net.h3xpy.bloodbound.skillcheck.SkillCheckManager;
@@ -60,6 +62,18 @@ public final class ModNetwork {
                 PerkDataManager.purchaseNode(player, payload.nodeIndex());
             }
         });
+
+        // Claimed only at a Perk Table, like everything else the table hands out.
+        registrar.playToServer(ClaimAchievementPayload.TYPE, ClaimAchievementPayload.STREAM_CODEC,
+                (payload, context) -> {
+                    if (context.player() instanceof ServerPlayer player
+                            && player.containerMenu instanceof PerkTableMenu) {
+                        AchievementRewards.claim(player, payload.id());
+                    }
+                });
+
+        registrar.playToClient(WikiPayload.TYPE, WikiPayload.STREAM_CODEC,
+                (payload, context) -> ClientPayloadHandler.handleWiki(payload));
 
         registrar.playToServer(ActivatePerkPayload.TYPE, ActivatePerkPayload.STREAM_CODEC, (payload, context) -> {
             if (context.player() instanceof ServerPlayer player) {
