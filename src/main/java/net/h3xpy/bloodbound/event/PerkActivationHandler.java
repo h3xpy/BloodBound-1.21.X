@@ -34,6 +34,7 @@ import net.h3xpy.bloodbound.perk.impl.OutOfBreath;
 import net.h3xpy.bloodbound.perk.impl.PatchUp;
 import net.h3xpy.bloodbound.perk.impl.ShortCircuit;
 import net.h3xpy.bloodbound.perk.impl.SinOfObliviousness;
+import net.h3xpy.bloodbound.perk.impl.ReactiveCompound;
 import net.h3xpy.bloodbound.perk.impl.SpringPad;
 import net.h3xpy.bloodbound.perk.impl.SurgicalSuture;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
@@ -96,7 +97,8 @@ public final class PerkActivationHandler {
             Map.entry(ModPerks.NULLIFICATION.id(), Nullification::activate),
             Map.entry(ModPerks.HANGED_MAN.id(), HangedMan::activate),
             Map.entry(ModPerks.HOLY_SANCTUM.id(), HolySanctum::activate),
-            Map.entry(ModPerks.SPRING_PAD.id(), SpringPad::activate));
+            Map.entry(ModPerks.SPRING_PAD.id(), SpringPad::activate),
+            Map.entry(ModPerks.REACTIVE_COMPOUND.id(), ReactiveCompound::activate));
 
     private PerkActivationHandler() {}
 
@@ -204,6 +206,9 @@ public final class PerkActivationHandler {
         } else if (perk.id().equals(ModPerks.SPRING_PAD.id())) {
             // Laying a pad is a moment of holding still with the key down.
             SpringPad.setHolding(player, holding);
+        } else if (perk.id().equals(ModPerks.REACTIVE_COMPOUND.id())) {
+            // The vial is poured for as long as the key stays down.
+            ReactiveCompound.setHolding(player, holding);
         }
     }
 

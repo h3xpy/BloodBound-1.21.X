@@ -84,7 +84,10 @@ public final class BarbedWire {
     public static void tick(ServerPlayer player, PlayerPerkData data, long gameTime) {
         // Taking the perk out of the loadout takes every coil it laid with it.
         if (data.getActiveTier(ModPerks.BARBED_WIRE) <= 0) {
-            if (TrapRoster.hasAny(BarbedWireEntity.KIND, player.getUUID()) || SETTING.containsKey(player.getUUID())) {
+            if (data.hasEquipped(ModPerks.BARBED_WIRE)) {
+                // Only disabled for a while: the coils stay down, the one being laid does not.
+                SETTING.remove(player.getUUID());
+            } else if (TrapRoster.hasAny(BarbedWireEntity.KIND, player.getUUID()) || SETTING.containsKey(player.getUUID())) {
                 clear(player.getUUID());
             }
             return;

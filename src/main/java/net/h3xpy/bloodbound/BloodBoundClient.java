@@ -2,6 +2,7 @@ package net.h3xpy.bloodbound;
 
 import net.h3xpy.bloodbound.client.ClientCameraShake;
 import net.h3xpy.bloodbound.client.ClientHangedMan;
+import net.h3xpy.bloodbound.client.ClientReactiveCompound;
 import net.h3xpy.bloodbound.client.ClientDrawSpeed;
 import net.h3xpy.bloodbound.client.ClientSanctumHits;
 import net.h3xpy.bloodbound.client.ClientEventHandler;
@@ -15,7 +16,11 @@ import net.h3xpy.bloodbound.client.model.BarbedWireModel;
 import net.h3xpy.bloodbound.client.model.IceShellModel;
 import net.h3xpy.bloodbound.client.model.TargetFoundModel;
 import net.h3xpy.bloodbound.client.render.BarbedWireRenderer;
+import net.h3xpy.bloodbound.client.model.AngelWingsModel;
+import net.h3xpy.bloodbound.client.render.AngelWingsLayer;
 import net.h3xpy.bloodbound.client.render.ChainAnchorRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.resources.PlayerSkin;
 import net.h3xpy.bloodbound.client.render.SpringPadRenderer;
 import net.h3xpy.bloodbound.client.render.IceShellRenderer;
 import net.h3xpy.bloodbound.client.render.RitualRenderer;
@@ -52,6 +57,7 @@ public class BloodBoundClient {
         modEventBus.addListener(BloodBoundClient::registerScreens);
         modEventBus.addListener(BloodBoundClient::registerGuiLayers);
         modEventBus.addListener(BloodBoundClient::registerEntityRenderers);
+        modEventBus.addListener(BloodBoundClient::addPlayerLayers);
         modEventBus.addListener(BloodBoundClient::registerLayers);
 
         NeoForge.EVENT_BUS.register(ClientEventHandler.class);
@@ -60,6 +66,7 @@ public class BloodBoundClient {
         NeoForge.EVENT_BUS.register(ClientSanctumHits.class);
         NeoForge.EVENT_BUS.register(ClientCameraShake.class);
         NeoForge.EVENT_BUS.register(ClientHangedMan.class);
+        NeoForge.EVENT_BUS.register(ClientReactiveCompound.class);
     }
 
     private static void registerScreens(RegisterMenuScreensEvent event) {
@@ -70,6 +77,16 @@ public class BloodBoundClient {
         event.registerLayerDefinition(BarbedWireModel.LAYER_LOCATION, BarbedWireModel::createBodyLayer);
         event.registerLayerDefinition(TargetFoundModel.LAYER_LOCATION, TargetFoundModel::createBodyLayer);
         event.registerLayerDefinition(IceShellModel.LAYER_LOCATION, IceShellModel::createBodyLayer);
+        event.registerLayerDefinition(AngelWingsModel.LAYER_LOCATION, AngelWingsModel::createBodyLayer);
+    }
+
+    /** Angel wings, on every player model: the wide-armed one and the slim one. */
+    private static void addPlayerLayers(EntityRenderersEvent.AddLayers event) {
+        for (PlayerSkin.Model skin : event.getSkins()) {
+            if (event.getSkin(skin) instanceof PlayerRenderer renderer) {
+                renderer.addLayer(new AngelWingsLayer(renderer, event.getEntityModels()));
+            }
+        }
     }
 
     private static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {

@@ -42,6 +42,26 @@ orientation again, go through the whole list:
   view rolled over, they feel reversed.
 - **Steps, knockback, slime and bed bounces, the void** all assume +Y is up.
 
+## "Not active" is not "unequipped"
+
+Reactive Compound turns a player's perks off for a while, through `getActiveTier`, which then
+returns 0. Barbed Wire, Spring Pad and Target Found used to read a tier of 0 as "the perk left the
+loadout" and took every trap away, so a disable would have wiped them.
+- Use `getActiveTier` for "does it work right now". To decide whether to tear down what a perk left
+  in the world, use `PlayerPerkData.hasEquipped(perk)`.
+
+## Tuning a first-person animation blind does not work
+
+The first Reactive Compound animation was placed by reasoning alone: the off arm filled the screen,
+the vial never tipped and the weapon was hidden. What worked was looking at it:
+- a temporary client class, registered only under a `-Dbloodbound.animdebug` system property, that
+  freezes the animation at a few points after joining and calls `Screenshot.grab(...)` for each;
+- the quick-play arguments plus `jvmArgument '-Dbloodbound.animdebug=true'` added to `build.gradle`
+  for the run (restored afterwards), and the PNGs in `run/screenshots/` read and compared;
+- the class and its registration deleted before committing.
+An arm with an item in it: draw the arm the way `ItemInHandRenderer.renderPlayerArm` does, then
+`translateAndRotate` on the model's arm and the `ItemInHandLayer` offsets before rendering the item.
+
 ## Entities bigger than their hitbox
 
 ### A hitbox that contains the player's eyes steals every click
@@ -91,3 +111,12 @@ behaviour in `client/` and register it from `BloodBoundClient`.
   there means no rare trade at all.
 - Adding listings never changes villagers and traders that already exist. Only new ones, or
   villagers reaching a new level, get them.
+
+## State that switches off
+
+### Compare with what was applied, not with the clock
+Vigilance's icon never went out. Each tick worked out "was it on before?" from the same expiry time
+as "is it on now?", so on the tick it ran out both were already false and the switch-off (speed
+removal, message to the client) never ran.
+- Keep a set of who the effect is applied to, and compare against that. On death and logout, tell
+  the client too: it keeps its own copy.

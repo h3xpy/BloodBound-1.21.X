@@ -74,7 +74,10 @@ public final class SpringPad {
     public static void tick(ServerPlayer player, PlayerPerkData data, long gameTime) {
         // Taking the perk out of the loadout takes every pad it laid with it.
         if (data.getActiveTier(ModPerks.SPRING_PAD) <= 0) {
-            if (TrapRoster.hasAny(SpringPadEntity.KIND, player.getUUID()) || SETTING.containsKey(player.getUUID())) {
+            if (data.hasEquipped(ModPerks.SPRING_PAD)) {
+                // Only disabled for a while: the pads stay down, the one being set does not.
+                SETTING.remove(player.getUUID());
+            } else if (TrapRoster.hasAny(SpringPadEntity.KIND, player.getUUID()) || SETTING.containsKey(player.getUUID())) {
                 clear(player.getUUID());
             }
             return;
