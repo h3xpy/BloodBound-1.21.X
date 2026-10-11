@@ -86,7 +86,8 @@ public final class RelentlessHandler {
     }
 
     /** The health the chain starts at, in half-hearts. The perk writes its own in hearts. */
-    private static float threshold(PlayerPerkData data, int tier) {
+    /** The health, in half-hearts, at or under which Relentless is in play, addons included. */
+    public static float threshold(PlayerPerkData data, int tier) {
         int index = Math.clamp(tier - 1, 0, 2);
         if (data.isAddonActive(ModAddons.WILD_ROSE)) {
             return (float) (ModAddons.WILD_ROSE_HEARTS[index] * 2.0D);

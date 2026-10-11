@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.advancement.QuestTracker;
 import net.h3xpy.bloodbound.BloodBound;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
@@ -440,6 +441,7 @@ public final class MarkManager {
         // Topped up every tick on the trail, so it runs out the linger's length after the last step.
         living.addEffect(new MobEffectInstance(ModEffects.BROKEN,
                 ModPerks.FINAL_BLOW.ticks(ModPerks.FINAL_BLOW_LINGER, tier), 0, false, true, true));
+        QuestTracker.onFinalBlowBroken(player, living);
     }
 
     private static double threshold(int tier) {

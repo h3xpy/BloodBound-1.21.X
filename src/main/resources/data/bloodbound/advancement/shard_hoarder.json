@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:root",
+  "display": {
+    "icon": { "id": "bloodbound:soul_shard" },
+    "title": { "translate": "advancement.bloodbound.shard_hoarder.title" },
+    "description": { "translate": "advancement.bloodbound.shard_hoarder.description" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

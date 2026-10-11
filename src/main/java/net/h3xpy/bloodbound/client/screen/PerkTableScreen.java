@@ -17,8 +17,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * The perk table. Three tabs: the loadout of equipped perks, the addons attached to them, and the
- * soulweb where soul shards are spent.
+ * The perk table. Four tabs: the loadout of equipped perks, the addons attached to them, the
+ * soulweb where soul shards are spent, and the wiki with its quest board.
  */
 public class PerkTableScreen extends AbstractContainerScreen<PerkTableMenu> {
 
@@ -43,6 +43,7 @@ public class PerkTableScreen extends AbstractContainerScreen<PerkTableMenu> {
     private final LoadoutTab loadoutTab = new LoadoutTab(this);
     private final AddonsTab addonsTab = new AddonsTab(this);
     private final SoulwebTab soulwebTab = new SoulwebTab(this);
+    private final WikiTab wikiTab = new WikiTab(this);
 
     private Tab activeTab = Tab.LOADOUT;
 
@@ -144,6 +145,7 @@ public class PerkTableScreen extends AbstractContainerScreen<PerkTableMenu> {
             case LOADOUT -> loadoutTab.render(graphics, mouseX, mouseY, partialTick);
             case ADDONS -> addonsTab.render(graphics, mouseX, mouseY, partialTick);
             case SOULWEB -> soulwebTab.render(graphics, mouseX, mouseY, partialTick);
+            case WIKI -> wikiTab.render(graphics, mouseX, mouseY, partialTick);
         }
 
         // Tooltips last so nothing draws over them.
@@ -151,6 +153,7 @@ public class PerkTableScreen extends AbstractContainerScreen<PerkTableMenu> {
             case LOADOUT -> loadoutTab.renderTooltip(graphics, mouseX, mouseY);
             case ADDONS -> addonsTab.renderTooltip(graphics, mouseX, mouseY);
             case SOULWEB -> soulwebTab.renderTooltip(graphics, mouseX, mouseY);
+            case WIKI -> wikiTab.renderTooltip(graphics, mouseX, mouseY);
         }
     }
 
@@ -217,6 +220,7 @@ public class PerkTableScreen extends AbstractContainerScreen<PerkTableMenu> {
             case LOADOUT -> loadoutTab.mouseClicked(mouseX, mouseY, button);
             case ADDONS -> addonsTab.mouseClicked(mouseX, mouseY, button);
             case SOULWEB -> soulwebTab.mouseClicked(mouseX, mouseY, button);
+            case WIKI -> wikiTab.mouseClicked(mouseX, mouseY, button);
         };
 
         return handled || super.mouseClicked(mouseX, mouseY, button);
@@ -244,6 +248,9 @@ public class PerkTableScreen extends AbstractContainerScreen<PerkTableMenu> {
         if (activeTab == Tab.LOADOUT && loadoutTab.mouseScrolled(mouseX, mouseY, scrollY)) {
             return true;
         }
+        if (activeTab == Tab.WIKI && wikiTab.mouseScrolled(mouseX, mouseY, scrollY)) {
+            return true;
+        }
         if (activeTab == Tab.ADDONS && addonsTab.mouseScrolled(mouseX, mouseY, scrollY)) {
             return true;
         }
@@ -253,7 +260,8 @@ public class PerkTableScreen extends AbstractContainerScreen<PerkTableMenu> {
     private enum Tab {
         LOADOUT("bloodbound.tab.loadout"),
         ADDONS("bloodbound.tab.addons"),
-        SOULWEB("bloodbound.tab.soulweb");
+        SOULWEB("bloodbound.tab.soulweb"),
+        WIKI("bloodbound.tab.wiki");
 
         private final String translationKey;
 

@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:p25",
+  "display": {
+    "icon": { "id": "minecraft:ender_eye" },
+    "title": { "translate": "advancement.bloodbound.p50.title" },
+    "description": { "translate": "advancement.bloodbound.p50.description" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

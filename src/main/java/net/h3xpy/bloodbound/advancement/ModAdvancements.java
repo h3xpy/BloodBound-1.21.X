@@ -63,6 +63,33 @@ public final class ModAdvancements {
     public static final ResourceLocation GET_IN_THERE = id("get_in_there");
     public static final ResourceLocation I_DONT_THINK_SO = id("i_dont_think_so");
 
+    // --- quest board, second batch ---
+
+    public static final ResourceLocation COLLECTOR = id("collector");
+    public static final ResourceLocation COMPLETIONIST = id("completionist");
+    public static final ResourceLocation FULL_KIT = id("full_kit");
+    public static final ResourceLocation UNSTABLE_GENIUS = id("unstable_genius");
+    public static final ResourceLocation WEAVER = id("weaver");
+    public static final ResourceLocation P25 = id("p25");
+    public static final ResourceLocation P50 = id("p50");
+    public static final ResourceLocation P100 = id("p100");
+    public static final ResourceLocation GREEN_THUMB = id("green_thumb");
+    public static final ResourceLocation BAD_LUCK = id("bad_luck");
+    public static final ResourceLocation SHARD_HOARDER = id("shard_hoarder");
+    public static final ResourceLocation GO_HOME = id("go_home");
+    public static final ResourceLocation DONT_WORRY_IM_HERE = id("dont_worry_im_here");
+    public static final ResourceLocation UPSIDE_DOWN = id("upside_down");
+    public static final ResourceLocation I_AM_A_SURGEON = id("i_am_a_surgeon");
+    public static final ResourceLocation BIP = id("bip");
+    public static final ResourceLocation WATCH_YOUR_STEP = id("watch_your_step");
+    public static final ResourceLocation YA_AINT_GOING_NOWHERE = id("ya_aint_going_nowhere");
+    public static final ResourceLocation NOT_ON_MY_WATCH = id("not_on_my_watch");
+    public static final ResourceLocation CHILLY = id("chilly");
+    public static final ResourceLocation EXECUTION = id("execution");
+    public static final ResourceLocation GOTCHA = id("gotcha");
+    public static final ResourceLocation HERBALIST = id("herbalist");
+    public static final ResourceLocation STILL_STANDING = id("still_standing");
+
     private ModAdvancements() {}
 
     private static ResourceLocation id(String path) {

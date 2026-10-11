@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:weaver",
+  "display": {
+    "icon": { "id": "minecraft:cobweb" },
+    "title": { "translate": "advancement.bloodbound.p25.title" },
+    "description": { "translate": "advancement.bloodbound.p25.description" },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

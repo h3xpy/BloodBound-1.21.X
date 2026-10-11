@@ -1,0 +1,14 @@
+{
+  "parent": "bloodbound:tier1_perk",
+  "display": {
+    "icon": { "id": "minecraft:chain" },
+    "title": { "translate": "advancement.bloodbound.ya_aint_going_nowhere.title" },
+    "description": { "translate": "advancement.bloodbound.ya_aint_going_nowhere.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "granted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["granted"]]
+}

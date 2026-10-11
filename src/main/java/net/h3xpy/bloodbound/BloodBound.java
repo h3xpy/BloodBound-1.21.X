@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 
 import net.h3xpy.bloodbound.advancement.AchievementTracker;
+import net.h3xpy.bloodbound.advancement.QuestTracker;
 import net.h3xpy.bloodbound.command.BloodBoundCommand;
 import net.h3xpy.bloodbound.effect.BleedingHandler;
 import net.h3xpy.bloodbound.effect.ExhaustedHandler;
@@ -27,6 +28,7 @@ import net.h3xpy.bloodbound.event.PerkEventHandler;
 import net.h3xpy.bloodbound.event.PlayerSyncHandler;
 import net.h3xpy.bloodbound.event.RaiseTheStakesHandler;
 import net.h3xpy.bloodbound.event.RelentlessHandler;
+import net.h3xpy.bloodbound.event.HostileWoundsHandler;
 import net.h3xpy.bloodbound.event.SoulShardDropHandler;
 import net.h3xpy.bloodbound.event.UnderTheRadarHandler;
 import net.h3xpy.bloodbound.network.ModNetwork;
@@ -114,6 +116,8 @@ public class BloodBound {
         NeoForge.EVENT_BUS.register(HangedMan.class);
         NeoForge.EVENT_BUS.register(HolySanctum.class);
         NeoForge.EVENT_BUS.register(SpringPad.class);
+        NeoForge.EVENT_BUS.register(HostileWoundsHandler.class);
+        NeoForge.EVENT_BUS.register(QuestTracker.class);
         NeoForge.EVENT_BUS.register(Offerings.class);
         NeoForge.EVENT_BUS.addListener(BloodBoundCommand::register);
 

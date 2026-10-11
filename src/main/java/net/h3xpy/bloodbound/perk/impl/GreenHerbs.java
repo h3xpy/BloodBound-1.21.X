@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.advancement.QuestTracker;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModPerks;
@@ -105,6 +106,7 @@ public final class GreenHerbs {
         if (tier <= 0) {
             return;
         }
+        QuestTracker.onHerbalHealing(healer, amount);
         // Someone who already carries the perk has nothing to be given.
         if (PerkDataManager.get(target).getActiveTier(ModPerks.GREEN_HERBS) > 0) {
             return;
