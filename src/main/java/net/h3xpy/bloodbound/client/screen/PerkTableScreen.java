@@ -51,6 +51,10 @@ public class PerkTableScreen extends AbstractContainerScreen<PerkTableMenu> {
     @Nullable
     private EditBox searchBox;
 
+    /** Filters the wiki's list of perks. Only shown on the wiki tab. */
+    @Nullable
+    private EditBox wikiSearchBox;
+
     public PerkTableScreen(PerkTableMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
         // 320x240 is the smallest viewport Minecraft ever hands a GUI; init() grows the panel from
@@ -77,11 +81,27 @@ public class PerkTableScreen extends AbstractContainerScreen<PerkTableMenu> {
         searchBox.setValue(previous);
         searchBox.setResponder(value -> loadoutTab.onSearchChanged());
         addRenderableWidget(searchBox);
+
+        // The wiki keeps a filter of its own, over the whole list of perks rather than the learned ones.
+        String previousWiki = wikiSearchBox != null ? wikiSearchBox.getValue() : "";
+        wikiSearchBox = new EditBox(font, contentX() + 5, contentY() + 3, wikiTab.searchWidth(), 12,
+                Component.translatable("bloodbound.wiki.search"));
+        wikiSearchBox.setHint(Component.translatable("bloodbound.wiki.search").withStyle(ChatFormatting.DARK_GRAY));
+        wikiSearchBox.setMaxLength(48);
+        wikiSearchBox.setBordered(true);
+        wikiSearchBox.setValue(previousWiki);
+        wikiSearchBox.setResponder(value -> wikiTab.onSearchChanged());
+        addRenderableWidget(wikiSearchBox);
     }
 
     /** What the player has typed into the search box, lower-cased and trimmed. */
     String searchQuery() {
         return searchBox == null ? "" : searchBox.getValue().trim().toLowerCase(Locale.ROOT);
+    }
+
+    /** What the player has typed into the wiki's search box, lower-cased and trimmed. */
+    String wikiQuery() {
+        return wikiSearchBox == null ? "" : wikiSearchBox.getValue().trim().toLowerCase(Locale.ROOT);
     }
 
     // --- layout ---
@@ -129,13 +149,9 @@ public class PerkTableScreen extends AbstractContainerScreen<PerkTableMenu> {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        // The box belongs to the loadout tab alone, and a hidden widget takes no clicks or keys.
-        if (searchBox != null) {
-            searchBox.visible = activeTab == Tab.LOADOUT;
-            if (!searchBox.visible) {
-                searchBox.setFocused(false);
-            }
-        }
+        // Each box belongs to its own tab, and a hidden widget takes no clicks or keys.
+        showOnlyOn(searchBox, Tab.LOADOUT);
+        showOnlyOn(wikiSearchBox, Tab.WIKI);
         super.render(graphics, mouseX, mouseY, partialTick);
 
         renderHeader(graphics);
@@ -232,15 +248,27 @@ public class PerkTableScreen extends AbstractContainerScreen<PerkTableMenu> {
      */
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (searchBox != null && searchBox.visible && searchBox.isFocused()) {
-            if (searchBox.keyPressed(keyCode, scanCode, modifiers)) {
-                return true;
-            }
-            if (keyCode != GLFW.GLFW_KEY_ESCAPE) {
-                return true;
+        for (EditBox box : new EditBox[] { searchBox, wikiSearchBox }) {
+            if (box != null && box.visible && box.isFocused()) {
+                if (box.keyPressed(keyCode, scanCode, modifiers)) {
+                    return true;
+                }
+                if (keyCode != GLFW.GLFW_KEY_ESCAPE) {
+                    return true;
+                }
             }
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    private void showOnlyOn(@Nullable EditBox box, Tab tab) {
+        if (box == null) {
+            return;
+        }
+        box.visible = activeTab == tab;
+        if (!box.visible) {
+            box.setFocused(false);
+        }
     }
 
     @Override

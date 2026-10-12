@@ -35,6 +35,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
 
 /**
@@ -120,7 +121,21 @@ public final class ClientReactiveCompound {
     /** How far through the coating the animation is, 0 to 1. */
     private static float progress(float partialTick) {
         float ticks = ClientPerkData.gameTime() - startedAt + partialTick;
-        return Mth.clamp(ticks / ModPerks.REACTIVE_COAT_TICKS, 0.0F, 1.0F);
+        int coatTicks = ModPerks.reactiveCoatTicks(ClientPerkData.get().getActiveTier(ModPerks.REACTIVE_COMPOUND));
+        return Mth.clamp(ticks / coatTicks, 0.0F, 1.0F);
+    }
+
+    /**
+     * Coating slows the player the way eating or drinking does: what the keys ask for is cut to a
+     * fifth, which also keeps a sprint from starting and ends one under way. Done here, on the
+     * client, because the client is what moves the player.
+     */
+    @SubscribeEvent
+    public static void onMovementInput(MovementInputUpdateEvent event) {
+        if (isCoating()) {
+            event.getInput().leftImpulse *= ModPerks.REACTIVE_COAT_SPEED;
+            event.getInput().forwardImpulse *= ModPerks.REACTIVE_COAT_SPEED;
+        }
     }
 
     // --- the timeline ---

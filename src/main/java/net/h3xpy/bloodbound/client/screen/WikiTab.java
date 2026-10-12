@@ -3,6 +3,7 @@ package net.h3xpy.bloodbound.client.screen;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nullable;
 
@@ -69,12 +70,23 @@ public class WikiTab {
         return screen.contentX() + 4;
     }
 
+    /** The list starts under the search box. */
     private int listY() {
-        return screen.contentY() + 4;
+        return screen.contentY() + 20;
     }
 
     private int listHeight() {
-        return screen.contentHeight() - 8;
+        return screen.contentHeight() - 24;
+    }
+
+    /** The search box spans the list column. */
+    int searchWidth() {
+        return listWidth() - 2;
+    }
+
+    /** A different filter starts the list again from the top. */
+    void onSearchChanged() {
+        listScroll = 0;
     }
 
     private int visibleEntries() {
@@ -104,24 +116,63 @@ public class WikiTab {
         return perks;
     }
 
+    /**
+     * What the list shows, narrowed to the search: null stands for the general page. A perk matches
+     * on its own name or on the name of any of its addons, in the language the player reads.
+     */
+    private List<ResourceLocation> entries() {
+        String query = screen.wikiQuery();
+        List<ResourceLocation> entries = new ArrayList<>();
+        if (query.isEmpty() || contains(Component.translatable("bloodbound.wiki.general"), query)) {
+            entries.add(null);
+        }
+        for (Perk perk : perks()) {
+            if (query.isEmpty() || matches(perk, query)) {
+                entries.add(perk.id());
+            }
+        }
+        return entries;
+    }
+
+    private static boolean matches(Perk perk, String query) {
+        if (contains(perk.displayName(), query)) {
+            return true;
+        }
+        for (Addon addon : AddonRegistry.forPerk(perk.id())) {
+            if (contains(addon.displayName(), query)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean contains(Component text, String query) {
+        return text.getString().toLowerCase(Locale.ROOT).contains(query);
+    }
+
     private int entryCount() {
-        return 1 + PerkRegistry.count();
+        return entries().size();
     }
 
     // --- rendering ---
 
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        listScroll = Math.clamp(listScroll, 0, Math.max(0, entryCount() - visibleEntries()));
-        List<Perk> perks = perks();
+        List<ResourceLocation> entries = entries();
+        listScroll = Math.clamp(listScroll, 0, Math.max(0, entries.size() - visibleEntries()));
 
-        int shown = Math.min(visibleEntries(), entryCount() - listScroll);
+        if (entries.isEmpty()) {
+            graphics.drawString(Minecraft.getInstance().font, Component.translatable("bloodbound.wiki.no_match"),
+                    listX() + 2, listY() + 6, 0xFF6A5A5E, false);
+        }
+        int shown = Math.min(visibleEntries(), entries.size() - listScroll);
         for (int i = 0; i < shown; i++) {
-            int index = listScroll + i;
+            ResourceLocation id = entries.get(listScroll + i);
             int y = listY() + i * ENTRY_HEIGHT;
-            if (index == 0) {
+            Perk perk = id == null ? null : PerkRegistry.get(id);
+            if (perk == null) {
                 renderGeneralEntry(graphics, y, mouseX, mouseY);
             } else {
-                renderPerkEntry(graphics, perks.get(index - 1), y, mouseX, mouseY);
+                renderPerkEntry(graphics, perk, y, mouseX, mouseY);
             }
         }
         renderScrollbar(graphics);
@@ -388,11 +439,12 @@ public class WikiTab {
         if (!isInside(x, y, listX(), listY(), listWidth(), listHeight())) {
             return false;
         }
+        List<ResourceLocation> entries = entries();
         int index = listScroll + (y - listY()) / ENTRY_HEIGHT;
-        if (index < 0 || index >= entryCount()) {
+        if (index < 0 || index >= entries.size()) {
             return true;
         }
-        ResourceLocation picked = index == 0 ? null : perks().get(index - 1).id();
+        ResourceLocation picked = entries.get(index);
         if (picked == null ? selected != null : !picked.equals(selected)) {
             selected = picked;
             detailScroll = 0;

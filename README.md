@@ -99,7 +99,7 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | **The Hanged Man** | Active | Press the key to turn your gravity upside down: you fall upwards and walk on the ceiling, model and view turned over, mouse and strafe keys mirrored to match. Press again to come back the right way up; the cooldown of **80/60/40** seconds only starts then. A fall under way is cancelled by either flip. Up there everything works mirrored: falling onto the ceiling hurts, its blocks act as the floor (ice, soul sand, honey, magma, slime and bed bounces), steps, ladders, swimming, creative flight, knockback and the dust of running and landing are turned over, the void lies above the world, and lying down in a bed sets you right (and starts the cooldown). |
 | **Spring Pad** | Active | Hold the key **2/1.5/1** seconds still to set a pad; up to **1/2/3** out, a new one takes the oldest. It arms after 2 seconds; whatever steps on it, you included, is thrown violently the way it is looking: always at least 20 blocks high; looking up sends it higher (about 33 straight up), looking ahead or down sends it farther (about 29 blocks), at most once a second, and it breaks after **2/3/4** launches. Cooldown **20/15/10** seconds after setting one. |
 | **Vigilance** | Passive | While another player looks right at you (within 48 blocks), or a hostile creature does, or anything hunts you in plain view (within 24): **10/15/20%** faster movement, damage, cooldown and harmful-effect recovery, and block breaking. Lasts 1 second past the gaze; the HUD icon lights up while on. |
-| **Reactive Compound** | Active | Hold the key 3 seconds with a melee weapon (sword, axe, trident, mace) in hand, unable to attack, to coat it — both arms show in first person, the blade swings flat and a vial is poured over it. Switching items loses the coat. The next thing it hits takes **10/15/20%** more damage and 50% more knockback; a player also has every perk off for **10/12.5/15** seconds (their HUD icons grey out; traps already laid stay). Cooldown **45/40/35** seconds after the hit. |
+| **Reactive Compound** | Active | Hold the key **6/5/4** seconds, slowed as if drinking, with a melee weapon (sword, axe, trident, mace) in hand, unable to attack, to coat it — both arms show in first person, the blade swings flat and a vial is poured over it. Switching items loses the coat. Taking a blow from anything while coating spills the vial: the coating stops, with no cooldown. The next thing it hits takes **10/15/20%** more damage and 50% more knockback; a player also has every perk off for **10/12.5/15** seconds (their HUD icons grey out; traps already laid stay). Cooldown **45/40/35** seconds after the hit. |
 
 
 ## Marks
@@ -437,7 +437,9 @@ tracked in `AchievementTracker`; nothing half done survives a logout.
 ## Quest board (the Wiki tab)
 
 The Perk Table's fourth tab lists every perk, owned or not — dimmed when not — with its description,
-its addons (owned or not), and the advancements filed under it; a General page holds the rest. Stars,
+its addons (owned or not), and the advancements filed under it; a General page holds the rest. A
+search box over the list narrows it to the perks whose name, or one of whose addons' names, holds
+what is typed. Stars,
 1 to 5, show how much a perk or addon is worn **in this world** next to the most worn of its kind:
 5 from 60% of it, 4 from 35%, 3 from 15%, 2 from 5%, 1 below that or never.
 
