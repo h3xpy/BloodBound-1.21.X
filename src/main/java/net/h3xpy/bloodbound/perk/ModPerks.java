@@ -950,13 +950,14 @@ public final class ModPerks {
      * Hold the key a few seconds with a melee weapon in hand to coat it; the next thing it hits takes
      * more damage and is thrown harder, and a player has every perk turned off for a while.
      * <p>Scaling: [0] seconds the perks stay off, [1] cooldown in seconds, [2] extra damage of the
-     * coated hit, as a percentage.
+     * coated hit, as a percentage, [3] seconds the coating takes.
      */
     public static final Perk REACTIVE_COMPOUND = PerkRegistry.register(Perk.builder("reactive_compound")
             .type(PerkType.ACTIVE)
             .scaling(10, 12.5, 15)
             .scaling(45, 40, 35)
             .scaling(10, 15, 20)
+            .scaling(6, 5, 4)
             .cooldown(1)
             .build());
 
@@ -976,10 +977,16 @@ public final class ModPerks {
     public static final int REACTIVE_DISABLE = 0;
     public static final int REACTIVE_COOLDOWN = 1;
     public static final int REACTIVE_DAMAGE = 2;
+    public static final int REACTIVE_COAT = 3;
     /** How much harder the coated hit throws what it hits. */
     public static final double REACTIVE_KNOCKBACK = 1.5D;
-    /** How long the coating takes, the key held throughout. */
-    public static final int REACTIVE_COAT_TICKS = 60;
+    /** How much of their speed a player keeps while coating: as much as while eating or drinking. */
+    public static final float REACTIVE_COAT_SPEED = 0.2F;
+
+    /** How long the coating takes at this tier, the key held throughout. Shared with the animation. */
+    public static int reactiveCoatTicks(int tier) {
+        return REACTIVE_COMPOUND.ticks(REACTIVE_COAT, Math.max(1, tier));
+    }
 
     // --- Spring Pad tuning ---
     public static final int SPRING_SETUP = 0;

@@ -26,6 +26,7 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
@@ -129,17 +130,18 @@ public final class ReactiveCompound {
                 return;
             }
             long held = gameTime - pouring.since();
-            // The drops everybody else sees, in the pouring part of the three seconds.
-            if (held > ModPerks.REACTIVE_COAT_TICKS / 4 && held < ModPerks.REACTIVE_COAT_TICKS * 4 / 5 && held % 3 == 0) {
+            int coatTicks = ModPerks.reactiveCoatTicks(data.getActiveTier(ModPerks.REACTIVE_COMPOUND));
+            // The drops everybody else sees, in the pouring part of the coating.
+            if (held > coatTicks / 4 && held < coatTicks * 4 / 5 && held % 3 == 0) {
                 Vec3 hand = handPosition(player);
                 player.serverLevel().sendParticles(ParticleTypes.FALLING_OBSIDIAN_TEAR,
                         hand.x, hand.y + 0.4D, hand.z, 1, 0.05D, 0.0D, 0.05D, 0.0D);
             }
             if (held % 20 == 0) {
                 player.displayClientMessage(Component.translatable("bloodbound.message.reactive_compound_coating",
-                        Math.max(1, (ModPerks.REACTIVE_COAT_TICKS - held + 19) / 20)).withStyle(ChatFormatting.LIGHT_PURPLE), true);
+                        Math.max(1, (coatTicks - held + 19) / 20)).withStyle(ChatFormatting.LIGHT_PURPLE), true);
             }
-            if (held >= ModPerks.REACTIVE_COAT_TICKS) {
+            if (held >= coatTicks) {
                 COATING.remove(id);
                 COATED.put(id, pouring.weapon());
                 send(player, ReactiveCompoundPayload.COATED);
@@ -171,6 +173,26 @@ public final class ReactiveCompound {
 
     private static void send(ServerPlayer player, int phase) {
         PacketDistributor.sendToPlayer(player, new ReactiveCompoundPayload(phase));
+    }
+
+    /**
+     * A blow taken while pouring spills the vial: the coating stops, and costs nothing — the
+     * cooldown only ever starts once a coated weapon lands a hit. Only blows from something count
+     * (a creature, a player, a shot, a blast somebody set off); burning or falling does not.
+     */
+    @SubscribeEvent
+    public static void onHurt(LivingDamageEvent.Post event) {
+        if (!(event.getEntity() instanceof ServerPlayer player) || event.getNewDamage() <= 0.0F
+                || event.getSource().getEntity() == null) {
+            return;
+        }
+        if (COATING.remove(player.getUUID()) != null) {
+            send(player, phaseOf(player.getUUID()));
+            player.displayClientMessage(Component.translatable("bloodbound.message.reactive_compound_interrupted")
+                    .withStyle(ChatFormatting.RED), true);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.GLASS_BREAK, SoundSource.PLAYERS,
+                    0.6F, 1.4F);
+        }
     }
 
     /** No swinging while the vial is out. */
