@@ -106,6 +106,7 @@ public final class ClientEventHandler {
         ClientWiki.reset();
         ClientReactiveCompound.reset();
         ClientAngelWings.reset();
+        ClientUndersized.setRiding(false);
         Vigilance.setClientBonus(0.0F);
         healHeld = false;
         Arrays.fill(SLOT_HELD, false);

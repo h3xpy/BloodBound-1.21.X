@@ -7,9 +7,13 @@
     "BedBlockMixin",
     "EntityMixin",
     "LevelMixin",
+    "LivingEntityAccessor",
     "LivingEntityMixin",
+    "MobControlMixin",
     "PlayerInvoker",
     "PlayerMixin",
+    "PlayerRidingMixin",
+    "RiddenMixin",
     "ServerGamePacketListenerImplAccessor",
     "ServerGamePacketListenerImplMixin",
     "SlimeBlockMixin"

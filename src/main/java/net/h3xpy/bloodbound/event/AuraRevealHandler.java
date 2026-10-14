@@ -32,6 +32,12 @@ public final class AuraRevealHandler {
 
     private AuraRevealHandler() {}
 
+    /** Whether this target's aura is revealed right now, and to this viewer. */
+    public static boolean isRevealedTo(LivingEntity target, ServerPlayer viewer) {
+        return target.hasEffect(ModEffects.AURA_REVEALED)
+                && viewer.getUUID().equals(WATCHERS.get(target.getUUID()));
+    }
+
     /**
      * Reveals a target's aura to one player and starts the effect on the target.
      *

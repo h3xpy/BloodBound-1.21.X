@@ -262,7 +262,7 @@ public final class ShortCircuit {
             // Kept fractional so 0.13 seconds really is 2.6 ticks on average, not three.
             beam.nextHit.put(victim.getId(), Math.max(due + beam.interval, now + beam.interval - 1.0D));
             victim.invulnerableTime = 0;
-            victim.hurt(source, ModPerks.CIRCUIT_DAMAGE);
+            victim.hurt(source, beam.steered ? ModPerks.CIRCUIT_DAMAGE * ModAddons.RED_LED_DAMAGE : ModPerks.CIRCUIT_DAMAGE);
             // Bip: four killed by the one cylinder.
             if (!victim.isAlive() && ++beam.kills == BIP_KILLS && owner != null) {
                 ModAdvancements.grant(owner, ModAdvancements.BIP);

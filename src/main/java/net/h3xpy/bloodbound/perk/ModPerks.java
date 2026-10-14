@@ -35,7 +35,7 @@ public final class ModPerks {
      */
     public static final Perk LOW_PROFILE = PerkRegistry.register(Perk.builder("low_profile")
             .type(PerkType.PASSIVE)
-            .scaling(3, 4, 5)
+            .scaling(4, 5, 6)
             .build());
 
     /**
@@ -46,7 +46,7 @@ public final class ModPerks {
      */
     public static final Perk SURGICAL_SUTURE = PerkRegistry.register(Perk.builder("surgical_suture")
             .type(PerkType.ACTIVE)
-            .scaling(4, 5, 6)
+            .scaling(5, 6, 7)
             .scaling(1, 2, 3)
             .flatCooldown(30)
             .grantsHealing()
@@ -98,7 +98,7 @@ public final class ModPerks {
      */
     public static final Perk PATCH_UP = PerkRegistry.register(Perk.builder("patch_up")
             .type(PerkType.ACTIVE)
-            .scaling(60, 55, 50)
+            .scaling(25, 20, 15)
             .build());
 
     /**
@@ -122,14 +122,18 @@ public final class ModPerks {
             .build());
 
     /**
-     * Wounded, your blows land again and again.
-     * <p>Scaling: [0] health threshold in hearts, [1] number of follow-up hits.
+     * Dropping under a health threshold opens a window in which every blow lands again and again;
+     * the cooldown starts when the window closes.
+     * <p>Scaling: [0] health threshold in hearts, [1] number of follow-up hits, [2] how long the
+     * window lasts in seconds, [3] cooldown in seconds.
      */
     public static final Perk RELENTLESS = PerkRegistry.register(Perk.builder("relentless")
             .type(PerkType.PASSIVE)
             .scaling(6, 6.5, 7)
             .scaling(1, 2, 3)
-            .flatCooldown(5)
+            .scaling(3, 4, 5)
+            .scaling(18, 16, 14)
+            .cooldown(3)
             .build());
 
     /**
@@ -140,7 +144,7 @@ public final class ModPerks {
     public static final Perk BROKEN_MOVEMENT_DEVICE = PerkRegistry.register(Perk.builder("broken_movement_device")
             .type(PerkType.ACTIVE)
             .scaling(10, 12.5, 15)
-            .scaling(50, 40, 30)
+            .scaling(35, 30, 25)
             .cooldown(1)
             .build());
 
@@ -161,7 +165,7 @@ public final class ModPerks {
     public static final Perk ANTI_EXHAUSTION_SYRINGE = PerkRegistry.register(
             Perk.builder("anti_exhaustion_syringe")
                     .type(PerkType.ACTIVE)
-                    .scaling(70, 80, 90)
+                    .scaling(80, 90, 100)
                     .scaling(150, 130, 110)
                     .cooldown(1)
                     .build());
@@ -188,7 +192,7 @@ public final class ModPerks {
      */
     public static final Perk TINKERER = PerkRegistry.register(Perk.builder("tinkerer")
             .type(PerkType.ACTIVE)
-            .scaling(3, 6, 9)
+            .scaling(4, 6, 8)
             .scaling(12, 10, 8)
             .scaling(100, 90, 80)
             .cooldown(2)
@@ -261,10 +265,10 @@ public final class ModPerks {
      */
     public static final Perk GUARDIAN_ANGEL = PerkRegistry.register(Perk.builder("guardian_angel")
             .type(PerkType.PASSIVE)
-            .scaling(20, 40, 60)
-            .scaling(6, 10, 14)
-            .scaling(10, 14, 18)
-            .scaling(9, 8, 7)
+            .scaling(60, 80, 100)
+            .scaling(4, 8, 12)
+            .scaling(8, 12, 16)
+            .scaling(7, 6, 5)
             .scaling(360, 300, 240)
             .cooldown(4)
             .build());
@@ -287,7 +291,7 @@ public final class ModPerks {
      */
     public static final Perk GREEN_HERBS = PerkRegistry.register(Perk.builder("green_herbs")
             .type(PerkType.PASSIVE)
-            .scaling(1.5, 2, 2.5)
+            .scaling(2.5, 3, 3.5)
             .scaling(6, 4, 2)
             .scaling(60, 90, 120)
             .grantsHealing()
@@ -340,12 +344,14 @@ public final class ModPerks {
             .build());
 
     /**
-     * Reads the ground for trails, and anything bleeding nearby that somebody else is fighting.
-     * <p>Scaling: [0] radius in blocks.
+     * Reads the ground for trails, and anything bleeding nearby that somebody else is fighting, and
+     * hits harder whatever has its aura revealed.
+     * <p>Scaling: [0] radius in blocks, [1] extra damage on a revealed target, as a percentage.
      */
     public static final Perk HUNTERS_INSTINCT = PerkRegistry.register(Perk.builder("hunters_instinct")
             .type(PerkType.PASSIVE)
             .scaling(16, 20, 24)
+            .scaling(10, 15, 20)
             .grantsMarkVision()
             .build());
 
@@ -387,6 +393,7 @@ public final class ModPerks {
 
     // --- Hunter's Instinct tuning ---
     public static final int HUNTERS_INSTINCT_RADIUS = 0;
+    public static final int HUNTERS_INSTINCT_DAMAGE = 1;
 
     /** How long a reveal lasts, in ticks. */
     public static final int HUNTERS_INSTINCT_REVEAL_TICKS = 140;
@@ -580,7 +587,7 @@ public final class ModPerks {
      */
     public static final Perk FULL_EXTRACTION = PerkRegistry.register(Perk.builder("full_extraction")
             .type(PerkType.PASSIVE)
-            .scaling(20, 25, 30)
+            .scaling(20, 30, 40)
             .build());
 
     /**
@@ -771,7 +778,7 @@ public final class ModPerks {
     public static final int TARGET_DELAY = 4;
 
     /** How close the owner has to be for a trip to be worth following, and the window to follow in. */
-    public static final double TARGET_RANGE = 128.0D;
+    public static final double TARGET_RANGE = 256.0D;
     public static final int TARGET_WINDOW_TICKS = 80;
     /** The wire's footprint, in blocks either side. */
     public static final double TARGET_TRAP_RADIUS = 0.6D;
@@ -825,7 +832,7 @@ public final class ModPerks {
      */
     public static final Perk WIRELESS = PerkRegistry.register(Perk.builder("wireless")
             .type(PerkType.PASSIVE)
-            .scaling(50, 60, 70)
+            .scaling(60, 80, 100)
             .build());
 
     /**
@@ -956,8 +963,8 @@ public final class ModPerks {
             .type(PerkType.ACTIVE)
             .scaling(10, 12.5, 15)
             .scaling(45, 40, 35)
-            .scaling(10, 15, 20)
-            .scaling(6, 5, 4)
+            .scaling(30, 40, 50)
+            .scaling(5, 4.5, 4)
             .cooldown(1)
             .build());
 
@@ -987,6 +994,92 @@ public final class ModPerks {
     public static int reactiveCoatTicks(int tier) {
         return REACTIVE_COMPOUND.ticks(REACTIVE_COAT, Math.max(1, tier));
     }
+
+    /**
+     * Blows struck up close hurt more; everything else hurts far less.
+     * <p>Scaling: [0] extra melee damage taken, as a percentage, [1] how much less every other kind
+     * of damage does, as a percentage.
+     */
+    public static final Perk BOUNDLESS_SOUL = PerkRegistry.register(Perk.builder("boundless_soul")
+            .type(PerkType.PASSIVE)
+            .scaling(30, 20, 10)
+            .scaling(50, 55, 60)
+            .build());
+
+    /**
+     * A few more hearts.
+     * <p>Scaling: [0] extra hearts.
+     */
+    public static final Perk HEART_OF_GOLD = PerkRegistry.register(Perk.builder("heart_of_gold")
+            .type(PerkType.PASSIVE)
+            .scaling(1, 2, 3)
+            .build());
+
+    /**
+     * Hold still with the key down to plant a post, press again near it to plant a second: a wire
+     * runs between their tops. Whatever walks into it gives itself away, tells the owner, and has
+     * every harmful effect it carries drawn out; crouching through only wears the wire.
+     * <p>Scaling: [0] how far the second post may stand from the first, in blocks, [1] how see-through
+     * the wire is, as a percentage, [2] seconds of aura reveal, [3] what harmful effects' time left is
+     * multiplied by, [4] triggers before it breaks, [5] posts out at once, [6] cooldown in seconds.
+     */
+    public static final Perk TRIPWIRES = PerkRegistry.register(Perk.builder("trip_wires")
+            .type(PerkType.ACTIVE)
+            .scaling(10, 15, 20)
+            .scaling(90, 93, 96)
+            .scaling(10, 15, 20)
+            .scaling(1.5, 1.75, 2)
+            .scaling(3, 4, 5)
+            .scaling(2, 4, 6)
+            .scaling(15, 12, 9)
+            .cooldown(6)
+            .build());
+
+    /**
+     * The bearer is shrunk, model and hitbox alike. From Tier II the key climbs onto the shoulders of
+     * a crouched player nearby; at Tier III onto any creature, which can then be ridden like a horse.
+     * Jumping or crouching gets back down. No cooldown.
+     * <p>Scaling: [0] how much smaller, as a percentage.
+     */
+    public static final Perk UNDERSIZED = PerkRegistry.register(Perk.builder("undersized")
+            .type(PerkType.ACTIVE)
+            .scaling(50, 50, 50)
+            .build());
+
+    // --- Undersized tuning ---
+    public static final int UNDERSIZED_SHRINK = 0;
+    /** How close the one to climb on has to be. */
+    public static final double UNDERSIZED_RANGE = 3.0D;
+    /** The tier that climbs onto players' shoulders, and the one that rides creatures. */
+    public static final int UNDERSIZED_SHOULDER_TIER = 2;
+    public static final int UNDERSIZED_MOUNT_TIER = 3;
+    /** What the bearer's own melee blows are worth, and how far a mount can be pointed at something. */
+    public static final float UNDERSIZED_MELEE_DEALT = 0.75F;
+    public static final double UNDERSIZED_COMMAND_RANGE = 32.0D;
+
+    // --- Boundless Soul tuning ---
+    public static final int BOUNDLESS_MELEE_TAKEN = 0;
+    public static final int BOUNDLESS_OTHER_REDUCTION = 1;
+
+    // --- Heart Of Gold tuning ---
+    public static final int HEART_OF_GOLD_HEARTS = 0;
+
+    // --- Tripwires tuning ---
+    public static final int TRIPWIRE_RANGE = 0;
+    public static final int TRIPWIRE_TRANSPARENCY = 1;
+    public static final int TRIPWIRE_REVEAL = 2;
+    public static final int TRIPWIRE_EFFECT_MULTIPLIER = 3;
+    public static final int TRIPWIRE_TRIGGERS = 4;
+    public static final int TRIPWIRE_POSTS = 5;
+    public static final int TRIPWIRE_COOLDOWN = 6;
+    /** Seconds of holding still it takes to plant the first post. */
+    public static final int TRIPWIRE_SETUP_TICKS = 40;
+    /** How tall a post is, in blocks: the wire runs between their tops. */
+    public static final double TRIPWIRE_POST_HEIGHT = 1.0D;
+    /** The shortest wire allowed, so two posts are never planted on top of each other. */
+    public static final double TRIPWIRE_MIN_LENGTH = 1.0D;
+    /** How long a lone first post waits for its second before it is pulled up. */
+    public static final int TRIPWIRE_LONE_POST_TICKS = 1200;
 
     // --- Spring Pad tuning ---
     public static final int SPRING_SETUP = 0;
@@ -1148,6 +1241,9 @@ public final class ModPerks {
     public static final int RELENTLESS_HEARTS = 0;
     /** Index of how many follow-up hits the chain lands. */
     public static final int RELENTLESS_HITS = 1;
+    /** Index of how long the window lasts, in seconds, and of the cooldown after it. */
+    public static final int RELENTLESS_WINDOW = 2;
+    public static final int RELENTLESS_COOLDOWN = 3;
     /** Share of the opening blow each follow-up deals, in order. */
     public static final float[] RELENTLESS_CHAIN_FRACTIONS = { 0.30F, 0.15F, 0.075F };
     /** Delay between follow-up hits, in seconds. */
@@ -1319,7 +1415,7 @@ public final class ModPerks {
      * Half-angle of the cone the bounced shot looks down, in degrees: a target counts if the angle
      * between the shot's new heading and the line to it is no wider than this.
      */
-    public static final double BANK_SHOT_CONE_DEGREES = 45.0D;
+    public static final double BANK_SHOT_CONE_DEGREES = 63.0D;
     /** How far down that cone it looks. */
     public static final double BANK_SHOT_SEEK_RANGE = 6.0D;
 

@@ -103,7 +103,8 @@ public final class BarbedWire {
         }
 
         // Standing still is the whole of it. A step in any direction and the coil is dropped.
-        if (player.position().distanceToSqr(setup.origin)
+        // Sideways only: sinking into snow or bobbing on a block is not walking away.
+        if (player.position().subtract(setup.origin).horizontalDistanceSqr()
                 > ModPerks.BARBED_STILL_EPSILON * ModPerks.BARBED_STILL_EPSILON * 400.0D) {
             SETTING.remove(player.getUUID());
             player.displayClientMessage(Component.translatable("bloodbound.message.barbed_wire_moved")

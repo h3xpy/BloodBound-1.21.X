@@ -1,14 +1,15 @@
 package net.h3xpy.bloodbound.heal;
 
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 
 /**
- * One in-progress heal between a healer and a target. Both players have to hold still for it to
- * keep running.
+ * One in-progress heal between a healer and a target. Only a Patch Up session asks anyone to hold
+ * still; a co-op heal follows its target around.
  */
 public class HealSession {
     private final ServerPlayer healer;
-    private final ServerPlayer target;
+    private final LivingEntity target;
     /** A Patch Up session: the player is mending themselves, on their own timer. */
     private final boolean selfHeal;
 
@@ -24,10 +25,19 @@ public class HealSession {
     /** Game time of the last skill check roll, so they are rolled once per second. */
     private long lastCheckRoll;
 
+    /** Consecutive ticks the healer has spent looking away from the target. */
+    private int ticksLookingAway;
+
+    /** Counts a tick of looking at the target, or away from it, and returns how long it has been away. */
+    public int lookedAway(boolean away) {
+        ticksLookingAway = away ? ticksLookingAway + 1 : 0;
+        return ticksLookingAway;
+    }
+
     /** Game time the session began, so a session can never outlive its usefulness. */
     private final long startedAt;
 
-    public HealSession(ServerPlayer healer, ServerPlayer target, long gameTime, boolean selfHeal) {
+    public HealSession(ServerPlayer healer, LivingEntity target, long gameTime, boolean selfHeal) {
         this.healer = healer;
         this.target = target;
         this.selfHeal = selfHeal;
@@ -45,7 +55,7 @@ public class HealSession {
         return healer;
     }
 
-    public ServerPlayer target() {
+    public LivingEntity target() {
         return target;
     }
 

@@ -10,6 +10,7 @@ import net.h3xpy.bloodbound.entity.RitualEntity;
 import net.h3xpy.bloodbound.entity.SanctumBubbleEntity;
 import net.h3xpy.bloodbound.entity.SpringPadEntity;
 import net.h3xpy.bloodbound.entity.TargetFoundEntity;
+import net.h3xpy.bloodbound.entity.TripwireEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -39,6 +40,16 @@ public final class ModEntities {
                     .updateInterval(20)
                     .noSummon()
                     .build("target_found"));
+
+    /** A Tripwires wire, standing on its first post. Its own size is a post: the wire is drawn past it. */
+    public static final Supplier<EntityType<TripwireEntity>> TRIPWIRE =
+            ENTITY_TYPES.register("tripwire", () -> EntityType.Builder
+                    .<TripwireEntity>of(TripwireEntity::new, MobCategory.MISC)
+                    .sized(0.2F, 1.0F)
+                    .clientTrackingRange(8)
+                    .updateInterval(20)
+                    .noSummon()
+                    .build("tripwire"));
 
     /**
      * A ritual, or an Eavesdrop trap, standing on the ground. Tracked far further than the traps:

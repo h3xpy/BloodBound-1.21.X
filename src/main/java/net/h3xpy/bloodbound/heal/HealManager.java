@@ -24,18 +24,32 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * The co-op healing ability, unlocked by perks such as Surgical Suture.
  * <p>
- * Stand near a player who is crouched and holding still, hold the heal key, and they mend at one
- * point of health every {@link #TICKS_PER_POINT} ticks. Skill checks interrupt at random: land one
- * for a bonus point, miss it and the target loses one and the heal stalls.
+ * Look straight at a player or a creature within {@link #HEAL_RANGE} blocks and hold the heal key:
+ * they mend at one point of health every {@link #TICKS_PER_POINT} ticks, both of you free to move.
+ * Skill checks interrupt at random: land one for a bonus point, miss it and the target loses one
+ * and the heal stalls. It is the one kind of healing that gets through Broken.
  */
 public final class HealManager {
 
     /** How far the healer can stand from the target. */
-    public static final double HEAL_RANGE = 3.0D;
+    public static final double HEAL_RANGE = 6.0D;
+    /** How long the healer may look away from the target before the heal breaks. */
+    private static final int LOOK_AWAY_TICKS = 10;
+    /** Set while a co-op heal puts health in, so Broken lets it through. */
+    private static boolean mendingThroughBroken;
     /** A full 20 HP heal takes 30 seconds, so one point every 1.5 seconds. */
     public static final int TICKS_PER_POINT = 30;
     /**
@@ -98,7 +112,7 @@ public final class HealManager {
             return;
         }
 
-        ServerPlayer target = findTarget(healer);
+        LivingEntity target = findTarget(healer);
         if (target == null) {
             healer.displayClientMessage(Component.translatable("bloodbound.message.no_heal_target")
                     .withStyle(ChatFormatting.DARK_GRAY), true);
@@ -161,26 +175,32 @@ public final class HealManager {
                 SoundSource.PLAYERS, 0.6F, 0.9F);
     }
 
-    /** Nearest crouched, injured player in range. */
+    /** The injured player or creature under the healer's crosshair, within range and in sight. */
     @Nullable
-    private static ServerPlayer findTarget(ServerPlayer healer) {
-        ServerPlayer best = null;
-        double bestDistance = Double.MAX_VALUE;
-        for (ServerPlayer candidate : healer.serverLevel().players()) {
-            if (candidate == healer || !isValidTarget(candidate)) {
-                continue;
-            }
-            double distance = candidate.distanceToSqr(healer);
-            if (distance <= HEAL_RANGE * HEAL_RANGE && distance < bestDistance) {
-                best = candidate;
-                bestDistance = distance;
-            }
-        }
-        return best;
+    private static LivingEntity findTarget(ServerPlayer healer) {
+        LivingEntity looked = lookedAt(healer);
+        return looked != null && isValidTarget(looked) ? looked : null;
     }
 
-    private static boolean isValidTarget(ServerPlayer target) {
-        return target.isAlive() && target.isCrouching() && target.getHealth() < target.getMaxHealth();
+    /** Whatever living thing the healer's crosshair rests on within range, walls stopping the look. */
+    @Nullable
+    private static LivingEntity lookedAt(ServerPlayer healer) {
+        Vec3 eyes = healer.getEyePosition();
+        Vec3 end = eyes.add(healer.getLookAngle().scale(HEAL_RANGE));
+        BlockHitResult wall = healer.level().clip(new ClipContext(eyes, end, ClipContext.Block.COLLIDER,
+                ClipContext.Fluid.NONE, healer));
+        if (wall.getType() != HitResult.Type.MISS) {
+            end = wall.getLocation();
+        }
+        AABB sweep = healer.getBoundingBox().expandTowards(end.subtract(eyes)).inflate(1.0D);
+        EntityHitResult hit = ProjectileUtil.getEntityHitResult(healer, eyes, end, sweep,
+                entity -> entity instanceof LivingEntity && !entity.isSpectator() && entity != healer,
+                eyes.distanceToSqr(end));
+        return hit != null && hit.getEntity() instanceof LivingEntity living ? living : null;
+    }
+
+    private static boolean isValidTarget(LivingEntity target) {
+        return target.isAlive() && !(target instanceof ArmorStand) && target.getHealth() < target.getMaxHealth();
     }
 
     /** Called once per tick for each healer that has a session running. */
@@ -191,7 +211,7 @@ public final class HealManager {
         }
 
         long gameTime = healer.level().getGameTime();
-        ServerPlayer target = session.target();
+        LivingEntity target = session.target();
 
         // A full heal takes 30 seconds, so anything past this means the session is stuck — most
         // likely because a client stopped reporting the key as released after losing focus.
@@ -211,16 +231,24 @@ public final class HealManager {
                 ? SELF_HOLDING.contains(healer.getUUID())
                 : HOLDING.contains(healer.getUUID());
         boolean stillValid = healer.isAlive() && !target.isRemoved() && isValidTarget(target) && holdingKey
-                && (session.isSelfHeal() || target.distanceToSqr(healer) <= HEAL_RANGE * HEAL_RANGE);
+                && (session.isSelfHeal() ? healer.isCrouching()
+                        : target.level() == healer.level() && target.distanceToSqr(healer) <= HEAL_RANGE * HEAL_RANGE);
         if (!stillValid) {
             stop(healer, "bloodbound.message.heal_interrupted");
             return;
         }
-        if (session.hasEitherMoved(MOVE_EPSILON)) {
+        if (session.isSelfHeal()) {
+            // Patch Up still asks the player to crouch and hold still.
+            if (session.hasEitherMoved(MOVE_EPSILON)) {
+                stop(healer, "bloodbound.message.heal_interrupted");
+                return;
+            }
+            session.rememberPositions();
+        } else if (session.lookedAway(lookedAt(healer) != target) > LOOK_AWAY_TICKS) {
+            // Both may move, but the healer has to keep their eyes on the patient.
             stop(healer, "bloodbound.message.heal_interrupted");
             return;
         }
-        session.rememberPositions();
 
         if (session.isBlocked(gameTime)) {
             return;
@@ -228,7 +256,7 @@ public final class HealManager {
 
         int ticksPerPoint = ticksPerPoint(healer, session);
         if (session.advance(ticksPerPoint)) {
-            mend(healer, target, 1.0F);
+            mend(healer, target, 1.0F, !session.isSelfHeal());
         }
 
         PlayerPerkData data = PerkDataManager.get(healer);
@@ -263,7 +291,7 @@ public final class HealManager {
         double rangeSq = ModAddons.FIRST_AID_SPRAY_RANGE * ModAddons.FIRST_AID_SPRAY_RANGE;
         for (ServerPlayer other : healer.serverLevel().players()) {
             if (other != healer && other.isAlive() && other.distanceToSqr(healer) <= rangeSq) {
-                mend(healer, other, 1.0F);
+                mend(healer, other, 1.0F, false);
             }
         }
     }
@@ -271,11 +299,25 @@ public final class HealManager {
     /**
      * Puts health into a patient and tells Green Herbs about it, which is the only place that keeps
      * count of how much one player has put into another.
+     *
+     * @param throughBroken a co-op heal, the one kind that Broken does not stop
      */
-    private static void mend(ServerPlayer healer, ServerPlayer target, float amount) {
-        target.heal(amount);
-        GreenHerbs.recordHealing(healer, target, amount);
-        TeamSpirit.recordHealing(healer, target, amount);
+    private static void mend(ServerPlayer healer, LivingEntity target, float amount, boolean throughBroken) {
+        mendingThroughBroken = throughBroken;
+        try {
+            target.heal(amount);
+        } finally {
+            mendingThroughBroken = false;
+        }
+        if (target instanceof ServerPlayer patient) {
+            GreenHerbs.recordHealing(healer, patient, amount);
+            TeamSpirit.recordHealing(healer, patient, amount);
+        }
+    }
+
+    /** Whether the heal going on right now is a co-op one, which Broken lets through. */
+    public static boolean isMendingThroughBroken() {
+        return mendingThroughBroken;
     }
 
     /**
@@ -288,12 +330,12 @@ public final class HealManager {
         if (session == null) {
             return;
         }
-        ServerPlayer target = session.target();
+        LivingEntity target = session.target();
         long gameTime = healer.level().getGameTime();
 
         if (success) {
             float amount = (1.0F + assistBonus(healer)) * multiplier;
-            mend(healer, target, amount);
+            mend(healer, target, amount, !session.isSelfHeal());
             return;
         }
 

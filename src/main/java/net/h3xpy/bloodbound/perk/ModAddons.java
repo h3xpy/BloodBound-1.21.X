@@ -659,7 +659,7 @@ public final class ModAddons {
     public static final double LUCKY_CHARM_SPREAD = 0.4D;
 
     // --- Decorated Leaf tuning ---
-    public static final float DECORATED_LEAF_SELF_HEAL = 0.5F;
+    public static final float DECORATED_LEAF_SELF_HEAL = 0.25F;
     public static final float DECORATED_LEAF_OTHER_HEAL = 1.5F;
     /** How close to the thrower's feet a rune has to break for it to count as thrown at them. */
     public static final double DECORATED_LEAF_FEET_RANGE = 1.5D;
@@ -750,7 +750,7 @@ public final class ModAddons {
             Addon.of("red_led", ModPerks.SHORT_CIRCUIT, AddonRarity.EPIC));
 
     // --- Copper Coil tuning ---
-    public static final float COPPER_COIL_CHARGE = 0.85F;
+    public static final float COPPER_COIL_CHARGE = 0.70F;
 
     // --- Capacitor tuning ---
     public static final float CAPACITOR_KEPT = 0.5F;
@@ -759,6 +759,8 @@ public final class ModAddons {
     // --- Red LED tuning ---
     /** How far the growing tip turns towards the crosshair each tick, as a share of the way. */
     public static final double RED_LED_STEER = 0.15D;
+    /** How much harder the cylinder hits. */
+    public static final float RED_LED_DAMAGE = 1.3F;
 
     // --- Barbed Wire ---
 
@@ -967,7 +969,7 @@ public final class ModAddons {
 
     // --- Gear System tuning ---
     /** Ticks between two charges coming back. */
-    public static final int GEAR_SYSTEM_RECHARGE_TICKS = 80;
+    public static final int GEAR_SYSTEM_RECHARGE_TICKS = 100;
 
     // --- Overclocked Module tuning ---
     /** Multiplier on every impulse. */
@@ -1118,6 +1120,42 @@ public final class ModAddons {
     public static final float GEL_ABSORPTION_PER_SUCCESS = 2.0F;
     /** Absorption HP ceiling (three hearts). */
     public static final float GEL_ABSORPTION_MAX = 6.0F;
+
+    // --- Tripwires ---
+
+    /** Whatever trips it is left short of breath. */
+    public static final Addon BOTTLE_OF_VENOM = AddonRegistry.register(
+            Addon.of("bottle_of_venom", ModPerks.TRIPWIRES, AddonRarity.COMMON));
+
+    /** Whatever trips it cannot heal for a while. */
+    public static final Addon PLASTIC_WIRE = AddonRegistry.register(
+            Addon.of("plastic_wire", ModPerks.TRIPWIRES, AddonRarity.UNCOMMON));
+
+    /** Whatever trips it bleeds, less each time the same wire cuts. */
+    public static final Addon SILVER_WIRE = AddonRegistry.register(
+            Addon.of("silver_wire", ModPerks.TRIPWIRES, AddonRarity.RARE));
+
+    /** Whatever trips it is blinded and strong, then weak. */
+    public static final Addon DETONATOR = AddonRegistry.register(
+            Addon.of("detonator", ModPerks.TRIPWIRES, AddonRarity.EPIC));
+
+    // --- Bottle Of Venom tuning ---
+    public static final int BOTTLE_OF_VENOM_CHARGES = 3;
+    public static final int BOTTLE_OF_VENOM_TICKS = 200;
+
+    // --- Plastic Wire tuning ---
+    public static final int PLASTIC_WIRE_BROKEN_TICKS = 300;
+
+    // --- Silver Wire tuning ---
+    /** Bleeding the first cut deals; each later cut by the same wire deals half the one before, rounded up. */
+    public static final int SILVER_WIRE_BLEED = 10;
+
+    // --- Detonator tuning ---
+    public static final int DETONATOR_FLASH_TICKS = 80;
+    /** Strength while blinded, as an amplifier (V), then Weakness (II) for this long once the sight comes back. */
+    public static final int DETONATOR_STRENGTH_AMPLIFIER = 4;
+    public static final int DETONATOR_WEAKNESS_AMPLIFIER = 1;
+    public static final int DETONATOR_WEAKNESS_TICKS = 200;
 
     private ModAddons() {}
 

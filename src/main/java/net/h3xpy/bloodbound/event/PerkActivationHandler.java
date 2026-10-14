@@ -38,6 +38,8 @@ import net.h3xpy.bloodbound.perk.impl.ReactiveCompound;
 import net.h3xpy.bloodbound.perk.impl.SpringPad;
 import net.h3xpy.bloodbound.perk.impl.SurgicalSuture;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
+import net.h3xpy.bloodbound.perk.impl.Tripwires;
+import net.h3xpy.bloodbound.perk.impl.Undersized;
 import net.h3xpy.bloodbound.perk.impl.Tinkerer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
@@ -85,6 +87,8 @@ public final class PerkActivationHandler {
             Map.entry(ModPerks.OUT_OF_BREATH.id(), OutOfBreath::activate),
             Map.entry(ModPerks.HEALING_RUNES.id(), HealingRunes::activate),
             Map.entry(ModPerks.TARGET_FOUND.id(), TargetFound::activate),
+            Map.entry(ModPerks.TRIPWIRES.id(), Tripwires::activate),
+            Map.entry(ModPerks.UNDERSIZED.id(), Undersized::activate),
             Map.entry(ModPerks.FRAGNADE.id(), FragNade::activate),
             Map.entry(ModPerks.ICE_BLOCK.id(), IceBlock::activate),
             Map.entry(ModPerks.BLESSING_OF_LIFE.id(), BlessingOfLife::activate),
@@ -184,6 +188,8 @@ public final class PerkActivationHandler {
             Flashbang.setHolding(player, holding, player.level().getGameTime());
         } else if (perk.id().equals(ModPerks.TARGET_FOUND.id())) {
             TargetFound.setHolding(player, holding);
+        } else if (perk.id().equals(ModPerks.TRIPWIRES.id())) {
+            Tripwires.setHolding(player, holding);
         } else if (perk.id().equals(ModPerks.BLESSING_OF_LIFE.id())) {
             // Laying a ritual is seconds of holding still with the key down.
             BlessingOfLife.setHolding(player, holding);
