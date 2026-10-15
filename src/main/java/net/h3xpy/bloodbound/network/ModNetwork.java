@@ -1,5 +1,6 @@
 package net.h3xpy.bloodbound.network;
 
+import net.h3xpy.bloodbound.client.ClientUndersized;
 import net.h3xpy.bloodbound.advancement.AchievementRewards;
 import net.h3xpy.bloodbound.client.ClientPayloadHandler;
 import net.h3xpy.bloodbound.data.PerkDataManager;
@@ -77,6 +78,8 @@ public final class ModNetwork {
 
         registrar.playToClient(VigilancePayload.TYPE, VigilancePayload.STREAM_CODEC,
                 (payload, context) -> ClientPayloadHandler.handleVigilance(payload));
+        registrar.playToClient(UndersizedRidePayload.TYPE, UndersizedRidePayload.STREAM_CODEC,
+                (payload, context) -> ClientUndersized.setRiding(payload.riding()));
 
         registrar.playToClient(ReactiveCompoundPayload.TYPE, ReactiveCompoundPayload.STREAM_CODEC,
                 (payload, context) -> ClientPayloadHandler.handleReactiveCompound(payload));

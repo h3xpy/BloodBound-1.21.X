@@ -223,7 +223,8 @@ public final class TargetFound {
             SETTING.remove(player.getUUID());
             return;
         }
-        if (player.position().distanceToSqr(setup.origin)
+        // Sideways only: sinking into snow or bobbing on a block is not walking away.
+        if (player.position().subtract(setup.origin).horizontalDistanceSqr()
                 > ModPerks.BARBED_STILL_EPSILON * ModPerks.BARBED_STILL_EPSILON * 400.0D) {
             SETTING.remove(player.getUUID());
             player.displayClientMessage(Component.translatable("bloodbound.message.target_found_moved")

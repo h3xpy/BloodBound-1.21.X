@@ -42,44 +42,44 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | --- | --- | --- |
 | **Perfect Landing** | Passive | Fall damage past 3 blocks is negated entirely. On landing, Speed III for **2/3/4** seconds, then a **40/30/20** second cooldown. |
 | **Close Call** | Active | At 5 hearts or less, dash ~4 blocks forward, immune to damage for the dash; any blow that lands in the meantime is sent back to its attacker. Cooldown **12/8/6** seconds. |
-| **Low Profile** | Passive | While sneaking, move as if under Speed **3/4/5** and gain night vision. Both end the instant you stand up. |
-| **Surgical Suture** | Active | A hard skill check: land it to heal **4/5/6** HP at no cooldown cost, miss it and go on cooldown for 30 seconds. Unlocks healing, and makes each skill check you land while healing someone heal them **1/2/3** HP extra. |
+| **Low Profile** | Passive | While sneaking, move as if under Speed **4/5/6** and gain night vision. Both end the instant you stand up. |
+| **Surgical Suture** | Active | A hard skill check: land it to heal **5/6/7** HP at no cooldown cost, miss it and go on cooldown for 30 seconds. Unlocks healing, and makes each skill check you land while healing someone heal them **1/2/3** HP extra. |
 | **Keep Fighting** | Active | Heals a nearby player **9/12/15** HP for **8/7/6** of your own, then leaves you Broken for **30/25/20** seconds. No cooldown — Broken is the price. |
 | **Lightbringer** | Passive | Every player within 16 blocks, you included, recovers from cooldowns, charge timers and debuffs **40/48/55%** faster. |
 | **Caretaker** | Passive | Unlocks healing and makes it **50/55/60%** faster. |
 | **Longshot** | Passive | Arrows gain **+0.05/0.1/0.15** damage per block travelled before impact. |
-| **Patch Up** | Active | Crouch still and press the key to mend yourself on the healing loop, skill checks included; press again to stop. A full heal takes **60/55/50** seconds. Moving or standing up ends it. |
+| **Patch Up** | Active | Crouch still and press the key to mend yourself on the healing loop, skill checks included; press again to stop. A full heal takes **25/20/15** seconds. Moving or standing up ends it. |
 | **We Can Do This** | Passive | Unlocks healing. While you are at full health, you heal others **100/110/120%** faster. |
 | **Adrenaline** | Passive | At 3 HP or less: Broken and immune to all damage for **5/7/10** seconds, then a 60 second cooldown. A blow straight from healthy to zero kills you first. |
-| **Relentless** | Passive | At **6/6.5/7** hearts or less, attacks chain **1/2/3** follow-up blows every 0.52s for 30%, 15% and 7.5% of the opening hit. Cooldown 5 seconds. |
-| **Broken Movement Device** | Active | Press to pin your position and current health; press again within **10/12.5/15** seconds to snap back to both. Let the window lapse and the point is wasted. Cooldown **50/40/30** seconds, counted from when the point is spent or lost. While a point is up you trail end rod particles. |
+| **Relentless** | Passive | Dropping to **6/6.5/7** hearts or less sets it off for **3/4/5** seconds: in that time attacks chain **1/2/3** follow-up blows every 0.52s for 30%, 15% and 7.5% of the opening hit (the HUD slot counts the window down). Cooldown **18/16/14** seconds once it ends. Still under the threshold when the cooldown ends, it goes off again at once. |
+| **Broken Movement Device** | Active | Press to pin your position and current health; press again within **10/12.5/15** seconds to snap back to both. Let the window lapse and the point is wasted. Cooldown **35/30/25** seconds, counted from when the point is spent or lost. While a point is up you trail end rod particles. |
 | **Raise The Stakes** | Passive | Every ore has a **25/30/35%** chance to drop again, rerolled after each success, so the chain is open ended. Hostile mobs also drop one extra soul shard. Silk Touch turns it off. |
-| **Anti-Exhaustion Syringe** | Active | Skips **70/80/90%** of what is left on every other perk's cooldown, then goes on cooldown itself for **150/130/110** seconds. |
+| **Anti-Exhaustion Syringe** | Active | Skips **80/90/100%** of what is left on every other perk's cooldown, then goes on cooldown itself for **150/130/110** seconds. |
 | **Echoing Wounds** | Passive | Damage you deal jumps to the nearest living thing within 5 blocks, up to **3/4/5** times, losing **30/20/10%** per jump. Never you, never the same target twice. Cooldown **9/7/5** seconds, paid only if the echo found somebody. |
-| **Tinkerer** | Active | Hold a damaged item and press the key: land the skill check to restore **3/6/9%** of its durability and get another **12/10/8%** tighter. A miss costs 12% durability and ends the run. Cooldown **100/90/80** seconds. |
-| **Bank Shot** | Passive | 3 charges, one back every **14/12/10** seconds. Every projectile you fire spends one to bounce off the first block it hits, with a slight auto-aim on the way out. A Frag' Nade spends one too, and comes off even the floor. |
+| **Tinkerer** | Active | Hold a damaged item and press the key: land the skill check to restore **4/6/8%** of its durability and get another **12/10/8%** tighter. A miss costs 12% durability and ends the run. Cooldown **100/90/80** seconds. |
+| **Bank Shot** | Passive | 3 charges, one back every **14/12/10** seconds. Every projectile you fire spends one to bounce off the first block it hits, with a slight auto-aim on the way out (a 63-degree cone). A Frag' Nade spends one too, and comes off even the floor. |
 | **No One Gets Away** | Active | Fire a fast, flat shot; whatever it catches is dragged back to your feet with Slowness and Weakness at their highest for a second. Cooldown **30/27/24** seconds, halved when the shot catches nothing. |
 | **Nasty Blade** | Passive | Attacks deal 2 less damage. Every hit banks a token — at most one every half second — and restarts a **3/4/5** second clock; each token puts 0.5 damage back. Let the clock run out and the streak is gone. |
 | **Omniscience** | Passive | Stand still for **3/2.5/2** seconds and every entity, chest and ore within **8/12/16** blocks is outlined through the walls, for you alone. Tier I is blind to diamond and ancient debris, tier II to ancient debris. Moving puts it away at once. |
 | **Low-Cost Movement Device** | Active | Spend a charge on a falling shot; where it hits a block, it throws you there. **2/3/4** charges with no wait between them, pull capped at **1.65/1.9/2.15** across and **0.42/0.46/0.5** up (a level shot keeps a third of the lift, aiming up earns the rest), shot speed **1.05/1.1/1.15**, gravity **0.0605/0.0572/0.055**, no range limit. Only the last charge starts the **12/8/6** second cooldown. |
-| **Guardian Angel** | Passive | A blow that would kill you instead leaves you at **20/40/60%** health, glowing gold for everyone to see. Somewhere between **6-10/10-14/14-18** seconds later a run of skill checks begins: land **9/8/7** of them and you walk away, cooldown **360/300/240** seconds. Miss one and the blow catches up with you. |
+| **Guardian Angel** | Passive | A blow that would kill you instead leaves you at **60/80/100%** health, glowing gold for everyone to see. Somewhere between **4-8/8-12/12-16** seconds later a run of skill checks begins: land **7/6/5** of them and you walk away, cooldown **360/300/240** seconds. Miss one and the blow catches up with you. |
 | **Flashbang** | Active | Throw a grenade that comes off one wall and goes off 2 seconds later, beeping faster as it goes. Anything looking at the blast is Flashed for 4 seconds, a second less for every 10 blocks away — a wall or a turned back is cover. Cooldown **30/25/20** seconds. |
 | **Advanced Movement Device** | Active | Fire a shot and be teleported to wherever it stops: it comes off the first wall and stops at the second. Shots draw on a self-refilling reserve of **200/400/600** charges, at most **100/200/300** per shot. Speed **1.95/2.1/2.25**. |
 | **Beware The Power Of An Angel** | Active | Press the key to spread your wings and fly, press again to fold them. 3 charges a second until you land; **12/18/24** charges, one back every 2 seconds, and only on the ground. While the wings are out, everybody sees them on your back. |
 | **Catching Up** | Passive | See the marks on the ground. Stepping on marks that are not yours grants Speed I, lingering **3/4/5** seconds after the trail ends. You also walk **10/13/16%** faster while neither sprinting nor crouched. |
-| **Hunter's Instinct** | Passive | See the marks on the ground. Anything within **16/20/24** blocks that loses health to something other than you has its aura revealed to you for 7 seconds. |
+| **Hunter's Instinct** | Passive | See the marks on the ground. Anything within **16/20/24** blocks that loses health to something other than you has its aura revealed to you for 7 seconds. Anything whose aura you revealed takes **10/15/20%** more damage from you. |
 | **Barbed Wire** | Active | Hold the key **3/2.5/2** seconds without moving to lay a coil at **15/12/9%** opacity. Up to **1/2/3** out at once; a fourth takes the oldest. The first thing that walks in takes **4/6/8** damage, starts Bleeding on **12/10/8** charges and has its aura shown to you for 3 seconds — and the coil is spent. Unequipping the perk removes every coil. Coils stay down through a logout or a restart. An arrow or a thrown item takes a coil apart. Cooldown **45/40/35** seconds, paid only on a coil laid. |
 | **Panic Attack** | Passive | A player you hit has every skill check **30/40/50%** smaller and **22/33/44%** faster. No timer — it holds while you stay within **20/24/28** blocks, and ends for good the moment they get clear. |
 | **Out Of Breath** | Active | Lob a charge that walls only turn; it goes off on the floor, in a **1.5/2/2.5** block blast, leaving everything caught Exhausted **1/3/5** for **20/25/30** seconds; anything already Exhausted also takes **6/7/8** damage. Cooldown **16/14/12** seconds. |
 | **Team Spirit** | Passive | Unlocks healing. One point of health earns the patient Haste **1/2/3** and Strength I for **60/70/80** seconds — but only within **16/20/24** blocks of you. Leave it and there are 3 seconds to come back before the boons are gone for good. |
 | **Beyond Vision** | Passive | Harmful effects on you are **80/85/90%** shorter, and whatever cast one has its aura revealed to you for as long as the effect was meant to last. You have 8 hearts instead of 10. |
 | **Healing Runes** | Active | Fire a slow rune that ignores gravity; the first living thing it touches is healed **3/4/5** HP. **5/6/7** runes, one back every **6/5.5/5** seconds. |
-| **Target Found** | Active | Hold the key **3/2.5/2** seconds without moving to lay a tripwire at **15/12/9%** opacity; up to **5/6/7** out, a new one takes the oldest. When something crosses one within 128 blocks of you, you are told and shown its aura, and after **5/4/3** seconds a 4 second window lets the key take you to the wire. The wire goes when the window does. Further away you only get the warning. Wires stay down through a logout or a restart, and wait, armed, while you are away. Cooldown **15/12/9** seconds. |
+| **Target Found** | Active | Hold the key **3/2.5/2** seconds without moving to lay a tripwire at **15/12/9%** opacity; up to **5/6/7** out, a new one takes the oldest. When something crosses one within 256 blocks of you, you are told and shown its aura, and after **5/4/3** seconds a 4 second window lets the key take you to the wire. The wire goes when the window does. Further away you only get the warning. Wires stay down through a logout or a restart, and wait, armed, while you are away. Cooldown **15/12/9** seconds. |
 | **Under The Radar** | Passive | Nametag hidden and every sound you make silenced, subtitles included. The first aura reveal against you is blocked, along with any other for **4/8/12** seconds; then a **40/30/20** second cooldown. Mobs have to come **50/65/80%** closer to notice you. |
 | **Final Blow** | Passive | See the marks of anything under **30/40/50%** health. Walking them leaves the owner Broken, lingering **6/8/10** seconds after you step off. Their marks vanish the moment they heal back over the line. |
-| **Full Extraction** | Passive | Ores drop smelted, with their rock, and a **20/25/30%** chance of a soul shard, rerolled after every success. Off with Silk Touch. |
+| **Full Extraction** | Passive | Ores drop smelted, with their rock, and a **20/30/40%** chance of a soul shard, rerolled after every success. Off with Silk Touch. |
 | **Frag' Nade** | Active | Hold to wind up a throw (up to 3 seconds, shown on the slot), release to throw. Comes off walls, stops on the floor, beeps 0.75 s if it bounced or 1.5 s if not, then blasts twice a second apart: **1.8/2/2.2** blocks, then **3.75/4.25/4.75** with heavy knockback. **5/6/7** armour- and enchantment-ignoring damage each, thrower included. Cooldown **20/17/14** seconds. |
-| **Green Herbs** | Passive | Unlocks healing. Your own natural healing runs **1.5/2/2.5x** as fast. Put **6/4/2** HP into another player and they mend that way too for **60/90/120** seconds, unless they already carry the perk. |
+| **Green Herbs** | Passive | Unlocks healing. Your own natural healing runs **2.5/3/3.5x** as fast. Put **6/4/2** HP into another player and they mend that way too for **60/90/120** seconds, unless they already carry the perk. |
 | **From The Dark** | Passive | Permanent night vision. Sprinting in light level 3 or lower grants Speed III for 2 seconds, then a **9/7/5** second cooldown. The price: Flashed lasts twice as long on you. |
 | **Crime And Punishment** | Passive | Turn a blow aside with a shield, or anything else that parries, and whoever threw it is Flashed for **2.5/3/3.5** seconds. Cooldown **25/23/21** seconds. |
 | **Enhanced Perception** | Passive | Everything of yours that reveals auras within a radius reaches **10/15/20** blocks further. |
@@ -89,7 +89,7 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | **Eavesdrop** | Active | Hold the key **4/3.5/3** seconds still to lay a ritual. Within 100 blocks of it, every chest and everything moving within **20/24/28** blocks of it is outlined for you. Enhanced Perception widens it, and Spyware and Ransomware work on it. 30 seconds inside, all told, shows a player the ritual. Cooldown **80/70/60** seconds. |
 | **Inevitable Death** | Active | Hold the key **12/11/10** seconds still, glowing, to lay a ritual of **300/400/500** charges. No cooldown: the reserve refills **3/4/5** charges a second while no circle of yours stands, and only a full one may be laid. Anything alive but you within **12/14/16** blocks is Exposed until it leaves or the circle runs dry, at 15 charges a second each. Seen from 4 blocks, growing a block every 4 seconds up to 12. |
 | **Sin Of Obliviousness** | Active | Hold the key 5 seconds still to lay a ritual. Anything but you that takes damage within **12/16/20** blocks is Blinded for as long as the ritual stands; leaving the circle is no cure, breaking it is. Seen from 4 blocks, growing a block every 3 seconds up to 24. Cooldown 180 seconds. |
-| **Wireless** | Passive | Holds **50/60/70** charges, 2 back every second; each adds 0.05 blocks to your reach for blocks and creatures. Reaching past your normal reach costs 4 charges per extra block; a block is paid for once it breaks, so a long dig keeps its reach. |
+| **Wireless** | Passive | Holds **60/80/100** charges, 2 back every second; each adds 0.05 blocks to your reach for blocks and creatures. Reaching past your normal reach costs 4 charges per extra block; a block is paid for once it breaks, so a long dig keeps its reach. |
 | **Short Circuit** | Active | Hold the key **3.66/3.33/3** seconds without being hit, slowed and sparking yellow to cyan, to let go a cylinder of radius **2/2.5/3** that grows forward through blocks at **10/12.5/15** blocks a second up to **40/50/60**, holds 1 second and fades. Anything inside takes 1 damage every **0.17/0.15/0.13** seconds. Cooldown **70/65/60** seconds. |
 | **Bad Omen** | Active | Hold the key 5 seconds still to lay a ritual. Your other rituals within **48/64/80** blocks are **30/50/70%** wider, each works inside all of their circles, and none can be broken: whoever tries is shown the Bad Omen for 20 seconds. Rituals with charges hold **20/30/40%** more. Cooldown 180 seconds. |
 | **Chained Up** | Active | Fire a fast shot with no gravity. What it hits is chained to an anchor where it stood, pulled back (never teleported) whenever it strays past **3/2.5/2** blocks, until the anchor has taken **6/10/14** damage. Cooldown **60/55/50** seconds on a hit, **25/23/21** on a miss. |
@@ -99,7 +99,11 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | **The Hanged Man** | Active | Press the key to turn your gravity upside down: you fall upwards and walk on the ceiling, model and view turned over, mouse and strafe keys mirrored to match. Press again to come back the right way up; the cooldown of **80/60/40** seconds only starts then. A fall under way is cancelled by either flip. Up there everything works mirrored: falling onto the ceiling hurts, its blocks act as the floor (ice, soul sand, honey, magma, slime and bed bounces), steps, ladders, swimming, creative flight, knockback and the dust of running and landing are turned over, the void lies above the world, and lying down in a bed sets you right (and starts the cooldown). |
 | **Spring Pad** | Active | Hold the key **2/1.5/1** seconds still to set a pad; up to **1/2/3** out, a new one takes the oldest. It arms after 2 seconds; whatever steps on it, you included, is thrown violently the way it is looking: always at least 20 blocks high; looking up sends it higher (about 33 straight up), looking ahead or down sends it farther (about 29 blocks), at most once a second, and it breaks after **2/3/4** launches. Cooldown **20/15/10** seconds after setting one. |
 | **Vigilance** | Passive | While another player looks right at you (within 48 blocks), or a hostile creature does, or anything hunts you in plain view (within 24): **10/15/20%** faster movement, damage, cooldown and harmful-effect recovery, and block breaking. Lasts 1 second past the gaze; the HUD icon lights up while on. |
-| **Reactive Compound** | Active | Hold the key **6/5/4** seconds, slowed as if drinking, with a melee weapon (sword, axe, trident, mace) in hand, unable to attack, to coat it — both arms show in first person, the blade swings flat and a vial is poured over it. Switching items loses the coat. Taking a blow from anything while coating spills the vial: the coating stops, with no cooldown. The next thing it hits takes **10/15/20%** more damage and 50% more knockback; a player also has every perk off for **10/12.5/15** seconds (their HUD icons grey out; traps already laid stay). Cooldown **45/40/35** seconds after the hit. |
+| **Reactive Compound** | Active | Hold the key **5/4.5/4** seconds, slowed as if drinking, with a melee weapon (sword, axe, trident, mace) in hand, unable to attack, to coat it — both arms show in first person, the blade swings flat and a vial is poured over it. Switching items loses the coat. Taking a blow from anything while coating spills the vial: the coating stops, with no cooldown. The next thing it hits takes **30/40/50%** more damage and 50% more knockback; a player also has every perk off for **10/12.5/15** seconds (their HUD icons grey out; traps already laid stay). Cooldown **45/40/35** seconds after the hit. |
+| **Boundless Soul** | Passive | Melee blows hurt you **30/20/10%** more; every other kind of damage (arrows, explosions, fire, falls, magic) hurts you **50/55/60%** less. The void and `/kill` are untouched. |
+| **Heart Of Gold** | Passive | **1/2/3** more hearts. |
+| **Undersized** | Active | You are **50/50/50%** smaller, model and hitbox alike, and your melee blows deal 25% less. From Tier II the key climbs onto the shoulders of a crouched player within 3 blocks; at Tier III, failing a crouched player, onto the nearest creature, which you steer like a horse at its own walking pace, keeping what it can do: flyers and swimmers (in water) climb and dive where you look, spiders climb walls, swimmers are quick in water. It fights for you: it goes after what you hit, what hits you, or what you look at when you press the key again (nothing in sight calms it), with its own attacks (a zombie hits, a skeleton shoots, a creeper blows up). Nothing it does can hurt you, and you cannot hurt it. Jump or crouch to get down. No cooldown. |
+| **TripWires** | Active | Hold the key 2 seconds still to plant a post, then press it again within **10/15/20** blocks to plant a second and stretch a wire between their tops (**90/93/96%** see-through; nothing solid may cross it, and until then you alone see the line in particles, red while the spot will not do). Whatever walks into it (not you) has its aura revealed to you for **10/15/20** seconds, you are warned, and its harmful effects already running last **1.5/1.75/2x** as long. Breaks after **3/4/5** triggers; crouching through wears it without setting it off. Up to **2/4/6** posts. Wires survive logouts and restarts. Cooldown **15/12/9** seconds. |
 
 
 ## Marks
@@ -190,18 +194,19 @@ you a check, and a doctored client gains nothing.
 
 ## Healing
 
-Any perk that grants healing — Surgical Suture, Caretaker or We Can Do This — unlocks it. Stand within 3 blocks of a
-player who is **crouched and holding still**, hold the heal key, and they recover 1 HP every 0.75
-seconds — a full 20 HP heal in 15 seconds. Every kind of mending in the mod runs at twice its
+Any perk that grants healing — Surgical Suture, Caretaker or We Can Do This — unlocks it. Look
+straight at an injured player or creature within 6 blocks and hold the heal key: they recover 1 HP
+every 0.75 seconds — a full 20 HP heal in 15 seconds. Neither of you has to crouch or stand still.
+It is the only healing that gets through **Broken**. Every kind of mending in the mod runs at twice its
 written rate: co-op healing, Patch Up and dressing a Bleeding wound alike.
 
 While healing, a skill check fires on a 30% roll each second. Land it and the target gains an extra
 point of health; miss it and they lose one and the heal stalls for a second. A missed check can
 never be what kills them.
 
-The heal breaks the instant either player moves horizontally, the target stands up, they drift out
-of range, or the key is released. Vertical movement is deliberately ignored, so jumping does not
-cancel the heal.
+The heal breaks when the healer looks away from the target for more than half a second, the target
+drifts past 6 blocks, or the key is released. Patch Up, on yourself, still needs you crouched and
+still; jumping in place does not cancel it.
 
 ## Addons
 
@@ -239,7 +244,7 @@ you already own and addons you do not.
 | **Automatic Screwdriver** | Tinkerer | Epic | The checks never tighten below 40% of the opening one, and a miss costs no durability. |
 | **Duct Tape** | Tinkerer | Unstable | Stretches the item's durability pool to 110% of what it was built with, so a run mends it past its own maximum. Never compounds. |
 | **Overclocked Module** | Low-Cost Movement Device | Common | Every throw is 30% harder. |
-| **Gear System** | Low-Cost Movement Device | Uncommon | Charges come back one at a time every 4 seconds instead of all at once. |
+| **Gear System** | Low-Cost Movement Device | Uncommon | Charges come back one at a time every 5 seconds instead of all at once. |
 | **Loose Screw** | Low-Cost Movement Device | Rare | The shot flies slower and bounces once for a short second hop that throws you again. |
 | **Box Opener** | Low-Cost Movement Device | Unstable | One charge, 3 seconds more cooldown, throws 50% harder, and anything you crash into mid-flight takes up to 18 damage from the impact. |
 | **Shiny Coin** | Raise The Stakes | Common | The reroll chance goes up by 7.77 points. |
@@ -310,7 +315,7 @@ you already own and addons you do not.
 | **Charm of the Faithful** | Lightbringer | Uncommon | Every other player in the aura adds 15% to its recovery rate. |
 | **Gilded Cross** | Lightbringer | Epic | The aura is worth 20/28/35% in company, 80/88/95% alone. |
 | **Wild Rose** | Relentless | Common | Starts at 7/7.5/8 hearts or less. |
-| **Wooden Sword** | Relentless | Uncommon | Always on, whatever your health, but the cooldown is 150% longer. |
+| **Wooden Sword** | Relentless | Uncommon | No longer waits for your health to drop: your first blow sets it off. The cooldown is 150% longer. |
 | **Bloodied Matchete** | Relentless | Rare | Holds off until 4.5/5/5.5 hearts, and lands one more blow for 15/7.5/3.25% of the opening hit. |
 | **Rotting Rope** | Echoing Wounds | Common | The echo reaches 50% further between victims. |
 | **Hysteria** | Echoing Wounds | Uncommon | Echo victims get Blindness I and Slowness I for 3 seconds. Cooldown 1 second longer. |
@@ -324,7 +329,7 @@ you already own and addons you do not.
 | **Cheap Paper** | Healing Runes | Common | Runes come back 40% faster. |
 | **Ink Bottle** | Healing Runes | Uncommon | Runes fly twice as fast. |
 | **Lucky Charm** | Healing Runes | Rare | Three runes in a triangle instead of one, each healing 33% less. |
-| **Decorated Leaf** | Healing Runes | Epic | A rune fired at your own feet heals you for half; runes heal anybody else 50% more. |
+| **Decorated Leaf** | Healing Runes | Epic | A rune fired at your own feet heals you for a quarter; runes heal anybody else 50% more. |
 | **Safety Protocol** | Spring Pad | Rare | Being thrown by your own pad never costs you fall damage. |
 | **Votive Candle** | Holy Sanctum | Common | The bubble has 25% more health and stands 2 seconds longer. |
 | **Stained Glass** | Holy Sanctum | Rare | 30% of the damage the bubble takes goes back to whoever dealt it (never to its owner). |
@@ -334,13 +339,17 @@ you already own and addons you do not.
 | **Upturned Hourglass** | The Hanged Man | Uncommon | No fall damage while upside down; coming back the right way up is not covered. |
 | **Tarot Card XII** | The Hanged Man | Epic | Turning over turns every creature and player within 8 blocks too, for 5 seconds. |
 | **Upside Down Card** | The Hanged Man | Unstable | No cooldown, but the landing after each flip deals double damage. |
-| **Copper Coil** | Short Circuit | Common | The charge is 15% shorter. |
+| **Copper Coil** | Short Circuit | Common | The charge is 30% shorter. |
 | **Capacitor** | Short Circuit | Rare | A broken-off charge keeps 50% of its progress for 10 seconds. |
-| **Red LED** | Short Circuit | Epic | As it grows, the cylinder bends towards your crosshair. |
+| **Red LED** | Short Circuit | Epic | As it grows, the cylinder bends towards your crosshair, and it deals 30% more damage. |
 | **Rusty Nail** | Barbed Wire | Common | Coils deal 2 more damage. |
 | **Fence Pliers** | Barbed Wire | Uncommon | Coils are laid 50% faster. |
 | **Dirty Blade** | Barbed Wire | Rare | Whatever a coil catches has Slowness II for as long as it bleeds. |
 | **Reinforced Wire** | Barbed Wire | Epic | A coil catches twice before it is spent, 2 seconds apart. |
+| **Bottle Of Venom** | TripWires | Common | Whatever trips a wire is Exhausted, 3 charges, for 10 seconds. |
+| **Plastic Wire** | TripWires | Uncommon | Whatever trips a wire is Broken for 15 seconds. |
+| **Silver Wire** | TripWires | Rare | Whatever trips a wire Bleeds, 10 charges; each later trip of the same wire halves that, rounded up (10, 5, 3, 2, 1). |
+| **Detonator** | TripWires | Epic | Whatever trips a wire is Flashed for 4 seconds, with Strength V while blind, then Weakness II for 10 seconds. |
 
 ## Rituals
 

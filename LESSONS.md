@@ -14,8 +14,25 @@ Older, broader rules are in `CLAUDE.md` ("Invariants that past bugs came from").
 `core.autocrlf` is `true` on these Windows machines. After a `git pull`, every file the pull
 touched is checked out with CRLF line endings. A scripted edit (perl, sed, regex) whose pattern
 contains `\n` then matches nothing **and reports no error**. Several edits were silently skipped.
-- Check with `grep -c $'\r' <file>`. Before scripting, normalise the files you are about to edit:
-  `sed -i 's/\r$//' <file>`. Git stores LF either way, so the diff stays clean.
+- Do not check with `grep -c $'\r'`: Git Bash's grep reads files in text mode and reports 0 on a
+  CRLF file. Check with perl instead: `perl -ne 'if (/\r/) { print "$ARGV\n"; close ARGV }' <files>`.
+- Before scripting, normalise the files you are about to edit: `perl -pi -e 's/\r$//' <file>`. Git
+  stores LF either way, so the diff stays clean.
+- `sed -i "Na\\ line1\\ line2"` in Git Bash glues the appended lines into one. Add several lines
+  with the Edit tool.
+- In `perl -pi -e 's|…|…|'`, a `\|` in the pattern is not a literal pipe but alternation with
+  nothing, which matches at the start of every line: the replacement was written in front of every
+  line of the README, then of a Java file. With `|` as the delimiter, never put `||` or `\|` in the
+  pattern; pick another delimiter or use the Edit tool.
+
+## Riding
+
+### The server hears a rider's keys a tick late
+`ServerPlayer.jumping` (and the crouch state) only change when the client sends its input, which it
+does only once it is riding. On the tick a player climbs on, the server still has the old values,
+so "jump to get down" read a jump held from before as released, then saw it pressed a tick later and
+threw the rider straight off. Undersized only arms the jump/crouch dismount a few ticks after
+mounting, once both have been seen released (`Undersized.ARMED`, `PlayerRidingMixin`).
 - After every scripted edit, grep for each expected change and compare the counts.
 - The Edit tool (exact string replacement) copes with either line ending.
 

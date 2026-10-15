@@ -167,7 +167,7 @@
   "bloodbound.message.tinkerer_complete": "Fully repaired",
   "bloodbound.message.suture_retry": "Missed - try again, quickly!",
   "bloodbound.message.no_healing_ability": "No equipped perk grants healing",
-  "bloodbound.message.no_heal_target": "Nobody nearby is crouched and holding still",
+  "bloodbound.message.no_heal_target": "Look at an injured player or creature within 6 blocks",
   "bloodbound.message.healing": "Healing %s - %s/%s HP",
   "bloodbound.message.heal_missed": "Missed! The wound reopens",
   "bloodbound.message.heal_stopped": "Healing stopped",
@@ -217,7 +217,7 @@
   "perk.bloodbound.adrenaline.desc": "At 3 HP or less, Adrenaline fires: you are Broken and ignore all damage for %s seconds, then the perk goes on cooldown for 60. A blow that takes you straight from healthy to nothing kills you before it can trigger.",
 
   "perk.bloodbound.relentless": "Relentless",
-  "perk.bloodbound.relentless.desc": "At %s hearts or less, your attacks chain into %s follow-up blows, one every 0.52 seconds, dealing 30%%, 15%% and 7.5%% of the opening hit. Cooldown 5 seconds.",
+  "perk.bloodbound.relentless.desc": "Dropping to %1$s hearts or less sets Relentless off for %3$s seconds: in that time your attacks chain into %2$s follow-up blows, one every 0.52 seconds, dealing 30%%, 15%% and 7.5%% of the opening hit. Cooldown %4$s seconds once it is over; still under the threshold when that ends, it goes off again at once.",
 
   "perk.bloodbound.broken_movement_device": "Broken Movement Device",
   "perk.bloodbound.broken_movement_device.desc": "Press the slot key to pin down where you stand and the health you have. Press it again within %s seconds to snap back to that spot with exactly that health. Let the window close and the point is wasted. Cooldown %s seconds, counted from the moment the point is spent or lost.",
@@ -298,7 +298,7 @@
   "addon.bloodbound.wild_rose.desc": "Relentless now starts at 7/7.5/8 hearts or less.",
 
   "addon.bloodbound.wooden_sword": "Wooden Sword",
-  "addon.bloodbound.wooden_sword.desc": "Relentless is always on, whatever your health, but the cooldown is 150%% longer.",
+  "addon.bloodbound.wooden_sword.desc": "Relentless no longer waits for your health to drop: your first blow sets it off. The cooldown is 150%% longer.",
 
   "addon.bloodbound.bloodied_matchete": "Bloodied Matchete",
   "addon.bloodbound.bloodied_matchete.desc": "Relentless holds off until 4.5/5/5.5 hearts or less, and lands one more blow for 15/7.5/3.25%% of the opening hit.",
@@ -328,7 +328,7 @@
   "addon.bloodbound.momentum_formula.desc": "Once 3 blocks are behind you, you fall 2.5 times as fast. All that speed is spent on the way down: the Speed you land with lasts 40%% less.",
 
   "addon.bloodbound.gear_system": "Gear System",
-  "addon.bloodbound.gear_system.desc": "Charges come back one at a time, every 4 seconds, instead of all at once when the cooldown ends.",
+  "addon.bloodbound.gear_system.desc": "Charges come back one at a time, every 5 seconds, instead of all at once when the cooldown ends.",
 
   "addon.bloodbound.overclocked_module": "Overclocked Module",
   "addon.bloodbound.overclocked_module.desc": "Every throw is 30%% harder.",
@@ -449,7 +449,7 @@
   "perk.bloodbound.catching_up.desc": "You can see the marks left on the ground. Stepping on marks that are not yours grants Speed I, and it stays with you for %1$s seconds after the trail runs out. Apart from that you walk %2$s%% faster, as long as you are neither sprinting nor crouched.",
 
   "perk.bloodbound.hunters_instinct": "Hunter's Instinct",
-  "perk.bloodbound.hunters_instinct.desc": "You can see the marks left on the ground. Whenever something within %s blocks loses health to anything but you, its aura is revealed to you for 7 seconds.",
+  "perk.bloodbound.hunters_instinct.desc": "You can see the marks left on the ground. Whenever something within %1$s blocks loses health to anything but you, its aura is revealed to you for 7 seconds. Anything whose aura you revealed takes %2$s%% more damage from you.",
 
   "addon.bloodbound.wire_spool": "Wire Spool",
   "addon.bloodbound.wire_spool.desc": "The reserve fills 75%% faster.",
@@ -593,7 +593,7 @@
   "bloodbound.message.target_found_arrived": "You followed the tripwire",
 
   "perk.bloodbound.target_found": "Target Found",
-  "perk.bloodbound.target_found.desc": "Hold the slot key for %1$s seconds without moving to lay a tripwire, drawn at %2$s%% opacity. You may have %3$s out at once; one more takes the oldest. When something crosses one while you are within 128 blocks, you are told who and shown their aura, and %5$s seconds later a 4 second window opens: press the slot key to be taken to the wire. The wire is gone once the window closes, used or not. Further away, you only get the warning and the wire is spent. Cooldown %4$s seconds after laying one.",
+  "perk.bloodbound.target_found.desc": "Hold the slot key for %1$s seconds without moving to lay a tripwire, drawn at %2$s%% opacity. You may have %3$s out at once; one more takes the oldest. When something crosses one while you are within 256 blocks, you are told who and shown their aura, and %5$s seconds later a 4 second window opens: press the slot key to be taken to the wire. The wire is gone once the window closes, used or not. Further away, you only get the warning and the wire is spent. Cooldown %4$s seconds after laying one.",
 
   "perk.bloodbound.under_the_radar": "Under The Radar",
   "perk.bloodbound.under_the_radar.desc": "Your nametag is hidden and every sound you make is silenced, subtitles included. The first time something would reveal your aura it is blocked, and so is everything else for the next %1$s seconds; then the perk is on cooldown for %2$s seconds. Mobs also have to come %3$s%% closer to notice you.",
@@ -862,7 +862,7 @@
   "addon.bloodbound.lucky_charm": "Lucky Charm",
   "addon.bloodbound.lucky_charm.desc": "Fires 3 runes in a triangle instead of one, each healing 33%% less.",
   "addon.bloodbound.decorated_leaf": "Decorated Leaf",
-  "addon.bloodbound.decorated_leaf.desc": "A rune fired at your own feet heals you, for 50%% less. Runes heal anybody else 50%% more.",
+  "addon.bloodbound.decorated_leaf.desc": "A rune fired at your own feet heals you, for 75%% less. Runes heal anybody else 50%% more.",
   "perk.bloodbound.spring_pad": "Spring Pad",
   "perk.bloodbound.spring_pad.desc": "Hold the slot key %1$s seconds without moving to set a pad; up to %2$s out, a new one takes the oldest. It arms after 2 seconds. Whatever steps on it, you included, is thrown violently the way it is looking: looking up sends it high, looking ahead sends it far. At most once a second; it breaks after %4$s launches. Cooldown %3$s seconds after setting one.",
   "addon.bloodbound.safety_protocol": "Safety Protocol",
@@ -884,11 +884,11 @@
   "addon.bloodbound.upside_down_card": "Upside Down Card",
   "addon.bloodbound.upside_down_card.desc": "No cooldown at all, but the fall after each flip deals double damage.",
   "addon.bloodbound.copper_coil": "Copper Coil",
-  "addon.bloodbound.copper_coil.desc": "The charge is 15%% shorter.",
+  "addon.bloodbound.copper_coil.desc": "The charge is 30%% shorter.",
   "addon.bloodbound.capacitor": "Capacitor",
   "addon.bloodbound.capacitor.desc": "A charge broken off keeps 50%% of its progress for 10 seconds.",
   "addon.bloodbound.red_led": "Red LED",
-  "addon.bloodbound.red_led.desc": "As it grows, the cylinder bends towards your crosshair.",
+  "addon.bloodbound.red_led.desc": "As it grows, the cylinder bends towards your crosshair, and it deals 30%% more damage.",
   "addon.bloodbound.rusty_nail": "Rusty Nail",
   "addon.bloodbound.rusty_nail.desc": "Your coils deal 2 more damage.",
   "addon.bloodbound.fence_pliers": "Fence Pliers",
@@ -934,5 +934,31 @@
 
   "bloodbound.configuration.title": "BloodBound",
   "bloodbound.configuration.hud": "HUD",
-  "bloodbound.configuration.hudScale": "Perk HUD size"
+  "bloodbound.configuration.hudScale": "Perk HUD size",
+  "perk.bloodbound.boundless_soul": "Boundless Soul",
+  "perk.bloodbound.boundless_soul.desc": "Melee blows hurt you %1$s%% more, but every other kind of damage - arrows, explosions, fire, falls, magic - hurts you %2$s%% less.",
+  "perk.bloodbound.undersized": "Undersized",
+  "perk.bloodbound.undersized.desc": "You are %s%% smaller, model and hitbox alike, and your melee blows deal 25%% less damage. From Tier II, press the slot key next to a crouched player to climb onto their shoulders; at Tier III, next to any creature to ride it and steer it like a horse, at its own speed and with what it can do (fly, climb, swim). It attacks what you hit, what attacks you, or what you aim at when you press the key again, and its attacks never hurt you. You cannot attack what you ride. Jump or crouch to get down.",
+  "bloodbound.message.undersized_attack": "Your mount goes after %s",
+  "bloodbound.message.undersized_calm": "Your mount calms down",
+  "perk.bloodbound.heart_of_gold": "Heart Of Gold",
+  "perk.bloodbound.heart_of_gold.desc": "You have %s more hearts.",
+  "perk.bloodbound.trip_wires": "TripWires",
+  "perk.bloodbound.trip_wires.desc": "Hold the slot key 2 seconds still to plant a post, then press it again within %1$s blocks to plant a second and stretch a wire between them (%2$s%% see-through). Whatever walks into it has its aura revealed to you for %3$s seconds and its harmful effects last %4$s times as long. Breaks after %5$s triggers; crouching through wears it without setting it off. Up to %6$s posts. Cooldown %7$s seconds.",
+  "addon.bloodbound.bottle_of_venom": "Bottle Of Venom",
+  "addon.bloodbound.bottle_of_venom.desc": "Whatever trips a wire is Exhausted, with 3 charges, for 10 seconds.",
+  "addon.bloodbound.plastic_wire": "Plastic Wire",
+  "addon.bloodbound.plastic_wire.desc": "Whatever trips a wire is Broken for 15 seconds.",
+  "addon.bloodbound.silver_wire": "Silver Wire",
+  "addon.bloodbound.silver_wire.desc": "Whatever trips a wire Bleeds, 10 charges. Every later trip of the same wire halves the charges, rounded up.",
+  "addon.bloodbound.detonator": "Detonator",
+  "addon.bloodbound.detonator.desc": "Whatever trips a wire is Flashed for 4 seconds, with Strength V for as long as it is blind, then Weakness II for 10 seconds.",
+  "bloodbound.message.tripwires_setting": "Planting the post... %s",
+  "bloodbound.message.tripwires_stopped": "Post not planted",
+  "bloodbound.message.tripwires_moved": "You moved - post not planted",
+  "bloodbound.message.tripwires_first": "First post planted: plant the second within %s blocks",
+  "bloodbound.message.tripwires_invalid": "The second post cannot go here",
+  "bloodbound.message.tripwires_placed": "Wire set (%s/%s posts)",
+  "bloodbound.message.tripwires_triggered": "%s walked into your wire",
+  "bloodbound.message.tripwires_broken": "One of your wires broke"
 }

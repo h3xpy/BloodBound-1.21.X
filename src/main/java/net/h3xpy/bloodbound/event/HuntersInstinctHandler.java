@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 /**
  * Hunter's Instinct: anything bleeding nearby gives itself away.
@@ -64,6 +65,20 @@ public final class HuntersInstinctHandler {
                     && victim instanceof ServerPlayer) {
                 ModAdvancements.grant(hunter, ModAdvancements.I_KNOW_THIS_GUY);
             }
+        }
+    }
+
+    /** Whatever the hunter has revealed takes more from them. */
+    @SubscribeEvent
+    public static void onIncomingDamage(LivingIncomingDamageEvent event) {
+        if (!(event.getSource().getEntity() instanceof ServerPlayer hunter)
+                || !AuraRevealHandler.isRevealedTo(event.getEntity(), hunter)) {
+            return;
+        }
+        int tier = PerkDataManager.get(hunter).getActiveTier(ModPerks.HUNTERS_INSTINCT);
+        if (tier > 0) {
+            double bonus = ModPerks.HUNTERS_INSTINCT.value(ModPerks.HUNTERS_INSTINCT_DAMAGE, tier) / 100.0D;
+            event.setAmount((float) (event.getAmount() * (1.0D + bonus)));
         }
     }
 }

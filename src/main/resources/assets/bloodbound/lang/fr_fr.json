@@ -167,7 +167,7 @@
   "bloodbound.message.tinkerer_complete": "Entièrement réparé",
   "bloodbound.message.suture_retry": "Raté - vite, réessayez !",
   "bloodbound.message.no_healing_ability": "Aucun perk équipé ne donne la capacité de soin",
-  "bloodbound.message.no_heal_target": "Personne d'accroupi et immobile à proximité",
+  "bloodbound.message.no_heal_target": "Regardez un joueur ou une créature blessé à moins de 6 blocs",
   "bloodbound.message.healing": "Soin de %s - %s/%s HP",
   "bloodbound.message.heal_missed": "Raté ! La plaie se rouvre",
   "bloodbound.message.heal_stopped": "Soin arrêté",
@@ -217,7 +217,7 @@
   "perk.bloodbound.adrenaline.desc": "À 3 HP ou moins, Adrenaline se déclenche : vous êtes Broken et négligez tous les dégâts pendant %s secondes, puis le perk entre en recharge pendant 60. Un coup qui vous fait passer directement de la pleine forme à zéro vous tue sans déclencher le perk.",
 
   "perk.bloodbound.relentless": "Relentless",
-  "perk.bloodbound.relentless.desc": "À %s cœurs ou moins, vos attaques enchaînent %s coups supplémentaires, un toutes les 0,52 seconde, infligeant 30 %%, 15 %% et 7,5 %% du coup initial. Recharge : 5 secondes.",
+  "perk.bloodbound.relentless.desc": "Tomber à %1$s cœurs ou moins active Relentless pendant %3$s secondes : pendant ce temps, vos attaques enchaînent %2$s coups supplémentaires, un toutes les 0,52 seconde, infligeant 30 %%, 15 %% et 7,5 %% du coup initial. Recharge : %4$s secondes une fois terminé ; si vous êtes toujours sous le seuil à la fin de la recharge, il se réactive aussitôt.",
 
   "perk.bloodbound.broken_movement_device": "Broken Movement Device",
   "perk.bloodbound.broken_movement_device.desc": "Appuyez sur la touche du slot pour marquer l'endroit où vous vous trouvez et la vie qu'il vous reste. Appuyez de nouveau dans les %s secondes pour y revenir avec exactement cette vie. Si la fenêtre se referme, le point est perdu. Recharge : %s secondes, à partir du moment où le point est utilisé ou perdu.",
@@ -298,7 +298,7 @@
   "addon.bloodbound.wild_rose.desc": "Relentless se déclenche désormais à 7/7,5/8 cœurs ou moins.",
 
   "addon.bloodbound.wooden_sword": "Wooden Sword",
-  "addon.bloodbound.wooden_sword.desc": "Relentless est toujours actif, quelle que soit votre vie, mais la recharge est augmentée de 150 %%.",
+  "addon.bloodbound.wooden_sword.desc": "Relentless n'attend plus que votre vie baisse : votre premier coup le déclenche. La recharge est augmentée de 150 %%.",
 
   "addon.bloodbound.bloodied_matchete": "Bloodied Matchete",
   "addon.bloodbound.bloodied_matchete.desc": "Relentless attend 4,5/5/5,5 cœurs ou moins, et gagne un coup supplémentaire infligeant 15/7,5/3,25 %% du coup initial.",
@@ -328,7 +328,7 @@
   "addon.bloodbound.momentum_formula.desc": "Passé 3 blocs de chute, vous tombez 2,5 fois plus vite. Toute cette vitesse est dépensée en l'air : la Vitesse à l'atterrissage dure 40 %% de moins.",
 
   "addon.bloodbound.gear_system": "Gear System",
-  "addon.bloodbound.gear_system.desc": "Les charges reviennent une par une, toutes les 4 secondes, au lieu de toutes d'un coup à la fin de la recharge.",
+  "addon.bloodbound.gear_system.desc": "Les charges reviennent une par une, toutes les 5 secondes, au lieu de toutes d'un coup à la fin de la recharge.",
 
   "addon.bloodbound.overclocked_module": "Overclocked Module",
   "addon.bloodbound.overclocked_module.desc": "Chaque impulsion est 30 %% plus forte.",
@@ -449,7 +449,7 @@
   "perk.bloodbound.catching_up.desc": "Vous voyez les marques laissées au sol. Marcher sur des marques qui ne sont pas les vôtres octroie Vitesse I, et l'effet persiste %1$s secondes après la fin de la piste. Par ailleurs vous marchez %2$s %% plus vite, tant que vous ne sprintez pas et n'êtes pas accroupi.",
 
   "perk.bloodbound.hunters_instinct": "Hunter's Instinct",
-  "perk.bloodbound.hunters_instinct.desc": "Vous voyez les marques laissées au sol. Dès qu'une entité dans un rayon de %s blocs perd de la vie à cause d'autre chose que vous, son aura vous est révélée pendant 7 secondes.",
+  "perk.bloodbound.hunters_instinct.desc": "Vous voyez les marques laissées au sol. Dès qu'une entité dans un rayon de %1$s blocs perd de la vie à cause d'autre chose que vous, son aura vous est révélée pendant 7 secondes. Tout ce dont vous avez révélé l'aura subit %2$s %% de dégâts en plus de votre part.",
 
   "addon.bloodbound.wire_spool": "Wire Spool",
   "addon.bloodbound.wire_spool.desc": "La réserve se remplit 75 %% plus vite.",
@@ -593,7 +593,7 @@
   "bloodbound.message.target_found_arrived": "Vous avez rejoint le fil",
 
   "perk.bloodbound.target_found": "Target Found",
-  "perk.bloodbound.target_found.desc": "Maintenez la touche du slot pendant %1$s secondes sans bouger pour poser un fil, affiché à %2$s %% d'opacité. Vous pouvez en avoir %3$s posés ; un de plus supprime le plus ancien. Quand quelque chose le franchit alors que vous êtes à moins de 128 blocs, vous êtes averti et son aura vous est révélée, puis %5$s secondes plus tard une fenêtre de 4 secondes s'ouvre : appuyez sur la touche du slot pour être téléporté au fil. Le fil disparaît à la fermeture de la fenêtre, utilisée ou non. Plus loin, vous êtes seulement averti et le fil est détruit. Recharge %4$s secondes après la pose.",
+  "perk.bloodbound.target_found.desc": "Maintenez la touche du slot pendant %1$s secondes sans bouger pour poser un fil, affiché à %2$s %% d'opacité. Vous pouvez en avoir %3$s posés ; un de plus supprime le plus ancien. Quand quelque chose le franchit alors que vous êtes à moins de 256 blocs, vous êtes averti et son aura vous est révélée, puis %5$s secondes plus tard une fenêtre de 4 secondes s'ouvre : appuyez sur la touche du slot pour être téléporté au fil. Le fil disparaît à la fermeture de la fenêtre, utilisée ou non. Plus loin, vous êtes seulement averti et le fil est détruit. Recharge %4$s secondes après la pose.",
 
   "perk.bloodbound.under_the_radar": "Under The Radar",
   "perk.bloodbound.under_the_radar.desc": "Votre nametag est caché et tous les sons que vous produisez sont supprimés, sous-titres compris. La première fois que votre aura devrait être révélée, c'est bloqué, ainsi que tout le reste pendant les %1$s secondes suivantes ; le perk passe ensuite en recharge pendant %2$s secondes. Les mobs doivent aussi s'approcher %3$s %% plus près pour vous repérer.",
@@ -862,7 +862,7 @@
   "addon.bloodbound.lucky_charm": "Lucky Charm",
   "addon.bloodbound.lucky_charm.desc": "Tire 3 runes en triangle au lieu d'une, qui soignent chacune 33 %% de moins.",
   "addon.bloodbound.decorated_leaf": "Decorated Leaf",
-  "addon.bloodbound.decorated_leaf.desc": "Une rune tirée à vos pieds vous soigne, 50 %% moins bien. Les runes soignent les autres 50 %% de plus.",
+  "addon.bloodbound.decorated_leaf.desc": "Une rune tirée à vos pieds vous soigne, 75 %% moins bien. Les runes soignent les autres 50 %% de plus.",
   "perk.bloodbound.spring_pad": "Spring Pad",
   "perk.bloodbound.spring_pad.desc": "Maintenez la touche du slot %1$s secondes sans bouger pour poser un pad ; jusqu'à %2$s posés, un nouveau remplace le plus ancien. Il s'active au bout de 2 secondes. Tout ce qui marche dessus, vous compris, est violemment projeté dans la direction où il regarde : regarder en l'air envoie haut, regarder devant envoie loin. Au plus une fois par seconde ; il se brise après %4$s projections. Recharge %3$s secondes après en avoir posé un.",
   "addon.bloodbound.safety_protocol": "Safety Protocol",
@@ -884,11 +884,11 @@
   "addon.bloodbound.upside_down_card": "Upside Down Card",
   "addon.bloodbound.upside_down_card.desc": "Aucune recharge, mais la chute après chaque changement inflige le double de dégâts.",
   "addon.bloodbound.copper_coil": "Copper Coil",
-  "addon.bloodbound.copper_coil.desc": "La charge est 15 %% plus courte.",
+  "addon.bloodbound.copper_coil.desc": "La charge est 30 %% plus courte.",
   "addon.bloodbound.capacitor": "Capacitor",
   "addon.bloodbound.capacitor.desc": "Une charge interrompue garde 50 %% de sa progression pendant 10 secondes.",
   "addon.bloodbound.red_led": "Red LED",
-  "addon.bloodbound.red_led.desc": "En s'allongeant, le cylindre s'incurve vers votre viseur.",
+  "addon.bloodbound.red_led.desc": "En s'allongeant, le cylindre s'incurve vers votre viseur, et il inflige 30 %% de dégâts en plus.",
   "addon.bloodbound.rusty_nail": "Rusty Nail",
   "addon.bloodbound.rusty_nail.desc": "Vos pièges infligent 2 dégâts de plus.",
   "addon.bloodbound.fence_pliers": "Fence Pliers",
@@ -934,5 +934,31 @@
 
   "bloodbound.configuration.title": "BloodBound",
   "bloodbound.configuration.hud": "ATH",
-  "bloodbound.configuration.hudScale": "Taille du HUD de perks"
+  "bloodbound.configuration.hudScale": "Taille du HUD de perks",
+  "perk.bloodbound.boundless_soul": "Boundless Soul",
+  "perk.bloodbound.boundless_soul.desc": "Les coups de mêlée vous infligent %1$s %% de dégâts en plus, mais tous les autres types de dégâts (flèches, explosions, feu, chutes, magie) vous en infligent %2$s %% de moins.",
+  "perk.bloodbound.undersized": "Undersized",
+  "perk.bloodbound.undersized.desc": "Vous êtes %s %% plus petit, modèle et hitbox compris, et vos coups de mêlée infligent 25 %% de dégâts en moins. Dès le tier II, appuyez sur la touche du slot près d'un joueur accroupi pour monter sur ses épaules ; au tier III, près de n'importe quelle créature pour la monter et la diriger comme un cheval, à sa vitesse et avec ses capacités (voler, grimper, nager). Elle attaque ce que vous frappez, ce qui vous attaque, ou ce que vous visez en rappuyant sur la touche, et ses attaques ne vous touchent jamais. Impossible d'attaquer ce que vous montez. Sautez ou accroupissez-vous pour descendre.",
+  "bloodbound.message.undersized_attack": "Votre monture attaque %s",
+  "bloodbound.message.undersized_calm": "Votre monture se calme",
+  "perk.bloodbound.heart_of_gold": "Heart Of Gold",
+  "perk.bloodbound.heart_of_gold.desc": "Vous avez %s cœurs en plus.",
+  "perk.bloodbound.trip_wires": "TripWires",
+  "perk.bloodbound.trip_wires.desc": "Maintenez la touche du slot 2 secondes sans bouger pour planter un poteau, puis rappuyez à moins de %1$s blocs pour en planter un second et tendre un fil entre eux (transparent à %2$s %%). Ce qui le traverse voit son aura révélée pendant %3$s secondes et ses effets négatifs durent %4$s fois plus longtemps. Casse après %5$s déclenchements ; le traverser accroupi l'abîme sans le déclencher. Jusqu'à %6$s poteaux. Recharge %7$s secondes.",
+  "addon.bloodbound.bottle_of_venom": "Bottle Of Venom",
+  "addon.bloodbound.bottle_of_venom.desc": "Ce qui déclenche un fil reçoit Exhausted, à 3 charges, pendant 10 secondes.",
+  "addon.bloodbound.plastic_wire": "Plastic Wire",
+  "addon.bloodbound.plastic_wire.desc": "Ce qui déclenche un fil reçoit Broken pendant 15 secondes.",
+  "addon.bloodbound.silver_wire": "Silver Wire",
+  "addon.bloodbound.silver_wire.desc": "Ce qui déclenche un fil reçoit Bleeding, à 10 charges. Chaque déclenchement suivant du même fil divise les charges par 2, arrondi au-dessus.",
+  "addon.bloodbound.detonator": "Detonator",
+  "addon.bloodbound.detonator.desc": "Ce qui déclenche un fil est Flashed pendant 4 secondes, avec Force V tant qu'il est aveuglé, puis Faiblesse II pendant 10 secondes.",
+  "bloodbound.message.tripwires_setting": "Pose du poteau... %s",
+  "bloodbound.message.tripwires_stopped": "Poteau non posé",
+  "bloodbound.message.tripwires_moved": "Vous avez bougé : poteau non posé",
+  "bloodbound.message.tripwires_first": "Premier poteau posé : posez le second à moins de %s blocs",
+  "bloodbound.message.tripwires_invalid": "Le second poteau ne peut pas aller ici",
+  "bloodbound.message.tripwires_placed": "Fil posé (%s/%s poteaux)",
+  "bloodbound.message.tripwires_triggered": "%s a traversé votre fil",
+  "bloodbound.message.tripwires_broken": "Un de vos fils a cassé"
 }

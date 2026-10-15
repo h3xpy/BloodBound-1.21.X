@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import net.h3xpy.bloodbound.heal.HealManager;
 import net.h3xpy.bloodbound.effect.ExposedEffect;
 import net.h3xpy.bloodbound.registry.ModEffects;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -30,7 +31,9 @@ public final class EffectHandler {
     @SubscribeEvent
     public static void onHeal(LivingHealEvent event) {
         LivingEntity entity = event.getEntity();
-        if (entity.hasEffect(ModEffects.BROKEN) || entity.hasEffect(ModEffects.EXPOSED)) {
+        // Co-op healing is the one heal Broken lets through.
+        boolean broken = entity.hasEffect(ModEffects.BROKEN) && !HealManager.isMendingThroughBroken();
+        if (broken || entity.hasEffect(ModEffects.EXPOSED)) {
             event.setCanceled(true);
         }
     }

@@ -48,6 +48,9 @@ import net.h3xpy.bloodbound.perk.impl.SpringPad;
 import net.h3xpy.bloodbound.perk.impl.Vigilance;
 import net.h3xpy.bloodbound.perk.impl.SurgicalSuture;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
+import net.h3xpy.bloodbound.perk.impl.Tripwires;
+import net.h3xpy.bloodbound.perk.impl.HeartOfGold;
+import net.h3xpy.bloodbound.perk.impl.Undersized;
 import net.h3xpy.bloodbound.perk.impl.TeamSpirit;
 import net.h3xpy.bloodbound.perk.impl.Tinkerer;
 import net.h3xpy.bloodbound.perk.impl.Wireless;
@@ -310,6 +313,10 @@ public final class PerkEventHandler {
         MovementTracker.update(player);
         AchievementTracker.tick(player, gameTime);
         TargetFound.tick(player, data, gameTime);
+        Tripwires.tick(player, data, gameTime);
+        HeartOfGold.tick(player, data);
+        Undersized.tick(player, data);
+        RelentlessHandler.tick(player, data, gameTime);
         FragNade.tickFallGuard(player, gameTime);
         MarkManager.finalBlowStep(player, data, gameTime);
 
