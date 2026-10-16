@@ -18,6 +18,7 @@ import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.perk.Perk;
 import net.h3xpy.bloodbound.perk.PerkRegistry;
 import net.h3xpy.bloodbound.perk.PerkType;
+import net.h3xpy.bloodbound.client.ClientPerkGlow;
 import net.h3xpy.bloodbound.perk.impl.Vigilance;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -130,8 +131,9 @@ public class PerkHudLayer implements LayeredDraw.Layer {
 
         // Reactive Compound has every perk off: the icons go grey until it wears off.
         boolean disabled = ClientPerkData.get().arePerksDisabled();
-        // Vigilance lights up while its bearer is being watched.
-        boolean lit = !disabled && perk.id().equals(ModPerks.VIGILANCE.id()) && Vigilance.isClientActive();
+        // Passive perks light up while they are in effect, or for a moment when they go off.
+        boolean lit = !disabled && (ClientPerkGlow.isLit(perk.id())
+                || (perk.id().equals(ModPerks.VIGILANCE.id()) && Vigilance.isClientActive()));
 
         graphics.fill(x, y, x + SLOT_SIZE, y + SLOT_SIZE, lit ? 0xA0806020 : 0xA0000000);
         GuiUtil.drawBorder(graphics, x, y, SLOT_SIZE, SLOT_SIZE, disabled ? 0xFF3A3A3A

@@ -11,6 +11,7 @@ import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.network.HiddenPlayersPayload;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.perk.PerkGlow;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -116,6 +117,7 @@ public final class UnderTheRadarHandler {
 
         int window = ModPerks.UNDER_THE_RADAR.ticks(ModPerks.RADAR_WINDOW, tier);
         WINDOW_UNTIL.put(player.getUUID(), now + window);
+        PerkGlow.flash(player, ModPerks.UNDER_THE_RADAR, window);
         data.setCooldown(ModPerks.UNDER_THE_RADAR.id(), now,
                 window + ModPerks.UNDER_THE_RADAR.cooldownTicks(tier));
         PerkDataManager.sync(player);

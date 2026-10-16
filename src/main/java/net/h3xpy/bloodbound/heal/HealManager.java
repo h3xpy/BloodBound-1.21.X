@@ -13,6 +13,7 @@ import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.effect.BleedingHandler;
 import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.perk.PerkGlow;
 import net.h3xpy.bloodbound.perk.impl.BlessingOfLife;
 import net.h3xpy.bloodbound.perk.impl.GreenHerbs;
 import net.h3xpy.bloodbound.perk.impl.TeamSpirit;
@@ -250,6 +251,8 @@ public final class HealManager {
             return;
         }
 
+        glowHealing(healer, session.isSelfHeal(), true);
+
         if (session.isBlocked(gameTime)) {
             return;
         }
@@ -404,8 +407,20 @@ public final class HealManager {
                 : 0.0F;
     }
 
+    /**
+     * The medic perks light up while they are at work: Caretaker and We Can Do This on any heal (the
+     * latter only while the healer is untouched), Green Herbs and Team Spirit on someone else.
+     */
+    private static void glowHealing(ServerPlayer healer, boolean selfHeal, boolean on) {
+        PerkGlow.set(healer, ModPerks.CARETAKER, on);
+        PerkGlow.set(healer, ModPerks.WE_CAN_DO_THIS, on && healer.getHealth() >= healer.getMaxHealth());
+        PerkGlow.set(healer, ModPerks.GREEN_HERBS, on && !selfHeal);
+        PerkGlow.set(healer, ModPerks.TEAM_SPIRIT, on && !selfHeal);
+    }
+
     public static void stop(ServerPlayer healer, String messageKey) {
         HealSession session = SESSIONS.remove(healer.getUUID());
+        glowHealing(healer, false, false);
         if (session == null) {
             return;
         }

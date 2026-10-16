@@ -9,6 +9,7 @@ import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.perk.PerkGlow;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
@@ -80,6 +81,9 @@ public final class RaiseTheStakesHandler {
         int extra = 0;
         while (extra < ModPerks.RAISE_THE_STAKES_MAX_EXTRA_DROPS && player.getRandom().nextFloat() < chance) {
             extra++;
+        }
+        if (extra > 0) {
+            PerkGlow.flash(player, ModPerks.RAISE_THE_STAKES);
         }
         if (extra >= JACKPOT_ROLLS) {
             ModAdvancements.grant(player, ModAdvancements.JACKPOT);

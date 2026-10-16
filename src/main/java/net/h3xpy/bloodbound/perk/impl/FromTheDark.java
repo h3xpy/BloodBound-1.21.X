@@ -3,6 +3,7 @@ package net.h3xpy.bloodbound.perk.impl;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.perk.PerkGlow;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -31,6 +32,8 @@ public final class FromTheDark {
         }
 
         seeInTheDark(player);
+        // Lit while the dark is dark enough to count.
+        PerkGlow.set(player, ModPerks.FROM_THE_DARK, inTheDark(player));
 
         if (!player.isSprinting() || !inTheDark(player)
                 || data.isOnCooldown(ModPerks.FROM_THE_DARK.id(), gameTime)) {

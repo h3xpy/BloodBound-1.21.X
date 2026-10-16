@@ -13,6 +13,7 @@ import net.h3xpy.bloodbound.event.UnderTheRadarHandler;
 import net.h3xpy.bloodbound.network.OmnisciencePayload;
 import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.perk.PerkGlow;
 import net.h3xpy.bloodbound.registry.ModEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -66,6 +67,12 @@ public final class Omniscience {
     }
 
     public static void tick(ServerPlayer player, PlayerPerkData data, long gameTime) {
+        tickReveal(player, data, gameTime);
+        // Lit for as long as the walls are see-through.
+        PerkGlow.set(player, ModPerks.OMNISCIENCE, data.getActiveTier(ModPerks.OMNISCIENCE) > 0 && data.isOmniscienceRevealed());
+    }
+
+    private static void tickReveal(ServerPlayer player, PlayerPerkData data, long gameTime) {
         int tier = data.getActiveTier(ModPerks.OMNISCIENCE);
         if (tier <= 0) {
             if (data.isOmniscienceRevealed()) {
@@ -148,7 +155,9 @@ public final class Omniscience {
                     }
 
                     BlockState state = player.level().getBlockState(cursor);
-                    if (state.is(Tags.Blocks.CHESTS) || state.is(Tags.Blocks.BARRELS)) {
+                    if (state.is(Tags.Blocks.CHESTS) || state.is(Tags.Blocks.BARRELS)
+                            || state.is(Blocks.SPAWNER) || state.is(Blocks.TRIAL_SPAWNER)) {
+                        // Spawners ride along with the containers; the client tells them apart by the block.
                         containers.add(cursor.immutable());
                     } else if (state.is(Tags.Blocks.ORES) && isVisibleAtTier(state, tier)) {
                         ores.add(cursor.immutable());

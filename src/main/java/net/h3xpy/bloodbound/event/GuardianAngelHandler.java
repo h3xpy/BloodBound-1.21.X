@@ -10,6 +10,7 @@ import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.perk.PerkGlow;
 import net.h3xpy.bloodbound.skillcheck.SkillCheckContext;
 import net.h3xpy.bloodbound.skillcheck.SkillCheckDifficulty;
 import net.h3xpy.bloodbound.skillcheck.SkillCheckManager;
@@ -122,6 +123,8 @@ public final class GuardianAngelHandler {
     /** Opens the trial once the grace period is up, and keeps a check on screen until it is over. */
     public static void tick(ServerPlayer player, PlayerPerkData data, long gameTime) {
         Trial trial = TRIALS.get(player.getUUID());
+        // Lit from the blow it caught to the end of the trial.
+        PerkGlow.set(player, ModPerks.GUARDIAN_ANGEL, trial != null);
         if (trial == null) {
             return;
         }

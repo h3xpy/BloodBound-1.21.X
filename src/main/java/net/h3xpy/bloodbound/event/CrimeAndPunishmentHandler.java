@@ -5,6 +5,7 @@ import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.perk.PerkGlow;
 import net.h3xpy.bloodbound.perk.impl.Flashbang;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -58,6 +59,7 @@ public final class CrimeAndPunishmentHandler {
         }
 
         Flashbang.blind(player, attacker, ticks);
+        PerkGlow.flash(player, ModPerks.CRIME_AND_PUNISHMENT);
         AchievementTracker.onPunished(player, attacker);
         data.setCooldown(ModPerks.CRIME_AND_PUNISHMENT.id(), gameTime,
                 ModPerks.CRIME_AND_PUNISHMENT.cooldownTicks(tier));
