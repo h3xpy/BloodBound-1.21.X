@@ -27,6 +27,8 @@ import net.h3xpy.bloodbound.client.render.IceShellRenderer;
 import net.h3xpy.bloodbound.client.render.RitualRenderer;
 import net.h3xpy.bloodbound.client.render.SanctumBubbleRenderer;
 import net.h3xpy.bloodbound.client.render.TargetFoundRenderer;
+import net.h3xpy.bloodbound.client.model.KnifeModel;
+import net.h3xpy.bloodbound.client.render.KnifeRenderer;
 import net.h3xpy.bloodbound.client.render.TripwireRenderer;
 import net.h3xpy.bloodbound.perk.impl.Undersized;
 import net.h3xpy.bloodbound.client.screen.PerkTableScreen;
@@ -82,6 +84,7 @@ public class BloodBoundClient {
         event.registerLayerDefinition(TargetFoundModel.LAYER_LOCATION, TargetFoundModel::createBodyLayer);
         event.registerLayerDefinition(IceShellModel.LAYER_LOCATION, IceShellModel::createBodyLayer);
         event.registerLayerDefinition(AngelWingsModel.LAYER_LOCATION, AngelWingsModel::createBodyLayer);
+        event.registerLayerDefinition(KnifeModel.LAYER_LOCATION, KnifeModel::createBodyLayer);
     }
 
     /** Angel wings, on every player model: the wide-armed one and the slim one. */
@@ -97,6 +100,7 @@ public class BloodBoundClient {
         event.registerEntityRenderer(ModEntities.BARBED_WIRE.get(), BarbedWireRenderer::new);
         event.registerEntityRenderer(ModEntities.TARGET_FOUND.get(), TargetFoundRenderer::new);
         event.registerEntityRenderer(ModEntities.TRIPWIRE.get(), TripwireRenderer::new);
+        event.registerEntityRenderer(ModEntities.KNIFE.get(), KnifeRenderer::new);
         event.registerEntityRenderer(ModEntities.RITUAL.get(), RitualRenderer::new);
         event.registerEntityRenderer(ModEntities.ICE_SHELL.get(), IceShellRenderer::new);
         event.registerEntityRenderer(ModEntities.CHAIN_ANCHOR.get(), ChainAnchorRenderer::new);

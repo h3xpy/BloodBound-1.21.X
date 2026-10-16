@@ -36,6 +36,8 @@ import net.h3xpy.bloodbound.perk.impl.SpringPad;
 import net.h3xpy.bloodbound.perk.impl.Vigilance;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
 import net.h3xpy.bloodbound.perk.impl.Tripwires;
+import net.h3xpy.bloodbound.perk.impl.Fortified;
+import net.h3xpy.bloodbound.perk.impl.SacrificialKnife;
 import net.h3xpy.bloodbound.perk.impl.Undersized;
 import net.h3xpy.bloodbound.perk.impl.TeamSpirit;
 import net.h3xpy.bloodbound.perk.impl.Tinkerer;
@@ -98,6 +100,8 @@ public final class PlayerSyncHandler {
             Tripwires.logout(player.getUUID());
             Undersized.clear(player.getUUID());
             PerkGlow.clear(player.getUUID());
+            SacrificialKnife.clear(player.getUUID());
+            Fortified.clear(player);
             IceBlock.release(player);
             // Traps and rituals stay behind: they are saved with the world and wait for the owner.
             BlessingOfLife.logout(player);
@@ -144,6 +148,8 @@ public final class PlayerSyncHandler {
             ReactiveCompound.cancel(player);
             Tripwires.onDeath(player.getUUID());
             PerkGlow.reset(player);
+            SacrificialKnife.clear(player.getUUID());
+            Fortified.clear(player);
             HangedMan.clear(player);
         }
     }

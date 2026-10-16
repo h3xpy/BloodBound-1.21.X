@@ -1145,8 +1145,8 @@ public final class ModAddons {
     public static final double GOLD_NUGGET_CHANCE = 0.07D;
 
     // --- Gilded Pickaxe tuning ---
-    public static final double GILDED_PICKAXE_CHANCE = 0.03D;
-    public static final double GILDED_PICKAXE_CHANCE_PER_MISS = 0.005D;
+    public static final double GILDED_PICKAXE_CHANCE = 0.01D;
+    public static final double GILDED_PICKAXE_CHANCE_PER_MISS = 0.001D;
     public static final int GILDED_PICKAXE_PRIZE = 100;
 
     // --- Tripwires ---

@@ -1046,6 +1046,63 @@ public final class ModPerks {
             .scaling(50, 50, 50)
             .build());
 
+    /**
+     * Throws a knife that sticks in what it hits. Killing the target bursts it, mending the thrower
+     * and hurting everything round it; pressing the key again pulls the knife back, and the target
+     * with it, for half the cooldown.
+     * <p>Scaling: [0] damage of the hit, [1] health the burst mends and deals, [2] cooldown in seconds,
+     * [3] the burst's radius in blocks.
+     */
+    public static final Perk SACRIFICIAL_KNIFE = PerkRegistry.register(Perk.builder("sacrificial_knife")
+            .type(PerkType.ACTIVE)
+            .scaling(6, 7, 8)
+            .scaling(4, 5, 6)
+            .scaling(40, 36, 32)
+            .scaling(4, 5, 6)
+            .cooldown(2)
+            .build());
+
+    /**
+     * Dealing enough damage braces the bearer: the next few real blows they take are cut down.
+     * <p>Scaling: [0] damage to deal, [1] blows braced against, [2] how much of each is taken off, as
+     * a percentage.
+     */
+    public static final Perk FORTIFIED = PerkRegistry.register(Perk.builder("fortified")
+            .type(PerkType.PASSIVE)
+            .scaling(36, 34, 32)
+            .scaling(3, 4, 5)
+            .scaling(60, 70, 80)
+            .build());
+
+    // --- Sacrificial Knife tuning ---
+    public static final int KNIFE_DAMAGE = 0;
+    public static final int KNIFE_BURST = 1;
+    public static final int KNIFE_COOLDOWN = 2;
+    /** How the knife flies: speed, a little drop, its size, and how long it may stay in the air. */
+    public static final double KNIFE_SPEED = 1.6D;
+    public static final double KNIFE_GRAVITY = 0.015D;
+    public static final double KNIFE_RADIUS = 0.3D;
+    public static final int KNIFE_MAX_FLIGHT_TICKS = 60;
+    /** Share of the cooldown left standing by a miss, and by pulling the knife back. */
+    public static final double KNIFE_MISS_COOLDOWN = 0.75D;
+    public static final double KNIFE_RECALL_COOLDOWN = 0.5D;
+    public static final int KNIFE_BURST_RADIUS = 3;
+    /** How long a knife stays stuck before it falls out, and how long one in a wall stays. */
+    public static final int KNIFE_STUCK_TICKS = 400;
+    public static final int KNIFE_WALL_TICKS = 40;
+    /** A pulled target lands this far in front of the thrower, after an arc this high at most. */
+    public static final double KNIFE_PULL_STOP = 1.2D;
+    public static final double KNIFE_PULL_ARC = 2.5D;
+    /** How fast a pull may go, in blocks a tick: under what the game will send a player. */
+    public static final double KNIFE_PULL_SPEED = 3.0D;
+
+    // --- Fortified tuning ---
+    public static final int FORTIFIED_DAMAGE_DEALT = 0;
+    public static final int FORTIFIED_HITS = 1;
+    public static final int FORTIFIED_REDUCTION = 2;
+    /** Blows at or under this do not use up a brace, and are not cut. */
+    public static final float FORTIFIED_MIN_HIT = 2.0F;
+
     // --- Undersized tuning ---
     public static final int UNDERSIZED_SHRINK = 0;
     /** How close the one to climb on has to be. */
