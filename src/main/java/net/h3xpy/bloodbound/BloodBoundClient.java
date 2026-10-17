@@ -3,6 +3,7 @@ package net.h3xpy.bloodbound;
 import net.h3xpy.bloodbound.client.ClientCameraShake;
 import net.h3xpy.bloodbound.client.ClientHangedMan;
 import net.h3xpy.bloodbound.client.ClientReactiveCompound;
+import net.h3xpy.bloodbound.client.ClientSalvation;
 import net.h3xpy.bloodbound.client.ClientNothinToSee;
 import net.h3xpy.bloodbound.client.ClientUndersized;
 import net.h3xpy.bloodbound.client.ClientDrawSpeed;
@@ -30,6 +31,8 @@ import net.h3xpy.bloodbound.client.render.SanctumBubbleRenderer;
 import net.h3xpy.bloodbound.client.render.TargetFoundRenderer;
 import net.h3xpy.bloodbound.client.model.KnifeModel;
 import net.h3xpy.bloodbound.client.render.KnifeRenderer;
+import net.h3xpy.bloodbound.client.render.PentagramRenderer;
+import net.h3xpy.bloodbound.client.render.RiteRenderer;
 import net.h3xpy.bloodbound.client.render.TripwireRenderer;
 import net.h3xpy.bloodbound.perk.impl.Undersized;
 import net.h3xpy.bloodbound.client.screen.PerkTableScreen;
@@ -73,6 +76,7 @@ public class BloodBoundClient {
         NeoForge.EVENT_BUS.register(ClientCameraShake.class);
         NeoForge.EVENT_BUS.register(ClientHangedMan.class);
         NeoForge.EVENT_BUS.register(ClientReactiveCompound.class);
+        NeoForge.EVENT_BUS.register(ClientSalvation.class);
         NeoForge.EVENT_BUS.register(ClientNothinToSee.class);
         Undersized.clientRiding = ClientUndersized::isRiding;
     }
@@ -103,6 +107,8 @@ public class BloodBoundClient {
         event.registerEntityRenderer(ModEntities.TARGET_FOUND.get(), TargetFoundRenderer::new);
         event.registerEntityRenderer(ModEntities.TRIPWIRE.get(), TripwireRenderer::new);
         event.registerEntityRenderer(ModEntities.KNIFE.get(), KnifeRenderer::new);
+        event.registerEntityRenderer(ModEntities.PENTAGRAM.get(), PentagramRenderer::new);
+        event.registerEntityRenderer(ModEntities.RITE.get(), RiteRenderer::new);
         event.registerEntityRenderer(ModEntities.RITUAL.get(), RitualRenderer::new);
         event.registerEntityRenderer(ModEntities.ICE_SHELL.get(), IceShellRenderer::new);
         event.registerEntityRenderer(ModEntities.CHAIN_ANCHOR.get(), ChainAnchorRenderer::new);

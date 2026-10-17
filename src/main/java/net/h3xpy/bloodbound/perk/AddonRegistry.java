@@ -26,6 +26,22 @@ public final class AddonRegistry {
         return addon;
     }
 
+    /**
+     * Addons that were renamed after release, old id to new. Saves still carry the old ids; reading
+     * them through {@link #migrate} keeps what players had bought.
+     */
+    private static final Map<ResourceLocation, ResourceLocation> RENAMED = Map.of(
+            ResourceLocation.fromNamespaceAndPath("bloodbound", "peekaboo"),
+            ResourceLocation.fromNamespaceAndPath("bloodbound", "soul_in_a_jar"),
+            ResourceLocation.fromNamespaceAndPath("bloodbound", "now_you_see_me"),
+            ResourceLocation.fromNamespaceAndPath("bloodbound", "firefly"));
+
+    /** The current id for an addon id read from a save, which may be one from before a rename. */
+    @Nullable
+    public static ResourceLocation migrate(@Nullable ResourceLocation id) {
+        return id == null ? null : RENAMED.getOrDefault(id, id);
+    }
+
     @Nullable
     public static Addon get(@Nullable ResourceLocation id) {
         return id == null ? null : ADDONS.get(id);

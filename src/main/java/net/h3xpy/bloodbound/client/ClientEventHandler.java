@@ -109,6 +109,7 @@ public final class ClientEventHandler {
         ClientUndersized.setRiding(false);
         ClientNothinToSee.reset();
         ClientPerkGlow.reset();
+        ClientSalvation.reset();
         Vigilance.setClientBonus(0.0F);
         healHeld = false;
         Arrays.fill(SLOT_HELD, false);

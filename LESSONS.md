@@ -76,6 +76,10 @@ the vial never tipped and the weapon was hidden. What worked was looking at it:
 - the quick-play arguments plus `jvmArgument '-Dbloodbound.animdebug=true'` added to `build.gradle`
   for the run (restored afterwards), and the PNGs in `run/screenshots/` read and compared;
 - the class and its registration deleted before committing.
+In such a harness, aim the camera with `player.connection.teleport(x, y, z, yaw, pitch)`: a plain
+`teleportTo` followed by `setYRot`/`setXRot` on the server never reaches the client, and the shots
+came out pointing the old way. Build the test scene on a temporary platform high in the sky (and
+remove it after): the test world's terrain hid the subject behind trees and hills more than once.
 An arm with an item in it: draw the arm the way `ItemInHandRenderer.renderPlayerArm` does, then
 `translateAndRotate` on the model's arm and the `ItemInHandLayer` offsets before rendering the item.
 
