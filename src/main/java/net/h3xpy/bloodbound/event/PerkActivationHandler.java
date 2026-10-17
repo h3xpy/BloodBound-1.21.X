@@ -39,6 +39,7 @@ import net.h3xpy.bloodbound.perk.impl.SpringPad;
 import net.h3xpy.bloodbound.perk.impl.SurgicalSuture;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
 import net.h3xpy.bloodbound.perk.impl.Tripwires;
+import net.h3xpy.bloodbound.perk.impl.SacrificialKnife;
 import net.h3xpy.bloodbound.perk.impl.Undersized;
 import net.h3xpy.bloodbound.perk.impl.Tinkerer;
 import net.minecraft.ChatFormatting;
@@ -89,6 +90,7 @@ public final class PerkActivationHandler {
             Map.entry(ModPerks.TARGET_FOUND.id(), TargetFound::activate),
             Map.entry(ModPerks.TRIPWIRES.id(), Tripwires::activate),
             Map.entry(ModPerks.UNDERSIZED.id(), Undersized::activate),
+            Map.entry(ModPerks.SACRIFICIAL_KNIFE.id(), SacrificialKnife::activate),
             Map.entry(ModPerks.FRAGNADE.id(), FragNade::activate),
             Map.entry(ModPerks.ICE_BLOCK.id(), IceBlock::activate),
             Map.entry(ModPerks.BLESSING_OF_LIFE.id(), BlessingOfLife::activate),
@@ -139,6 +141,11 @@ public final class PerkActivationHandler {
         // laid, so the key has to be heard before the cooldown gate.
         if (perk.id().equals(ModPerks.TARGET_FOUND.id()) && TargetFound.tryTeleport(player, gameTime)) {
             PerkDataManager.sync(player);
+            return;
+        }
+
+        // A knife stuck in something: the key pulls it back, cooldown or not.
+        if (perk.id().equals(ModPerks.SACRIFICIAL_KNIFE.id()) && SacrificialKnife.tryRecall(player, gameTime)) {
             return;
         }
 

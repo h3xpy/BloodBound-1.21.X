@@ -102,6 +102,8 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | **Reactive Compound** | Active | Hold the key **5/4.5/4** seconds, slowed as if drinking, with a melee weapon (sword, axe, trident, mace) in hand, unable to attack, to coat it — both arms show in first person, the blade swings flat and a vial is poured over it. Switching items loses the coat. Taking a blow from anything while coating spills the vial: the coating stops, with no cooldown. The next thing it hits takes **30/40/50%** more damage and 50% more knockback; a player also has every perk off for **10/12.5/15** seconds (their HUD icons grey out; traps already laid stay). Cooldown **45/40/35** seconds after the hit. |
 | **Boundless Soul** | Passive | Melee blows hurt you **30/20/10%** more; every other kind of damage (arrows, explosions, fire, falls, magic) hurts you **50/55/60%** less. The void and `/kill` are untouched. |
 | **Heart Of Gold** | Passive | **1/2/3** more hearts. |
+| **Sacrificial Knife** | Active | Throws a knife (a real model, a ritual dagger) with a slight drop. A hit leaves it stuck in the target, handle out and turning with it, for **6/7/8** damage (armour counts); the slot glows while it is. Kill the target and it bursts: you heal **4/5/6** HP and everything within **4/5/6** blocks takes as much. Or press the key again to tear the knife back: the target is hauled along an arc right up to you, whatever the distance, and stops in front of you; what is left of the cooldown is halved. A knife left in falls out after 20 seconds; one that hits a wall stays there for 2. Cooldown **40/36/32** seconds, 25% shorter on a miss. |
+| **Fortified** | Passive | After dealing **36/34/32** damage in total, the next **3/4/5** hits of more than 2 damage you take are cut by **60/70/80%** (shown as pips; the slot glows). Damage only counts towards the next set once the last is spent. |
 | **Undersized** | Active | You are **50/50/50%** smaller, model and hitbox alike, and your melee blows deal 25% less. From Tier II the key climbs onto the shoulders of a crouched player within 3 blocks; at Tier III, failing a crouched player, onto the nearest creature, which you steer like a horse at its own walking pace, keeping what it can do: flyers and swimmers (in water) climb and dive where you look, spiders climb walls, swimmers are quick in water. It fights for you: it goes after what you hit, what hits you, or what you look at when you press the key again (nothing in sight calms it), with its own attacks (a zombie hits, a skeleton shoots, a creeper blows up). Nothing it does can hurt you, and you cannot hurt it. Jump or crouch to get down. No cooldown. |
 | **TripWires** | Active | Hold the key 2 seconds still to plant a post, then press it again within **10/15/20** blocks to plant a second and stretch a wire between their tops (**90/93/96%** see-through; nothing solid may cross it, and until then you alone see the line in particles, red while the spot will not do). Whatever walks into it (not you) has its aura revealed to you for **10/15/20** seconds, you are warned, and its harmful effects already running last **1.5/1.75/2x** as long. Breaks after **3/4/5** triggers; crouching through wears it without setting it off. Up to **2/4/6** posts. Wires survive logouts and restarts. Cooldown **15/12/9** seconds. |
 
@@ -170,7 +172,7 @@ bottom of the slot; Nasty Blade tokens as a gold count in its corner.
 
 ## Death messages
 
-Every perk that can kill says so in chat: Barbed Wire, Echoing Wounds, Relentless, Frag' Nade, Short
+Every perk that can kill says so in chat: Sacrificial Knife, Barbed Wire, Echoing Wounds, Relentless, Frag' Nade, Short
 Circuit, Dead Weight, Box Opener, Bleeding and a failed Guardian Angel. Each has three versions — nobody to blame,
 killed by another player (or bled out after fighting one), and killed by your own perk — under
 `death.attack.bloodbound.<name>`, `.player` and `.self`. Only the message changes; the damage stays
@@ -360,7 +362,7 @@ you already own and addons you do not.
 | **Gold Nugget** | Full Extraction | Common | +7% chance of a soul shard. |
 | **Metal Plate** | Full Extraction | Rare | Every soul shard that drops brings one more of the ore. |
 | **Drill Head** | Full Extraction | Epic | Breaking any block also breaks the blocks like it in the 3x3x3 ahead of it (the way you look), each wearing the tool; the drill stops if the tool breaks. |
-| **Gilded Pickaxe** | Full Extraction | Unstable | Every ore: 3% chance of 100 soul shards. Each miss adds 0.5% and takes a shard off the prize (never below 1); a hit resets both. The misses are saved with the player. |
+| **Gilded Pickaxe** | Full Extraction | Unstable | Every ore: 1% chance of 100 soul shards. Each miss adds 0.1% and takes a shard off the prize (never below 1); a hit resets both. The misses are saved with the player. |
 | **Cracked Monocle** | Vigilance | Common | Lasts 3 seconds past the gaze instead of 1. |
 | **Mirror Shard** | Vigilance | Uncommon | Switching on reveals whoever is looking at you for 3 seconds; once every 15 seconds. |
 | **Scary Note** | Vigilance | Epic | Every gaze past the first adds 3% to the bonus. |

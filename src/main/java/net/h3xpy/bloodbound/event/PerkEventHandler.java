@@ -51,6 +51,8 @@ import net.h3xpy.bloodbound.perk.impl.SurgicalSuture;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
 import net.h3xpy.bloodbound.perk.impl.Tripwires;
 import net.h3xpy.bloodbound.perk.impl.HeartOfGold;
+import net.h3xpy.bloodbound.perk.impl.Fortified;
+import net.h3xpy.bloodbound.perk.impl.SacrificialKnife;
 import net.h3xpy.bloodbound.perk.impl.Undersized;
 import net.h3xpy.bloodbound.perk.impl.TeamSpirit;
 import net.h3xpy.bloodbound.perk.impl.Tinkerer;
@@ -319,6 +321,7 @@ public final class PerkEventHandler {
         HeartOfGold.tick(player, data);
         Undersized.tick(player, data);
         RelentlessHandler.tick(player, data, gameTime);
+        Fortified.tick(player, data);
         PerkGlow.prune(player, data);
         FragNade.tickFallGuard(player, gameTime);
         MarkManager.finalBlowStep(player, data, gameTime);
@@ -347,6 +350,7 @@ public final class PerkEventHandler {
     public static void onServerTick(ServerTickEvent.Post event) {
         LowCostMovementDevice.tickShots(event.getServer());
         NoOneGetsAway.tickShots(event.getServer());
+        SacrificialKnife.tick(event.getServer());
         Flashbang.tickGrenades(event.getServer());
         AdvancedMovementDevice.tickShots(event.getServer());
         MarkManager.tick(event.getServer());

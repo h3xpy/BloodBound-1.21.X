@@ -10,6 +10,7 @@ import net.h3xpy.bloodbound.entity.RitualEntity;
 import net.h3xpy.bloodbound.entity.SanctumBubbleEntity;
 import net.h3xpy.bloodbound.entity.SpringPadEntity;
 import net.h3xpy.bloodbound.entity.TargetFoundEntity;
+import net.h3xpy.bloodbound.entity.KnifeEntity;
 import net.h3xpy.bloodbound.entity.TripwireEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
@@ -40,6 +41,17 @@ public final class ModEntities {
                     .updateInterval(20)
                     .noSummon()
                     .build("target_found"));
+
+    /** Sacrificial Knife's knife: drawn in flight and where it sticks. */
+    public static final Supplier<EntityType<KnifeEntity>> KNIFE =
+            ENTITY_TYPES.register("knife", () -> EntityType.Builder
+                    .<KnifeEntity>of(KnifeEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(8)
+                    .updateInterval(1)
+                    .noSummon()
+                    .noSave()
+                    .build("knife"));
 
     /** A Tripwires wire, standing on its first post. Its own size is a post: the wire is drawn past it. */
     public static final Supplier<EntityType<TripwireEntity>> TRIPWIRE =
