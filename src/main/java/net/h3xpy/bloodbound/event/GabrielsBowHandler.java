@@ -28,7 +28,8 @@ public final class GabrielsBowHandler {
         if (event.getLevel().isClientSide || !(event.getEntity() instanceof AbstractArrow arrow)) {
             return;
         }
-        if (arrow.tickCount > 0 || !(arrow.getOwner() instanceof ServerPlayer shooter) || !isArmed(shooter)) {
+        if (event.loadedFromDisk() || arrow.tickCount > 0 || !(arrow.getOwner() instanceof ServerPlayer shooter)
+                || !isArmed(shooter)) {
             return;
         }
 

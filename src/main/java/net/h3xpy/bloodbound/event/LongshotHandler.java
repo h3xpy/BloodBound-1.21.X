@@ -120,7 +120,7 @@ public final class LongshotHandler {
         if (event.getLevel().isClientSide || !(event.getEntity() instanceof AbstractArrow arrow)) {
             return;
         }
-        if (!(arrow.getOwner() instanceof ServerPlayer shooter) || arrow.tickCount > 0) {
+        if (event.loadedFromDisk() || !(arrow.getOwner() instanceof ServerPlayer shooter) || arrow.tickCount > 0) {
             return;
         }
 
@@ -137,13 +137,13 @@ public final class LongshotHandler {
         }
         if (data.isAddonActive(ModAddons.GUNPOWDER)) {
             arrow.setNoGravity(true);
-            // Now and then it goes off like something much bigger than a bow. Once a tick, for multishot.
+            // A full draw goes off like something much bigger than a bow. Vanilla marks exactly those
+            // arrows critical: a bow at full power, and every crossbow bolt. Once a tick, for multishot.
             long now = shooter.level().getGameTime();
-            if (now != SNIPER_SOUNDED_AT.getOrDefault(shooter.getUUID(), -1L)
-                    && shooter.getRandom().nextFloat() < ModAddons.GUNPOWDER_SNIPER_CHANCE) {
+            if (arrow.isCritArrow() && now != SNIPER_SOUNDED_AT.getOrDefault(shooter.getUUID(), -1L)) {
                 SNIPER_SOUNDED_AT.put(shooter.getUUID(), now);
                 shooter.level().playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(),
-                        ModSounds.HEAVY_SNIPER.get(), SoundSource.PLAYERS, 2.0F, 1.0F);
+                        ModSounds.HEAVY_SNIPER.get(), SoundSource.PLAYERS, ModAddons.GUNPOWDER_SNIPER_VOLUME, 1.0F);
             }
         }
 

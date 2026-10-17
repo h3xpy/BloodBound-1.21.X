@@ -11,7 +11,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.h3xpy.bloodbound.perk.impl.HangedMan;
+import net.h3xpy.bloodbound.perk.impl.NothinToSee;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.CommonHooks;
@@ -68,6 +71,17 @@ public abstract class LivingEntityMixin {
             target = "Lnet/minecraft/world/entity/LivingEntity;getY()D"))
     private double bloodbound$landingDustAtFeet(LivingEntity self) {
         return HangedMan.isInverted(self) ? self.getBoundingBox().maxY : self.getY();
+    }
+
+    /** Nothin' to See: a hidden player lands without a puff of dust to show where. */
+    @Redirect(method = "checkFallDamage", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/server/level/ServerLevel;sendParticles(Lnet/minecraft/core/particles/ParticleOptions;DDDIDDDD)I"))
+    private int bloodbound$noLandingDustUnseen(ServerLevel level, ParticleOptions particle, double x, double y,
+            double z, int count, double dx, double dy, double dz, double speed) {
+        if (NothinToSee.isHidden((LivingEntity) (Object) this)) {
+            return 0;
+        }
+        return level.sendParticles(particle, x, y, z, count, dx, dy, dz, speed);
     }
 
     /** Ladders, mirrored: the slide is capped going up, and sneak holds the player still. */

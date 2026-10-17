@@ -241,13 +241,13 @@
   "perk.bloodbound.omniscience.desc": "Stand still for %s seconds and every entity, chest, ore and spawner within %s blocks is outlined through the walls (spawners in red), for you alone. Tier I is blind to diamond and ancient debris, tier II to ancient debris. The moment you move, it all goes away.",
 
   "perk.bloodbound.bank_shot": "Bank Shot",
-  "perk.bloodbound.bank_shot.desc": "Holds 3 charges, one coming back every %s seconds. Every projectile you fire spends one to bounce off the first block it hits, with a slight auto-aim on the way out.",
+  "perk.bloodbound.bank_shot.desc": "Holds 3 charges, one coming back every %s seconds. Every projectile you fire spends one to bounce off the first block it hits, with a slight auto-aim on the way out. A bounced projectile hits 1.5 times as hard as it would have without the bounce.",
 
   "perk.bloodbound.no_one_gets_away": "No One Gets Away",
   "perk.bloodbound.no_one_gets_away.desc": "Press the slot key to fire a fast, flat shot. Whatever it catches is dragged back to your feet and left barely able to move or fight for a second. Cooldown %s seconds, halved when the shot catches nothing.",
 
   "perk.bloodbound.nasty_blade": "Nasty Blade",
-  "perk.bloodbound.nasty_blade.desc": "Your attacks deal 2 less damage. Every hit that lands banks a token — at most one every half second — and starts a %s second clock, which each new token resets. Each token you hold puts 0.5 damage back onto your swings. Let the clock run out and the whole streak is gone.",
+  "perk.bloodbound.nasty_blade.desc": "Your attacks deal 2 less damage. Every hit that lands banks a token — at most one every half second — and starts a %s second clock, which each new token resets. Each token you hold puts 0.5 damage back onto your swings. Every Echoing Wounds jump banks a token too. Let the clock run out and the whole streak is gone.",
 
   "addon.bloodbound.bandages_wrap": "Bandages Wrap",
   "addon.bloodbound.bandages_wrap.desc": "Mending yourself runs 25%% quicker.",
@@ -990,6 +990,17 @@
   "addon.bloodbound.pepper_dust.desc": "The blast leaves a cloud for 5 seconds; whatever walks into it is Exhausted for half the blast's time.",
   "addon.bloodbound.nail_polish": "Nail Polish",
   "addon.bloodbound.nail_polish.desc": "Every target caught that was already Exhausted heals you 4 HP.",
+  "perk.bloodbound.nothin_to_see": "Nothin' to See",
+  "perk.bloodbound.nothin_to_see.desc": "Press the slot key to become wholly invisible for %1$s seconds: no body, armour or held item, no particles at all, not even running or landing, and every mob loses track of you and cannot find you again. You cannot hurt anything while invisible. Once it ends, the perk cools down for %2$s seconds. Press the key again while invisible to show yourself early: the cooldown is cut by twice the time you had left.",
+  "addon.bloodbound.peekaboo": "Peekaboo",
+  "addon.bloodbound.peekaboo.desc": "Showing yourself early with the key sets off a small blast: everything within 3 blocks is thrown back unhurt, lit TNT included (a fall still hurts).",
+  "addon.bloodbound.now_you_see_me": "Now You See Me",
+  "addon.bloodbound.now_you_see_me.desc": "You stay invisible for 20/40/60 seconds instead, but once you show again your aura is revealed to every other player for 30/20/10 seconds.",
+  "addon.bloodbound.invisi_bill": "Invisi-Bill",
+  "addon.bloodbound.invisi_bill.desc": "Every blow you land while invisible is held back instead of lost: each point of its damage adds 1.2 seconds of invisibility, up to the full length. When you show again, by the key or when time runs out, all of it lands on you at once, through armour. Logging out does not escape it: it lands when you are back.",
+  "death.attack.bloodbound.invisi_bill": "%1$s paid the Invisi-Bill",
+  "death.attack.bloodbound.invisi_bill.player": "%1$s paid the Invisi-Bill",
+  "death.attack.bloodbound.invisi_bill.self": "%1$s paid the Invisi-Bill",
   "addon.bloodbound.spray_can": "Spray Can",
   "addon.bloodbound.spray_can.desc": "If the charge came off a wall, the blast is twice as wide and deals 50%% more damage to targets already Exhausted."
 }

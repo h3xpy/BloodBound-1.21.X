@@ -64,6 +64,8 @@ public final class BankShotHandler {
     private static final String KEY_OWNER = "BloodBoundBankOwner";
     /** How many walls it has come off, which Origami Crane prices the hit by. */
     private static final String KEY_HITS = "BloodBoundBankHits";
+    /** The speed it reached the first wall at: what an arrow would have hit with, had it not bounced. */
+    private static final String KEY_SPEED = "BloodBoundBankSpeed";
     /** Set on a shot Paper Fan has taken control of. */
     private static final String KEY_PAPER = "BloodBoundBankPaper";
     private static final String KEY_HEADING_X = "BloodBoundBankX";
@@ -106,7 +108,7 @@ public final class BankShotHandler {
         // player again for an arrow they loosed days ago. Only a shot on its very first tick, and
         // never one already carrying a stamp, is a shot being fired now.
         CompoundTag tag = projectile.getPersistentData();
-        if (projectile.tickCount > 0 || tag.contains(KEY_BOUNCES)) {
+        if (event.loadedFromDisk() || projectile.tickCount > 0 || tag.contains(KEY_BOUNCES)) {
             return;
         }
         if (!(projectile.getOwner() instanceof ServerPlayer shooter) || !spendBounce(shooter)) {
@@ -188,6 +190,9 @@ public final class BankShotHandler {
         event.setCanceled(true);
 
         Direction face = hit.getDirection();
+        if (!client && !tag.contains(KEY_SPEED)) {
+            tag.putDouble(KEY_SPEED, projectile.getDeltaMovement().length());
+        }
         Vec3 heading = reflect(projectile.getDeltaMovement(), face).scale(ModPerks.BANK_SHOT_BOUNCE_SPEED);
         projectile.setPos(clearOf(projectile, hit.getLocation(), face));
 
@@ -283,6 +288,8 @@ public final class BankShotHandler {
         checkTrickShot(shooter, target);
         PlayerPerkData data = PerkDataManager.get(shooter);
 
+        event.setAmount(event.getAmount() * bounceMultiplier(projectile, tag));
+
         if (data.isAddonActive(ModAddons.ORIGAMI_CRANE)) {
             event.setAmount(event.getAmount() * (1.0F + hits * ModAddons.ORIGAMI_DAMAGE_PER_BOUNCE));
         }
@@ -297,6 +304,21 @@ public final class BankShotHandler {
             }
             AuraRevealHandler.reveal(shooter, target, ModAddons.PAPER_FAN_REVEAL_TICKS);
         }
+    }
+
+    /**
+     * What a bounced hit is multiplied by, so that it lands at 1.5 times the damage the shot would
+     * have done without the bounce. An arrow's damage is its speed times its base damage, and coming
+     * off the wall changed that speed, so the arrow's hit is first put back to the speed it reached
+     * the wall at. Anything else (a trident, a snowball) hits the same at any speed.
+     */
+    private static float bounceMultiplier(Projectile projectile, CompoundTag tag) {
+        float multiplier = ModPerks.BANK_SHOT_DAMAGE_MULTIPLIER;
+        double now = projectile.getDeltaMovement().length();
+        if (projectile instanceof AbstractArrow && tag.contains(KEY_SPEED) && now > 1.0E-3D) {
+            multiplier *= (float) (tag.getDouble(KEY_SPEED) / now);
+        }
+        return multiplier;
     }
 
     /**

@@ -1143,6 +1143,15 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
         this.bladeNextTokenAt = nextTokenAt;
     }
 
+    /**
+     * Banks a token without touching the door: an Echoing Wounds jump lands a few ticks after the
+     * blow, and earns its token however soon that is.
+     */
+    public void addBladeToken(long expiresAt) {
+        this.bladeTokens++;
+        this.bladeExpiresAt = expiresAt;
+    }
+
     /** Keeps a streak alive on a hit that came too soon to be worth a token of its own. */
     public void refreshBladeStreak(long expiresAt) {
         if (bladeTokens > 0) {

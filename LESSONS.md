@@ -137,3 +137,20 @@ as "is it on now?", so on the tick it ran out both were already false and the sw
 removal, message to the client) never ran.
 - Keep a set of who the effect is applied to, and compare against that. On death and logout, tell
   the client too: it keeps its own copy.
+
+## Perks that feed each other
+
+### An anti-spam gate swallows hits another perk deals
+Nasty Blade banks at most one token every half second, so a flurry of clicks does not count. Echoing
+Wounds lands its jumps 3 ticks apart, all inside that gate, so none of them ever banked a token and
+the two perks looked broken together. When a perk limits "hits per second", decide explicitly what
+happens to hits another perk makes (`EchoingWoundsHandler.isEchoing()` tells them apart).
+
+## Entities loaded from disk
+
+### "Just fired" is `!event.loadedFromDisk()`, not `tickCount == 0`
+`EntityJoinLevelEvent` also fires when a chunk loads entities back from the save, and `tickCount` is
+not saved, so a reloaded arrow is at tick 0 too. Arrows lying in the ground were taken for fresh
+shots every time their chunk loaded: Gunpowder's sniper sound played with nobody shooting, Bank Shot
+could charge a bounce, and Gabriel's Bow cut the arrow's damage again. Check
+`event.loadedFromDisk()` in any handler meant for a projectile being fired.

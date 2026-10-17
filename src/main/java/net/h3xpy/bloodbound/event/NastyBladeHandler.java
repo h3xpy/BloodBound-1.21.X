@@ -67,14 +67,19 @@ public final class NastyBladeHandler {
                     streak + ModAddons.ANTICOAGULANT_BROKEN_TAIL_TICKS, 0, false, true, true));
         }
 
-        // A hit that lands on top of the last one keeps the streak alive but earns nothing: the
-        // blade sharpens on a run of blows, not on how fast the button can be pressed.
-        if (!data.canBankBladeToken(gameTime)) {
+        // Every Echoing Wounds jump is a wound of its own and banks a token. The jumps land a few
+        // ticks apart, well inside the gap below, which is what used to swallow them all.
+        if (EchoingWoundsHandler.isEchoing()) {
+            data.addBladeToken(gameTime + streak);
+        } else if (!data.canBankBladeToken(gameTime)) {
+            // A hit that lands on top of the last one keeps the streak alive but earns nothing: the
+            // blade sharpens on a run of blows, not on how fast the button can be pressed.
             data.refreshBladeStreak(gameTime + streak);
             sendTokens(attacker, data, gameTime + streak);
             return;
+        } else {
+            data.addBladeToken(gameTime + streak, gameTime + ModPerks.NASTY_BLADE_TOKEN_COOLDOWN);
         }
-        data.addBladeToken(gameTime + streak, gameTime + ModPerks.NASTY_BLADE_TOKEN_COOLDOWN);
         if (data.bladeTokens() >= FERAL_FRENZY_TOKENS) {
             ModAdvancements.grant(attacker, ModAdvancements.FERAL_FRENZY);
         }

@@ -3,6 +3,7 @@ package net.h3xpy.bloodbound;
 import net.h3xpy.bloodbound.client.ClientCameraShake;
 import net.h3xpy.bloodbound.client.ClientHangedMan;
 import net.h3xpy.bloodbound.client.ClientReactiveCompound;
+import net.h3xpy.bloodbound.client.ClientNothinToSee;
 import net.h3xpy.bloodbound.client.ClientUndersized;
 import net.h3xpy.bloodbound.client.ClientDrawSpeed;
 import net.h3xpy.bloodbound.client.ClientSanctumHits;
@@ -72,6 +73,7 @@ public class BloodBoundClient {
         NeoForge.EVENT_BUS.register(ClientCameraShake.class);
         NeoForge.EVENT_BUS.register(ClientHangedMan.class);
         NeoForge.EVENT_BUS.register(ClientReactiveCompound.class);
+        NeoForge.EVENT_BUS.register(ClientNothinToSee.class);
         Undersized.clientRiding = ClientUndersized::isRiding;
     }
 

@@ -408,7 +408,7 @@ public final class ModPerks {
     public static final Perk BARBED_WIRE = PerkRegistry.register(Perk.builder("barbed_wire")
             .type(PerkType.ACTIVE)
             .scaling(3, 2.5, 2)
-            .scaling(15, 12, 9)
+            .scaling(40, 37, 34)
             .scaling(1, 2, 3)
             .scaling(45, 40, 35)
             .scaling(4, 6, 8)
@@ -1074,6 +1074,19 @@ public final class ModPerks {
             .scaling(60, 70, 80)
             .build());
 
+    /**
+     * The key makes the bearer wholly invisible for a while: no body, no armour, no held item, no
+     * particles, and no mob keeps or finds them. The cooldown starts once they show again; pressing
+     * the key early ends it and takes twice the time left off the cooldown.
+     * <p>Scaling: [0] seconds invisible, [1] cooldown in seconds.
+     */
+    public static final Perk NOTHIN_TO_SEE = PerkRegistry.register(Perk.builder("nothin_to_see")
+            .type(PerkType.ACTIVE)
+            .scaling(10, 20, 30)
+            .scaling(80, 70, 60)
+            .cooldown(1)
+            .build());
+
     // --- Sacrificial Knife tuning ---
     public static final int KNIFE_DAMAGE = 0;
     public static final int KNIFE_BURST = 1;
@@ -1102,6 +1115,14 @@ public final class ModPerks {
     public static final int FORTIFIED_REDUCTION = 2;
     /** Blows at or under this do not use up a brace, and are not cut. */
     public static final float FORTIFIED_MIN_HIT = 2.0F;
+
+    // --- Nothin' to See tuning ---
+    public static final int NOTHIN_SECONDS = 0;
+    public static final int NOTHIN_COOLDOWN = 1;
+    /** Ending it early takes this many seconds of cooldown off for every second still left. */
+    public static final int NOTHIN_EARLY_REFUND = 2;
+    /** How far round the bearer mobs are made to forget them. */
+    public static final double NOTHIN_FORGET_RADIUS = 64.0D;
 
     // --- Undersized tuning ---
     public static final int UNDERSIZED_SHRINK = 0;
@@ -1475,6 +1496,11 @@ public final class ModPerks {
     public static final double BANK_SHOT_CONE_DEGREES = 63.0D;
     /** How far down that cone it looks. */
     public static final double BANK_SHOT_SEEK_RANGE = 6.0D;
+    /**
+     * A projectile that has come off a wall hits this many times as hard as it would have without
+     * the bounce. One that never bounced is left alone.
+     */
+    public static final float BANK_SHOT_DAMAGE_MULTIPLIER = 1.5F;
 
     // --- No One Gets Away tuning ---
     /** Index of the cooldown, in seconds. */

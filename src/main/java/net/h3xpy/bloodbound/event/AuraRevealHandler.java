@@ -63,6 +63,30 @@ public final class AuraRevealHandler {
     }
 
     /**
+     * Shows a player's aura to every other player in their world, as a drawback of their own perk
+     * (Now You See Me). No watcher is kept: each viewer's outline runs its own clock out.
+     *
+     * @return true when the reveal took
+     */
+    public static boolean revealToAll(ServerPlayer target, int durationTicks) {
+        if (UnderTheRadarHandler.blocksReveal(target)) {
+            return false;
+        }
+        target.addEffect(new MobEffectInstance(ModEffects.AURA_REVEALED, durationTicks, 0, false, true, true));
+        if (!target.hasEffect(ModEffects.AURA_REVEALED)) {
+            return false;
+        }
+        for (ServerPlayer viewer : target.serverLevel().players()) {
+            if (viewer != target) {
+                PacketDistributor.sendToPlayer(viewer, new AuraRevealPayload(target.getId(),
+                        EnhancedPerception.revealTicks(viewer, durationTicks)));
+            }
+        }
+        UnderTheRadarHandler.onRevealedAnyway(target);
+        return true;
+    }
+
+    /**
      * Shows something that is not alive — a ritual, a trap — to one player.
      * <p>
      * No effect and no watcher: Aura Revealed lives on a status effect, which only a living thing
