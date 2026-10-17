@@ -45,6 +45,7 @@ import net.h3xpy.bloodbound.perk.impl.Tripwires;
 import net.h3xpy.bloodbound.perk.impl.BoundlessSoul;
 import net.h3xpy.bloodbound.perk.impl.Fortified;
 import net.h3xpy.bloodbound.perk.impl.SacrificialKnife;
+import net.h3xpy.bloodbound.perk.impl.Salvation;
 import net.h3xpy.bloodbound.perk.impl.Undersized;
 import net.h3xpy.bloodbound.perk.impl.NothinToSee;
 import net.h3xpy.bloodbound.perk.impl.Vigilance;
@@ -132,6 +133,7 @@ public class BloodBound {
         NeoForge.EVENT_BUS.register(Undersized.class);
         NeoForge.EVENT_BUS.register(NothinToSee.class);
         NeoForge.EVENT_BUS.register(SacrificialKnife.class);
+        NeoForge.EVENT_BUS.register(Salvation.class);
         NeoForge.EVENT_BUS.register(Fortified.class);
         NeoForge.EVENT_BUS.register(HostileWoundsHandler.class);
         NeoForge.EVENT_BUS.register(QuestTracker.class);

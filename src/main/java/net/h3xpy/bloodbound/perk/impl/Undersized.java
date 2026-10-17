@@ -22,7 +22,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.FlyingMob;
 import net.minecraft.world.entity.LivingEntity;
@@ -390,10 +389,10 @@ public final class Undersized {
                 setOrder(rider, enemy);
             }
         }
-        // Small hands: the bearer's own blows land softer.
-        if (attacker instanceof ServerPlayer player && event.getSource().is(DamageTypes.PLAYER_ATTACK)
+        // Small hands: everything the bearer deals lands softer, blows, shots and perks alike.
+        if (attacker instanceof ServerPlayer player && event.getEntity() != player
                 && PerkDataManager.get(player).getActiveTier(ModPerks.UNDERSIZED) > 0) {
-            event.setAmount(event.getAmount() * ModPerks.UNDERSIZED_MELEE_DEALT);
+            event.setAmount(event.getAmount() * ModPerks.UNDERSIZED_DAMAGE_DEALT);
         }
     }
 

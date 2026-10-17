@@ -1,6 +1,7 @@
 package net.h3xpy.bloodbound.network;
 
 import net.h3xpy.bloodbound.client.ClientPerkGlow;
+import net.h3xpy.bloodbound.client.ClientSalvation;
 import net.h3xpy.bloodbound.client.ClientUndersized;
 import net.h3xpy.bloodbound.client.ClientNothinToSee;
 import net.h3xpy.bloodbound.advancement.AchievementRewards;
@@ -80,6 +81,8 @@ public final class ModNetwork {
 
         registrar.playToClient(VigilancePayload.TYPE, VigilancePayload.STREAM_CODEC,
                 (payload, context) -> ClientPayloadHandler.handleVigilance(payload));
+        registrar.playToClient(SalvationBindPayload.TYPE, SalvationBindPayload.STREAM_CODEC,
+                (payload, context) -> ClientSalvation.handle(payload));
         registrar.playToClient(PerkGlowPayload.TYPE, PerkGlowPayload.STREAM_CODEC,
                 (payload, context) -> ClientPerkGlow.handle(payload));
         registrar.playToClient(UndersizedRidePayload.TYPE, UndersizedRidePayload.STREAM_CODEC,

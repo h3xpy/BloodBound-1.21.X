@@ -11,6 +11,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import net.h3xpy.bloodbound.entity.RitualEntity;
+import net.h3xpy.bloodbound.entity.RiteEntity;
 import net.h3xpy.bloodbound.event.AuraRevealHandler;
 import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.perk.impl.EnhancedPerception;
@@ -274,6 +275,16 @@ public final class RitualManager {
 
         level.playSound(null, marker.blockPosition(), SoundEvents.RESPAWN_ANCHOR_SET_SPAWN,
                 SoundSource.PLAYERS, 0.8F, mood == Mood.HELPFUL ? 1.4F : 0.7F);
+        // Consecrated as it is laid: blessed in light, or cursed in fire.
+        level.addFreshEntity(new RiteEntity(level, owner.getX(), owner.getY(), owner.getZ(), (float) radius,
+                mood == Mood.HELPFUL));
+        if (mood == Mood.HELPFUL) {
+            level.playSound(null, marker.blockPosition(), SoundEvents.BEACON_ACTIVATE, SoundSource.PLAYERS, 1.0F, 1.3F);
+            level.playSound(null, marker.blockPosition(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1.2F, 0.8F);
+        } else {
+            level.playSound(null, marker.blockPosition(), SoundEvents.SCULK_SHRIEKER_SHRIEK, SoundSource.PLAYERS, 0.8F, 0.5F);
+            level.playSound(null, marker.blockPosition(), SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 1.0F, 0.5F);
+        }
         return ritual;
     }
 

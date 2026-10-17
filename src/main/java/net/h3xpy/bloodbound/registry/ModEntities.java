@@ -11,6 +11,8 @@ import net.h3xpy.bloodbound.entity.SanctumBubbleEntity;
 import net.h3xpy.bloodbound.entity.SpringPadEntity;
 import net.h3xpy.bloodbound.entity.TargetFoundEntity;
 import net.h3xpy.bloodbound.entity.KnifeEntity;
+import net.h3xpy.bloodbound.entity.PentagramEntity;
+import net.h3xpy.bloodbound.entity.RiteEntity;
 import net.h3xpy.bloodbound.entity.TripwireEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
@@ -41,6 +43,28 @@ public final class ModEntities {
                     .updateInterval(20)
                     .noSummon()
                     .build("target_found"));
+
+    /** The consecration of a ritual as it is laid: a few seconds of light or fire. */
+    public static final Supplier<EntityType<RiteEntity>> RITE =
+            ENTITY_TYPES.register("rite", () -> EntityType.Builder
+                    .<RiteEntity>of(RiteEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.1F)
+                    .clientTrackingRange(10)
+                    .updateInterval(20)
+                    .noSummon()
+                    .noSave()
+                    .build("rite"));
+
+    /** Salvation's pentagram, lying on the ground while it is drawn and binds. */
+    public static final Supplier<EntityType<PentagramEntity>> PENTAGRAM =
+            ENTITY_TYPES.register("pentagram", () -> EntityType.Builder
+                    .<PentagramEntity>of(PentagramEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.1F)
+                    .clientTrackingRange(10)
+                    .updateInterval(20)
+                    .noSummon()
+                    .noSave()
+                    .build("pentagram"));
 
     /** Sacrificial Knife's knife: drawn in flight and where it sticks. */
     public static final Supplier<EntityType<KnifeEntity>> KNIFE =

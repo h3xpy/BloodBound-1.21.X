@@ -54,7 +54,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * player sees in their effect list.
  * <p>
  * The cooldown only starts once the bearer shows again. Pressing the key early ends it and takes
- * twice the time left off the cooldown.
+ * the time left off the cooldown, second for second.
  * <p>
  * A hidden player cannot hurt anything: their blows, shots and perks are cancelled before anything
  * else hears of them. With Invisi-Bill each cancelled blow is kept instead, buys more time, and the
@@ -71,6 +71,8 @@ public final class NothinToSee {
         private final int tier;
         private final int maxTicks;
         private float storedDamage;
+        /** When it began: mobs only lose track of the bearer once it has held a while. */
+        private long startedAt;
 
         private Cloak(long endsAt, int tier, int maxTicks) {
             this.endsAt = endsAt;
@@ -96,6 +98,15 @@ public final class NothinToSee {
     private NothinToSee() {}
 
     /** Whether this entity is hidden by the perk, on whichever side it lives. */
+    /**
+     * Whether mobs have lost track of this player: hidden, and for long enough. Until then a mob
+     * already on them keeps coming, and one that spots them can still pick them out.
+     */
+    private static boolean concealedFromMobs(ServerPlayer player) {
+        Cloak cloak = HIDDEN.get(player.getUUID());
+        return cloak != null && player.level().getGameTime() - cloak.startedAt >= ModPerks.NOTHIN_FORGET_DELAY_TICKS;
+    }
+
     public static boolean isHidden(Entity entity) {
         return entity.level().isClientSide ? CLIENT_HIDDEN.contains(entity.getId()) : HIDDEN.containsKey(entity.getUUID());
     }
@@ -130,9 +141,10 @@ public final class NothinToSee {
         int ticks = durationTicks(data, tier);
         // Recorded before the effect goes on: adding it recomputes the effect particles, and the
         // particle event has to already see the player as hidden to cut them.
-        HIDDEN.put(player.getUUID(), new Cloak(gameTime + ticks, tier, ticks));
+        Cloak cloak = new Cloak(gameTime + ticks, tier, ticks);
+        cloak.startedAt = gameTime;
+        HIDDEN.put(player.getUUID(), cloak);
         player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, ticks, 0, false, false, true));
-        forget(player);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(player,
                 new NothinToSeePayload(player.getId(), true, gameTime + ticks));
         PerkGlow.set(player, ModPerks.NOTHIN_TO_SEE, true);
@@ -141,16 +153,13 @@ public final class NothinToSee {
         return true;
     }
 
-    /** How long one go lasts: the perk's own time, or Now You See Me's longer one. */
+    /** How long one go lasts: the perk's own time, longer with Firefly. */
     private static int durationTicks(PlayerPerkData data, int tier) {
-        if (data.isAddonActive(ModAddons.NOW_YOU_SEE_ME)) {
-            return ModAddons.NOW_YOU_SEE_ME_SECONDS[tierIndex(tier)] * 20;
+        int ticks = ModPerks.NOTHIN_TO_SEE.ticks(ModPerks.NOTHIN_SECONDS, tier);
+        if (data.isAddonActive(ModAddons.FIREFLY)) {
+            ticks = (int) Math.round(ticks * ModAddons.FIREFLY_DURATION);
         }
-        return ModPerks.NOTHIN_TO_SEE.ticks(ModPerks.NOTHIN_SECONDS, tier);
-    }
-
-    private static int tierIndex(int tier) {
-        return Math.clamp(tier - 1, 0, 2);
+        return ticks;
     }
 
     /** Keeps a hidden player hidden, and ends it when the time is up. Called once a tick. */
@@ -169,7 +178,7 @@ public final class NothinToSee {
             player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, (int) (cloak.endsAt - gameTime),
                     0, false, false, true));
         }
-        if (gameTime % FORGET_INTERVAL == 0L) {
+        if (gameTime % FORGET_INTERVAL == 0L && gameTime - cloak.startedAt >= ModPerks.NOTHIN_FORGET_DELAY_TICKS) {
             forget(player);
         }
     }
@@ -177,8 +186,8 @@ public final class NothinToSee {
     /**
      * Shows the player again and starts the cooldown.
      *
-     * @param early the key ended it before its time: the cooldown is cut by twice the time left,
-     *              and Peekaboo goes off
+     * @param early the key ended it before its time: the cooldown is cut by the time left, and
+     *              Soul In A Jar goes off
      */
     private static void end(ServerPlayer player, PlayerPerkData data, long gameTime, boolean early) {
         Cloak cloak = HIDDEN.remove(player.getUUID());
@@ -194,12 +203,11 @@ public final class NothinToSee {
         }
         data.setCooldown(ModPerks.NOTHIN_TO_SEE.id(), gameTime, cooldown);
 
-        if (early && data.isAddonActive(ModAddons.PEEKABOO)) {
-            peekaboo(player);
+        if (early && data.isAddonActive(ModAddons.SOUL_IN_A_JAR)) {
+            soulInAJar(player);
         }
-        if (data.isAddonActive(ModAddons.NOW_YOU_SEE_ME)) {
-            AuraRevealHandler.revealToAll(player,
-                    ModAddons.NOW_YOU_SEE_ME_REVEAL_SECONDS[tierIndex(cloak.tier)] * 20);
+        if (data.isAddonActive(ModAddons.FIREFLY)) {
+            AuraRevealHandler.revealToAll(player, ModAddons.FIREFLY_REVEAL_TICKS);
         }
         if (cloak.storedDamage > 0.0F) {
             payBill(player, cloak.storedDamage);
@@ -232,10 +240,10 @@ public final class NothinToSee {
         player.hurt(PerkDamageSource.of(player.damageSources().magic(), "invisi_bill"), damage);
     }
 
-    /** Peekaboo: a blast round the bearer that throws everything back, lit TNT too, without a scratch. */
-    private static void peekaboo(ServerPlayer player) {
+    /** Soul In A Jar: a blast round the bearer that throws everything back, lit TNT too, without a scratch. */
+    private static void soulInAJar(ServerPlayer player) {
         ServerLevel level = player.serverLevel();
-        double radius = ModAddons.PEEKABOO_RADIUS;
+        double radius = ModAddons.SOUL_IN_A_JAR_RADIUS;
         AABB box = player.getBoundingBox().inflate(radius);
         for (Entity nearby : level.getEntitiesOfClass(Entity.class, box,
                 entity -> entity instanceof LivingEntity || entity instanceof PrimedTnt || entity instanceof MinecartTNT)) {
@@ -249,9 +257,9 @@ public final class NothinToSee {
             if (away.horizontalDistanceSqr() < 1.0E-4D) {
                 away = new Vec3(0.0D, 0.0D, 1.0D);
             }
-            Vec3 push = new Vec3(away.x, 0.0D, away.z).normalize().scale(ModAddons.PEEKABOO_PUSH);
+            Vec3 push = new Vec3(away.x, 0.0D, away.z).normalize().scale(ModAddons.SOUL_IN_A_JAR_PUSH);
             // Thrown, not hurt: whatever the landing costs them is theirs to pay.
-            nearby.push(push.x, ModAddons.PEEKABOO_LIFT, push.z);
+            nearby.push(push.x, ModAddons.SOUL_IN_A_JAR_LIFT, push.z);
             nearby.hurtMarked = true;
         }
         level.sendParticles(ParticleTypes.EXPLOSION, player.getX(), player.getY() + 1.0D, player.getZ(),
@@ -290,7 +298,7 @@ public final class NothinToSee {
     @SubscribeEvent
     public static void onChangeTarget(LivingChangeTargetEvent event) {
         LivingEntity wanted = event.getNewAboutToBeSetTarget();
-        if (wanted instanceof ServerPlayer player && HIDDEN.containsKey(player.getUUID())) {
+        if (wanted instanceof ServerPlayer player && concealedFromMobs(player)) {
             event.setCanceled(true);
         }
     }
@@ -298,7 +306,7 @@ public final class NothinToSee {
     /** Nothing sees a hidden player, at any distance. */
     @SubscribeEvent
     public static void onVisibility(LivingEvent.LivingVisibilityEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player && HIDDEN.containsKey(player.getUUID())) {
+        if (event.getEntity() instanceof ServerPlayer player && concealedFromMobs(player)) {
             event.modifyVisibility(0.0D);
         }
     }
