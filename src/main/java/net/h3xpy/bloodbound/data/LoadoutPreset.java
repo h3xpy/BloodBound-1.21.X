@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.perk.AddonRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
@@ -73,7 +74,7 @@ public final class LoadoutPreset {
         CompoundTag addonTag = tag.getCompound("addons");
         for (String key : addonTag.getAllKeys()) {
             ResourceLocation perkId = ResourceLocation.tryParse(key);
-            ResourceLocation addonId = ResourceLocation.tryParse(addonTag.getString(key));
+            ResourceLocation addonId = AddonRegistry.migrate(ResourceLocation.tryParse(addonTag.getString(key)));
             if (perkId != null && addonId != null) {
                 addons.put(perkId, addonId);
             }

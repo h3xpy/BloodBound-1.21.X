@@ -1002,7 +1002,7 @@ public final class ModPerks {
      */
     public static final Perk BOUNDLESS_SOUL = PerkRegistry.register(Perk.builder("boundless_soul")
             .type(PerkType.PASSIVE)
-            .scaling(30, 20, 10)
+            .scaling(30, 25, 20)
             .scaling(50, 55, 60)
             .build());
 
@@ -1077,15 +1077,39 @@ public final class ModPerks {
     /**
      * The key makes the bearer wholly invisible for a while: no body, no armour, no held item, no
      * particles, and no mob keeps or finds them. The cooldown starts once they show again; pressing
-     * the key early ends it and takes twice the time left off the cooldown.
+     * the key early ends it and takes the time left off the cooldown.
      * <p>Scaling: [0] seconds invisible, [1] cooldown in seconds.
      */
     public static final Perk NOTHIN_TO_SEE = PerkRegistry.register(Perk.builder("nothin_to_see")
             .type(PerkType.ACTIVE)
-            .scaling(10, 20, 30)
-            .scaling(80, 70, 60)
+            .scaling(12, 17, 22)
+            .scaling(40, 35, 30)
             .cooldown(1)
             .build());
+
+    /**
+     * Hold still with the key down to draw a pentagram on the ground; once drawn, everything standing
+     * in it but its drawer is bound in chains and cannot use a weapon or an item for a while.
+     * <p>Scaling: [0] radius in blocks, [1] seconds bound, [2] cooldown in seconds.
+     */
+    public static final Perk SALVATION = PerkRegistry.register(Perk.builder("salvation")
+            .type(PerkType.ACTIVE)
+            .scaling(10, 14, 18)
+            .scaling(6, 8, 10)
+            .scaling(40, 35, 30)
+            .cooldown(2)
+            .build());
+
+    // --- Salvation tuning ---
+    public static final int SALVATION_RADIUS = 0;
+    public static final int SALVATION_BIND = 1;
+    public static final int SALVATION_COOLDOWN = 2;
+    /** Holding still before it is drawn, the drawing itself, and the fade once it has bound. */
+    public static final int SALVATION_SETUP_TICKS = 40;
+    public static final int SALVATION_DRAW_TICKS = 50;
+    public static final int SALVATION_FADE_TICKS = 30;
+    /** How far above or below the pentagram something may stand and still be caught. */
+    public static final double SALVATION_HEIGHT = 4.0D;
 
     // --- Sacrificial Knife tuning ---
     public static final int KNIFE_DAMAGE = 0;
@@ -1093,7 +1117,7 @@ public final class ModPerks {
     public static final int KNIFE_COOLDOWN = 2;
     /** How the knife flies: speed, a little drop, its size, and how long it may stay in the air. */
     public static final double KNIFE_SPEED = 1.6D;
-    public static final double KNIFE_GRAVITY = 0.015D;
+    public static final double KNIFE_GRAVITY = 0.01725D;
     public static final double KNIFE_RADIUS = 0.3D;
     public static final int KNIFE_MAX_FLIGHT_TICKS = 60;
     /** Share of the cooldown left standing by a miss, and by pulling the knife back. */
@@ -1120,9 +1144,11 @@ public final class ModPerks {
     public static final int NOTHIN_SECONDS = 0;
     public static final int NOTHIN_COOLDOWN = 1;
     /** Ending it early takes this many seconds of cooldown off for every second still left. */
-    public static final int NOTHIN_EARLY_REFUND = 2;
+    public static final int NOTHIN_EARLY_REFUND = 1;
     /** How far round the bearer mobs are made to forget them. */
     public static final double NOTHIN_FORGET_RADIUS = 64.0D;
+    /** How long the bearer has to stay unseen before mobs lose track of them. */
+    public static final int NOTHIN_FORGET_DELAY_TICKS = 60;
 
     // --- Undersized tuning ---
     public static final int UNDERSIZED_SHRINK = 0;
@@ -1131,8 +1157,8 @@ public final class ModPerks {
     /** The tier that climbs onto players' shoulders, and the one that rides creatures. */
     public static final int UNDERSIZED_SHOULDER_TIER = 2;
     public static final int UNDERSIZED_MOUNT_TIER = 3;
-    /** What the bearer's own melee blows are worth, and how far a mount can be pointed at something. */
-    public static final float UNDERSIZED_MELEE_DEALT = 0.75F;
+    /** What everything the bearer deals is worth, and how far a mount can be pointed at something. */
+    public static final float UNDERSIZED_DAMAGE_DEALT = 0.75F;
     public static final double UNDERSIZED_COMMAND_RANGE = 32.0D;
 
     // --- Boundless Soul tuning ---
@@ -1508,7 +1534,7 @@ public final class ModPerks {
     /** How fast the shot travels, in blocks per tick, and how far it carries. */
     /** Share of the cooldown a shot that catches nothing leaves standing. */
     public static final double HARPOON_MISS_COOLDOWN = 0.5D;
-    public static final double HARPOON_SPEED = 2.4D;
+    public static final double HARPOON_SPEED = 3.12D;
     public static final double HARPOON_RANGE = 40.0D;
     /** Radius of the shot, in blocks. */
     public static final double HARPOON_RADIUS = 0.4D;

@@ -1248,32 +1248,38 @@ public final class ModAddons {
 
     // --- Nothin' to See ---
 
-    /** Showing again on purpose goes off with a blast that throws everything nearby back, unhurt. */
-    public static final Addon PEEKABOO = AddonRegistry.register(
-            Addon.of("peekaboo", ModPerks.NOTHIN_TO_SEE, AddonRarity.EPIC));
+    /**
+     * Showing again on purpose goes off with a blast that throws everything nearby back, unhurt.
+     * Called Peekaboo before 1.1.8; saves are read through {@link AddonRegistry#migrate}.
+     */
+    public static final Addon SOUL_IN_A_JAR = AddonRegistry.register(
+            Addon.of("soul_in_a_jar", ModPerks.NOTHIN_TO_SEE, AddonRarity.EPIC));
 
-    /** Much longer unseen, but everybody sees the bearer's aura for a while once it ends. */
-    public static final Addon NOW_YOU_SEE_ME = AddonRegistry.register(
-            Addon.of("now_you_see_me", ModPerks.NOTHIN_TO_SEE, AddonRarity.UNCOMMON));
+    /**
+     * Longer unseen, but everybody sees the bearer's aura for a while once it ends. Called Now You
+     * See Me before 1.1.8.
+     */
+    public static final Addon FIREFLY = AddonRegistry.register(
+            Addon.of("firefly", ModPerks.NOTHIN_TO_SEE, AddonRarity.UNCOMMON));
 
     /**
      * Blows landed while unseen are held back instead of lost, each buying more time; when the bearer
      * shows again, the whole lot lands on them, through armour.
      */
     public static final Addon INVISI_BILL = AddonRegistry.register(
-            Addon.of("invisi_bill", ModPerks.NOTHIN_TO_SEE, AddonRarity.RARE));
+            Addon.of("invisi_bill", ModPerks.NOTHIN_TO_SEE, AddonRarity.UNSTABLE));
 
-    // --- Peekaboo tuning ---
-    public static final double PEEKABOO_RADIUS = 3.0D;
-    /** How hard the blast throws, outwards and upwards. */
-    public static final double PEEKABOO_PUSH = 1.4D;
-    public static final double PEEKABOO_LIFT = 0.5D;
+    // --- Soul In A Jar tuning ---
+    public static final double SOUL_IN_A_JAR_RADIUS = 3.0D;
+    /** How hard the blast throws, outwards and upwards: 15% harder than it first did. */
+    public static final double SOUL_IN_A_JAR_PUSH = 1.4D * 1.15D;
+    public static final double SOUL_IN_A_JAR_LIFT = 0.5D * 1.15D;
 
-    // --- Now You See Me tuning ---
-    /** Seconds unseen at each tier, instead of the perk's own. */
-    public static final int[] NOW_YOU_SEE_ME_SECONDS = {20, 40, 60};
-    /** Seconds the bearer's aura is shown to everybody once they show again, at each tier. */
-    public static final int[] NOW_YOU_SEE_ME_REVEAL_SECONDS = {30, 20, 10};
+    // --- Firefly tuning ---
+    /** How much longer the bearer stays unseen. */
+    public static final double FIREFLY_DURATION = 1.4D;
+    /** Seconds the bearer's aura is shown to everybody once they show again, at every tier. */
+    public static final int FIREFLY_REVEAL_TICKS = 200;
 
     // --- Invisi-Bill tuning ---
     /** Invisibility bought by each point of damage held back: 1.2 seconds. */

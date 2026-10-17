@@ -1300,7 +1300,7 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
         unlockedAddons.clear();
         ListTag addonList = tag.getList("addons", Tag.TAG_STRING);
         for (int i = 0; i < addonList.size(); i++) {
-            ResourceLocation id = ResourceLocation.tryParse(addonList.getString(i));
+            ResourceLocation id = AddonRegistry.migrate(ResourceLocation.tryParse(addonList.getString(i)));
             if (id != null) {
                 unlockedAddons.add(id);
             }
@@ -1309,7 +1309,7 @@ public class PlayerPerkData implements INBTSerializable<CompoundTag> {
         CompoundTag equippedAddonTag = tag.getCompound("equippedAddons");
         for (String key : equippedAddonTag.getAllKeys()) {
             ResourceLocation perkId = ResourceLocation.tryParse(key);
-            ResourceLocation addonId = ResourceLocation.tryParse(equippedAddonTag.getString(key));
+            ResourceLocation addonId = AddonRegistry.migrate(ResourceLocation.tryParse(equippedAddonTag.getString(key)));
             if (perkId != null && addonId != null) {
                 equippedAddons.put(perkId, addonId);
             }
