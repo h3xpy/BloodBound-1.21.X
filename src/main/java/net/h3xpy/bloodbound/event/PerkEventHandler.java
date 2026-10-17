@@ -34,6 +34,7 @@ import net.h3xpy.bloodbound.perk.impl.FromTheDark;
 import net.h3xpy.bloodbound.perk.impl.GreenHerbs;
 import net.h3xpy.bloodbound.perk.impl.HealingRunes;
 import net.h3xpy.bloodbound.perk.impl.IceBlock;
+import net.h3xpy.bloodbound.perk.impl.NothinToSee;
 import net.h3xpy.bloodbound.perk.impl.InevitableDeath;
 import net.h3xpy.bloodbound.perk.impl.LowCostMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.NoOneGetsAway;
@@ -301,6 +302,7 @@ public final class PerkEventHandler {
         HealingRunes.tick(player, data, gameTime);
         BeyondVisionHandler.tick(player, data);
         IceBlock.tick(player, data, gameTime);
+        NothinToSee.tick(player, data, gameTime);
         BlessingOfLife.tick(player, data, gameTime);
         Eavesdrop.tick(player, data, gameTime);
         InevitableDeath.tick(player, data, gameTime);

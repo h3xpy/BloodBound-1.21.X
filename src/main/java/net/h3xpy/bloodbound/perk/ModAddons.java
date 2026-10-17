@@ -28,8 +28,11 @@ public final class ModAddons {
     /** Arrows fly flat, ignoring gravity. */
     public static final Addon GUNPOWDER = AddonRegistry.register(
             Addon.of("gunpowder", ModPerks.LONGSHOT, AddonRarity.RARE));
-    /** Odds a Gunpowder shot sounds like a heavy sniper. */
-    public static final float GUNPOWDER_SNIPER_CHANCE = 0.10F;
+    /**
+     * Volume of the heavy sniper sound a fully drawn Gunpowder shot makes. The game clamps loudness
+     * to 1, so above 1 it only carries further: 2 is heard 32 blocks off.
+     */
+    public static final float GUNPOWDER_SNIPER_VOLUME = 2.0F;
 
     /** Headshots multiply the whole damage, Longshot's distance bonus included. */
     public static final Addon POINT_BLANK = AddonRegistry.register(
@@ -1242,6 +1245,39 @@ public final class ModAddons {
     // --- Spray Can tuning ---
     public static final double SPRAY_CAN_RADIUS = 2.0D;
     public static final double SPRAY_CAN_DAMAGE = 1.5D;
+
+    // --- Nothin' to See ---
+
+    /** Showing again on purpose goes off with a blast that throws everything nearby back, unhurt. */
+    public static final Addon PEEKABOO = AddonRegistry.register(
+            Addon.of("peekaboo", ModPerks.NOTHIN_TO_SEE, AddonRarity.EPIC));
+
+    /** Much longer unseen, but everybody sees the bearer's aura for a while once it ends. */
+    public static final Addon NOW_YOU_SEE_ME = AddonRegistry.register(
+            Addon.of("now_you_see_me", ModPerks.NOTHIN_TO_SEE, AddonRarity.UNCOMMON));
+
+    /**
+     * Blows landed while unseen are held back instead of lost, each buying more time; when the bearer
+     * shows again, the whole lot lands on them, through armour.
+     */
+    public static final Addon INVISI_BILL = AddonRegistry.register(
+            Addon.of("invisi_bill", ModPerks.NOTHIN_TO_SEE, AddonRarity.RARE));
+
+    // --- Peekaboo tuning ---
+    public static final double PEEKABOO_RADIUS = 3.0D;
+    /** How hard the blast throws, outwards and upwards. */
+    public static final double PEEKABOO_PUSH = 1.4D;
+    public static final double PEEKABOO_LIFT = 0.5D;
+
+    // --- Now You See Me tuning ---
+    /** Seconds unseen at each tier, instead of the perk's own. */
+    public static final int[] NOW_YOU_SEE_ME_SECONDS = {20, 40, 60};
+    /** Seconds the bearer's aura is shown to everybody once they show again, at each tier. */
+    public static final int[] NOW_YOU_SEE_ME_REVEAL_SECONDS = {30, 20, 10};
+
+    // --- Invisi-Bill tuning ---
+    /** Invisibility bought by each point of damage held back: 1.2 seconds. */
+    public static final double INVISI_BILL_TICKS_PER_DAMAGE = 24.0D;
 
     private ModAddons() {}
 

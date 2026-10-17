@@ -21,6 +21,7 @@ import net.h3xpy.bloodbound.perk.impl.FragNade;
 import net.h3xpy.bloodbound.perk.impl.GreenHerbs;
 import net.h3xpy.bloodbound.perk.impl.HealingRunes;
 import net.h3xpy.bloodbound.perk.impl.IceBlock;
+import net.h3xpy.bloodbound.perk.impl.NothinToSee;
 import net.h3xpy.bloodbound.perk.impl.InevitableDeath;
 import net.h3xpy.bloodbound.perk.impl.LowCostMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.NoOneGetsAway;
@@ -99,6 +100,8 @@ public final class PlayerSyncHandler {
             TargetFound.logout(player.getUUID());
             Tripwires.logout(player.getUUID());
             Undersized.clear(player.getUUID());
+            // Before the glow is forgotten: showing again puts the slot out.
+            NothinToSee.logout(player);
             PerkGlow.clear(player.getUUID());
             SacrificialKnife.clear(player.getUUID());
             Fortified.clear(player);
@@ -136,6 +139,7 @@ public final class PlayerSyncHandler {
             GreenHerbs.clear(player.getUUID());
             AdvancedMovementDevice.clear(player.getUUID());
             IceBlock.release(player);
+            NothinToSee.release(player);
             BlessingOfLife.clear(player);
             Eavesdrop.clear(player);
             InevitableDeath.clear(player);

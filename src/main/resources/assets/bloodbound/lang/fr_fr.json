@@ -241,13 +241,13 @@
   "perk.bloodbound.omniscience.desc": "Restez immobile %s secondes et toutes les entités, coffres, minerais et spawners dans un rayon de %s blocs sont révélés à travers les murs (les spawners en rouge), pour vous seul. Le niveau I ne voit ni le diamant ni les anciens débris, le niveau II ne voit pas les anciens débris. Dès que vous bougez, tout disparaît.",
 
   "perk.bloodbound.bank_shot": "Bank Shot",
-  "perk.bloodbound.bank_shot.desc": "Dispose de 3 charges, dont une revient toutes les %s secondes. Chaque projectile que vous tirez dépense une charge pour rebondir sur le premier bloc touché, avec une légère visée automatique à la sortie.",
+  "perk.bloodbound.bank_shot.desc": "Dispose de 3 charges, dont une revient toutes les %s secondes. Chaque projectile que vous tirez dépense une charge pour rebondir sur le premier bloc touché, avec une légère visée automatique à la sortie. Un projectile qui a rebondi inflige 1,5 fois les dégâts qu'il aurait infligés sans rebond.",
 
   "perk.bloodbound.no_one_gets_away": "No One Gets Away",
   "perk.bloodbound.no_one_gets_away.desc": "Appuyez sur la touche de l'emplacement pour tirer un projectile rapide, insensible à la gravité. Toute entité touchée est ramenée à vos pieds et reçoit Lenteur 255 et Faiblesse 255 pendant 1 seconde. Recharge : %s secondes, divisée par deux si le tir n'attrape rien.",
 
   "perk.bloodbound.nasty_blade": "Nasty Blade",
-  "perk.bloodbound.nasty_blade.desc": "Vos attaques infligent 2 dégâts de moins. Chaque coup porté rapporte un jeton — au maximum un toutes les demi-secondes — et lance un compte à rebours de %s secondes, que chaque nouveau jeton réinitialise. Chaque jeton en votre possession rend 0,5 dégât à vos coups. Si le compte à rebours atteint zéro, vous perdez tous vos jetons.",
+  "perk.bloodbound.nasty_blade.desc": "Vos attaques infligent 2 dégâts de moins. Chaque coup porté rapporte un jeton — au maximum un toutes les demi-secondes — et lance un compte à rebours de %s secondes, que chaque nouveau jeton réinitialise. Chaque jeton en votre possession rend 0,5 dégât à vos coups. Chaque rebond d'Echoing Wounds rapporte aussi un jeton. Si le compte à rebours atteint zéro, vous perdez tous vos jetons.",
 
   "addon.bloodbound.bandages_wrap": "Bandages Wrap",
   "addon.bloodbound.bandages_wrap.desc": "Vous soigner est 25 %% plus rapide.",
@@ -990,6 +990,17 @@
   "addon.bloodbound.pepper_dust.desc": "L'explosion laisse un nuage pendant 5 secondes ; ce qui y entre reçoit Exhausted pendant la moitié du temps de l'explosion.",
   "addon.bloodbound.nail_polish": "Nail Polish",
   "addon.bloodbound.nail_polish.desc": "Chaque cible touchée déjà Exhausted vous soigne de 4 HP.",
+  "perk.bloodbound.nothin_to_see": "Nothin' to See",
+  "perk.bloodbound.nothin_to_see.desc": "Appuyez sur la touche du slot pour devenir totalement invisible pendant %1$s secondes : ni corps, ni armure, ni objet en main, aucune particule, même en courant ou en tombant, et tous les mobs vous perdent de vue sans pouvoir vous retrouver. Vous ne pouvez infliger aucun dégât pendant l'invisibilité. Une fois l'effet terminé, le perk recharge pendant %2$s secondes. Appuyez à nouveau pendant l'invisibilité pour réapparaître plus tôt : le temps de recharge est réduit de 2 fois le temps qu'il vous restait.",
+  "addon.bloodbound.peekaboo": "Peekaboo",
+  "addon.bloodbound.peekaboo.desc": "Réapparaître plus tôt avec la touche déclenche une petite explosion : tout ce qui est à moins de 3 blocs est repoussé sans dégâts, TNT allumée comprise (une chute fait toujours mal).",
+  "addon.bloodbound.now_you_see_me": "Now You See Me",
+  "addon.bloodbound.now_you_see_me.desc": "Vous restez invisible 20/40/60 secondes à la place, mais en réapparaissant votre aura est révélée à tous les autres joueurs pendant 30/20/10 secondes.",
+  "addon.bloodbound.invisi_bill": "Invisi-Bill",
+  "addon.bloodbound.invisi_bill.desc": "Chaque coup porté pendant l'invisibilité est mis de côté au lieu d'être perdu : chaque point de dégât ajoute 1,2 seconde d'invisibilité, sans dépasser la durée totale. Quand vous réapparaissez, avec la touche ou à la fin du temps, vous encaissez tous ces dégâts d'un coup, sans compter l'armure. Se déconnecter n'y échappe pas : les dégâts tombent à votre retour.",
+  "death.attack.bloodbound.invisi_bill": "%1$s a payé l'Invisi-Bill",
+  "death.attack.bloodbound.invisi_bill.player": "%1$s a payé l'Invisi-Bill",
+  "death.attack.bloodbound.invisi_bill.self": "%1$s a payé l'Invisi-Bill",
   "addon.bloodbound.spray_can": "Spray Can",
   "addon.bloodbound.spray_can.desc": "Si la charge a rebondi, l'explosion est 2 fois plus grande et inflige 50 %% de dégâts en plus aux cibles déjà Exhausted."
 }

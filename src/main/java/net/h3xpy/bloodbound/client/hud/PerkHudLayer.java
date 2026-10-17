@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import net.h3xpy.bloodbound.BloodBound;
 import net.h3xpy.bloodbound.ClientConfig;
 import net.h3xpy.bloodbound.client.ClientEventHandler;
+import net.h3xpy.bloodbound.client.ClientNothinToSee;
 import net.h3xpy.bloodbound.client.ClientPerkData;
 import net.h3xpy.bloodbound.client.ModKeyMappings;
 import net.h3xpy.bloodbound.client.screen.GuiUtil;
@@ -114,6 +115,8 @@ public class PerkHudLayer implements LayeredDraw.Layer {
             } else if (perk.id().equals(ModPerks.NASTY_BLADE.id())) {
                 tokens = ClientPerkData.bladeTokens();
                 window = ClientPerkData.bladeTicksRemaining();
+            } else if (perk.id().equals(ModPerks.NOTHIN_TO_SEE.id())) {
+                window = ClientNothinToSee.ticksRemaining();
             }
 
             renderSlot(graphics, minecraft, perk, addon, slot, tier, x, y, remaining, total, window, charges,

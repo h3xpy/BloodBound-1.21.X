@@ -54,6 +54,11 @@ public final class EchoingWoundsHandler {
 
     private EchoingWoundsHandler() {}
 
+    /** True while an echo is landing: the damage being dealt right now is an Echoing Wounds jump. */
+    public static boolean isEchoing() {
+        return echoing;
+    }
+
     @SubscribeEvent
     public static void onDamage(LivingIncomingDamageEvent event) {
         if (echoing || !(event.getSource().getEntity() instanceof ServerPlayer attacker)) {

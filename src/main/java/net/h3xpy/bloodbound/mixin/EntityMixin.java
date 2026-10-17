@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.h3xpy.bloodbound.perk.impl.HangedMan;
+import net.h3xpy.bloodbound.perk.impl.NothinToSee;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -110,6 +111,14 @@ public abstract class EntityMixin {
         Vec3 back = Entity.collideBoundingBox(self, new Vec3(0.0D, -down.y + Math.max(0.0D, movement.y), 0.0D),
                 lowered.move(across), self.level(), nearby);
         result.setReturnValue(down.add(across).add(back));
+    }
+
+    /** Nothin' to See: a hidden player kicks up no dust running. Runs on every client that draws them. */
+    @Inject(method = "spawnSprintParticle", at = @At("HEAD"), cancellable = true)
+    private void bloodbound$noDustUnseen(CallbackInfo ci) {
+        if (NothinToSee.isHidden((Entity) (Object) this)) {
+            ci.cancel();
+        }
     }
 
     /**

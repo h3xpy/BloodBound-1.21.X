@@ -29,6 +29,7 @@ import net.h3xpy.bloodbound.perk.impl.InevitableDeath;
 import net.h3xpy.bloodbound.perk.impl.KeepFighting;
 import net.h3xpy.bloodbound.perk.impl.LowCostMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.NoOneGetsAway;
+import net.h3xpy.bloodbound.perk.impl.NothinToSee;
 import net.h3xpy.bloodbound.perk.impl.Nullification;
 import net.h3xpy.bloodbound.perk.impl.OutOfBreath;
 import net.h3xpy.bloodbound.perk.impl.PatchUp;
@@ -104,7 +105,8 @@ public final class PerkActivationHandler {
             Map.entry(ModPerks.HANGED_MAN.id(), HangedMan::activate),
             Map.entry(ModPerks.HOLY_SANCTUM.id(), HolySanctum::activate),
             Map.entry(ModPerks.SPRING_PAD.id(), SpringPad::activate),
-            Map.entry(ModPerks.REACTIVE_COMPOUND.id(), ReactiveCompound::activate));
+            Map.entry(ModPerks.REACTIVE_COMPOUND.id(), ReactiveCompound::activate),
+            Map.entry(ModPerks.NOTHIN_TO_SEE.id(), NothinToSee::activate));
 
     private PerkActivationHandler() {}
 
