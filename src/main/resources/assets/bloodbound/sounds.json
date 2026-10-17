@@ -1,0 +1,8 @@
+{
+  "heavy_sniper": {
+    "sounds": [
+      "bloodbound:heavy_sniper"
+    ],
+    "subtitle": "subtitles.bloodbound.heavy_sniper"
+  }
+}

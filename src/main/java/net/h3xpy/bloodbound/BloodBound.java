@@ -53,6 +53,7 @@ import net.h3xpy.bloodbound.registry.ModCreativeTabs;
 import net.h3xpy.bloodbound.registry.ModEffects;
 import net.h3xpy.bloodbound.registry.ModDataComponents;
 import net.h3xpy.bloodbound.registry.ModEntities;
+import net.h3xpy.bloodbound.registry.ModSounds;
 import net.h3xpy.bloodbound.registry.ModLootModifiers;
 import net.h3xpy.bloodbound.registry.ModItems;
 import net.h3xpy.bloodbound.registry.ModMenus;
@@ -87,6 +88,7 @@ public class BloodBound {
         ModEntities.register(modEventBus);
         ModLootModifiers.register(modEventBus);
         ModDataComponents.register(modEventBus);
+        ModSounds.register(modEventBus);
 
         modEventBus.addListener(ModNetwork::register);
 

@@ -18,6 +18,7 @@ import net.h3xpy.bloodbound.effect.BleedingHandler;
 import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.registry.ModEffects;
+import net.h3xpy.bloodbound.registry.ModSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -107,6 +108,9 @@ public final class LongshotHandler {
     /** Fifty Cal: the damage the distance alone has to add. */
     private static final double FIFTY_CAL_BONUS = 10.0D;
 
+    /** When each shooter last let off the sniper sound, so a multishot volley plays it once. */
+    private static final Map<UUID, Long> SNIPER_SOUNDED_AT = new HashMap<>();
+
     private LongshotHandler() {}
 
     // --- stamping the arrow at launch ---
@@ -133,6 +137,14 @@ public final class LongshotHandler {
         }
         if (data.isAddonActive(ModAddons.GUNPOWDER)) {
             arrow.setNoGravity(true);
+            // Now and then it goes off like something much bigger than a bow. Once a tick, for multishot.
+            long now = shooter.level().getGameTime();
+            if (now != SNIPER_SOUNDED_AT.getOrDefault(shooter.getUUID(), -1L)
+                    && shooter.getRandom().nextFloat() < ModAddons.GUNPOWDER_SNIPER_CHANCE) {
+                SNIPER_SOUNDED_AT.put(shooter.getUUID(), now);
+                shooter.level().playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(),
+                        ModSounds.HEAVY_SNIPER.get(), SoundSource.PLAYERS, 2.0F, 1.0F);
+            }
         }
 
         CompoundTag tag = arrow.getPersistentData();

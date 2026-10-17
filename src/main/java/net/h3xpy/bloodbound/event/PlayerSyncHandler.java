@@ -8,6 +8,7 @@ import net.h3xpy.bloodbound.effect.ExhaustedHandler;
 import net.h3xpy.bloodbound.effect.MovementTracker;
 import net.h3xpy.bloodbound.heal.HealManager;
 import net.h3xpy.bloodbound.mark.MarkManager;
+import net.h3xpy.bloodbound.perk.PerkGlow;
 import net.h3xpy.bloodbound.perk.impl.AdvancedMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.BadOmen;
 import net.h3xpy.bloodbound.perk.impl.BarbedWire;
@@ -96,6 +97,7 @@ public final class PlayerSyncHandler {
             TargetFound.logout(player.getUUID());
             Tripwires.logout(player.getUUID());
             Undersized.clear(player.getUUID());
+            PerkGlow.clear(player.getUUID());
             IceBlock.release(player);
             // Traps and rituals stay behind: they are saved with the world and wait for the owner.
             BlessingOfLife.logout(player);
@@ -141,6 +143,7 @@ public final class PlayerSyncHandler {
             Vigilance.clear(player);
             ReactiveCompound.cancel(player);
             Tripwires.onDeath(player.getUUID());
+            PerkGlow.reset(player);
             HangedMan.clear(player);
         }
     }

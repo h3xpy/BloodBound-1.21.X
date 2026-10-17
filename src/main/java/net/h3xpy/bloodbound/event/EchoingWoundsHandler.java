@@ -15,6 +15,7 @@ import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.perk.PerkGlow;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -95,6 +96,7 @@ public final class EchoingWoundsHandler {
             cooldown += ModAddons.HYSTERIA_EXTRA_COOLDOWN_SECONDS * 20;
         }
         data.setCooldown(ModPerks.ECHOING_WOUNDS.id(), gameTime, cooldown);
+        PerkGlow.flash(attacker, ModPerks.ECHOING_WOUNDS);
         PerkDataManager.sync(attacker);
     }
 

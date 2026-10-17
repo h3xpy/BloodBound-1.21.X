@@ -13,6 +13,7 @@ import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.network.PerkChargesPayload;
 import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.perk.PerkGlow;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -121,6 +122,7 @@ public final class RelentlessHandler {
         }
         long until = gameTime + ModPerks.RELENTLESS.ticks(ModPerks.RELENTLESS_WINDOW, tier);
         OPEN_UNTIL.put(player.getUUID(), until);
+        PerkGlow.flash(player, ModPerks.RELENTLESS, (int) (until - gameTime));
         player.level().playSound(null, player.blockPosition(), SoundEvents.RAVAGER_ROAR, SoundSource.PLAYERS,
                 0.5F, 1.4F);
         // Shown on the slot as a single pip running down with the window.

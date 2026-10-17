@@ -17,6 +17,7 @@ import net.h3xpy.bloodbound.heal.HealManager;
 import net.h3xpy.bloodbound.mark.MarkManager;
 import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.perk.PerkGlow;
 import net.h3xpy.bloodbound.perk.impl.AdvancedMovementDevice;
 import net.h3xpy.bloodbound.perk.impl.AntiExhaustionSyringe;
 import net.h3xpy.bloodbound.perk.impl.BadOmen;
@@ -166,6 +167,7 @@ public final class PerkEventHandler {
             cooldown = Math.round(cooldown * ModAddons.HELIUM_COOLDOWN);
         }
         data.setCooldown(ModPerks.PERFECT_LANDING.id(), gameTime, cooldown);
+        PerkGlow.flash(player, ModPerks.PERFECT_LANDING);
         PerkDataManager.sync(player);
 
         player.level().playSound(null, player.blockPosition(), SoundEvents.PHANTOM_FLAP,
@@ -317,6 +319,7 @@ public final class PerkEventHandler {
         HeartOfGold.tick(player, data);
         Undersized.tick(player, data);
         RelentlessHandler.tick(player, data, gameTime);
+        PerkGlow.prune(player, data);
         FragNade.tickFallGuard(player, gameTime);
         MarkManager.finalBlowStep(player, data, gameTime);
 
@@ -386,6 +389,7 @@ public final class PerkEventHandler {
 
         int tier = data.getActiveTier(ModPerks.LOW_PROFILE);
         boolean active = tier > 0 && player.isCrouching();
+        PerkGlow.set(player, ModPerks.LOW_PROFILE, active);
         AttributeModifier existing = speed.getModifier(LOW_PROFILE_MODIFIER_ID);
 
         if (!active) {
@@ -477,6 +481,7 @@ public final class PerkEventHandler {
 
         int duration = ModPerks.ADRENALINE.ticks(ModPerks.ADRENALINE_DURATION, tier);
         data.setDamageImmuneUntil(gameTime + duration);
+        PerkGlow.flash(player, ModPerks.ADRENALINE, duration);
         AchievementTracker.onAdrenaline(player, player.getLastHurtByMob());
         player.addEffect(new MobEffectInstance(ModEffects.BROKEN, duration, 0, false, true, true));
 

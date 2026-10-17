@@ -60,7 +60,7 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | **Bank Shot** | Passive | 3 charges, one back every **14/12/10** seconds. Every projectile you fire spends one to bounce off the first block it hits, with a slight auto-aim on the way out (a 63-degree cone). A Frag' Nade spends one too, and comes off even the floor. |
 | **No One Gets Away** | Active | Fire a fast, flat shot; whatever it catches is dragged back to your feet with Slowness and Weakness at their highest for a second. Cooldown **30/27/24** seconds, halved when the shot catches nothing. |
 | **Nasty Blade** | Passive | Attacks deal 2 less damage. Every hit banks a token — at most one every half second — and restarts a **3/4/5** second clock; each token puts 0.5 damage back. Let the clock run out and the streak is gone. |
-| **Omniscience** | Passive | Stand still for **3/2.5/2** seconds and every entity, chest and ore within **8/12/16** blocks is outlined through the walls, for you alone. Tier I is blind to diamond and ancient debris, tier II to ancient debris. Moving puts it away at once. |
+| **Omniscience** | Passive | Stand still for **3/2.5/2** seconds and every entity, chest, ore and spawner (in red) within **8/12/16** blocks is outlined through the walls, for you alone. Tier I is blind to diamond and ancient debris, tier II to ancient debris. Moving puts it away at once. |
 | **Low-Cost Movement Device** | Active | Spend a charge on a falling shot; where it hits a block, it throws you there. **2/3/4** charges with no wait between them, pull capped at **1.65/1.9/2.15** across and **0.42/0.46/0.5** up (a level shot keeps a third of the lift, aiming up earns the rest), shot speed **1.05/1.1/1.15**, gravity **0.0605/0.0572/0.055**, no range limit. Only the last charge starts the **12/8/6** second cooldown. |
 | **Guardian Angel** | Passive | A blow that would kill you instead leaves you at **60/80/100%** health, glowing gold for everyone to see. Somewhere between **4-8/8-12/12-16** seconds later a run of skill checks begins: land **7/6/5** of them and you walk away, cooldown **360/300/240** seconds. Miss one and the blow catches up with you. |
 | **Flashbang** | Active | Throw a grenade that comes off one wall and goes off 2 seconds later, beeping faster as it goes. Anything looking at the blast is Flashed for 4 seconds, a second less for every 10 blocks away — a wall or a turned back is cover. Cooldown **30/25/20** seconds. |
@@ -105,6 +105,13 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | **Undersized** | Active | You are **50/50/50%** smaller, model and hitbox alike, and your melee blows deal 25% less. From Tier II the key climbs onto the shoulders of a crouched player within 3 blocks; at Tier III, failing a crouched player, onto the nearest creature, which you steer like a horse at its own walking pace, keeping what it can do: flyers and swimmers (in water) climb and dive where you look, spiders climb walls, swimmers are quick in water. It fights for you: it goes after what you hit, what hits you, or what you look at when you press the key again (nothing in sight calms it), with its own attacks (a zombie hits, a skeleton shoots, a creeper blows up). Nothing it does can hurt you, and you cannot hurt it. Jump or crouch to get down. No cooldown. |
 | **TripWires** | Active | Hold the key 2 seconds still to plant a post, then press it again within **10/15/20** blocks to plant a second and stretch a wire between their tops (**90/93/96%** see-through; nothing solid may cross it, and until then you alone see the line in particles, red while the spot will not do). Whatever walks into it (not you) has its aura revealed to you for **10/15/20** seconds, you are warned, and its harmful effects already running last **1.5/1.75/2x** as long. Breaks after **3/4/5** triggers; crouching through wears it without setting it off. Up to **2/4/6** posts. Wires survive logouts and restarts. Cooldown **15/12/9** seconds. |
 
+**Gold slots.** A passive perk's HUD slot turns gold while it is in effect: Low Profile while
+crouched, Omniscience while the walls are see-through, From The Dark in the dark, Catching Up on a
+trail, Guardian Angel through the trial, Vigilance while watched, and Caretaker, We Can Do This (at
+full health), Green Herbs and Team Spirit while healing. Perks that go off in a moment flash gold
+for two seconds instead, or for as long as their effect lasts: Perfect Landing, Adrenaline,
+Relentless, Echoing Wounds, Crime And Punishment, Call Of Death, Hunter's Instinct, Under The
+Radar, Raise The Stakes (an extra drop) and Full Extraction (a soul shard).
 
 ## Marks
 
@@ -230,7 +237,7 @@ you already own and addons you do not.
 | **Sterilizer** | Surgical Suture | Rare | A missed check grants a 3 second retry instead of a cooldown. Land the retry: healed, cooldown halved. Miss it or let it lapse: cooldown 30% longer. |
 | **Gel Dressing** | Surgical Suture | Unstable | Used at full health, a landed check grants a yellow heart instead, up to 3. Unequipping the addon or its perk removes them at once. |
 | **Taped Flashlight** | Longshot | Uncommon | Another +0.05 damage per block, and arrows give off light (level 10) until they despawn or are picked up. |
-| **Gunpowder** | Longshot | Rare | Arrows ignore gravity. |
+| **Gunpowder** | Longshot | Rare | Arrows ignore gravity. One shot in ten goes off with a heavy sniper sound. |
 | **Point Blank** | Longshot | Epic | Headshots on players and mobs deal 1.45x damage, distance bonus included, with a sound cue. |
 | **Boots of Speed** | Low Profile | Rare | No more night vision, but crouching is a further 75% faster. |
 | **Steel Toe Boot** | Low Profile | Epic | Every 5 blocks walked crouched heals 1 HP. |
@@ -350,6 +357,17 @@ you already own and addons you do not.
 | **Plastic Wire** | TripWires | Uncommon | Whatever trips a wire is Broken for 15 seconds. |
 | **Silver Wire** | TripWires | Rare | Whatever trips a wire Bleeds, 10 charges; each later trip of the same wire halves that, rounded up (10, 5, 3, 2, 1). |
 | **Detonator** | TripWires | Epic | Whatever trips a wire is Flashed for 4 seconds, with Strength V while blind, then Weakness II for 10 seconds. |
+| **Gold Nugget** | Full Extraction | Common | +7% chance of a soul shard. |
+| **Metal Plate** | Full Extraction | Rare | Every soul shard that drops brings one more of the ore. |
+| **Drill Head** | Full Extraction | Epic | Breaking any block also breaks the blocks like it in the 3x3x3 ahead of it (the way you look), each wearing the tool; the drill stops if the tool breaks. |
+| **Gilded Pickaxe** | Full Extraction | Unstable | Every ore: 3% chance of 100 soul shards. Each miss adds 0.5% and takes a shard off the prize (never below 1); a hit resets both. The misses are saved with the player. |
+| **Cracked Monocle** | Vigilance | Common | Lasts 3 seconds past the gaze instead of 1. |
+| **Mirror Shard** | Vigilance | Uncommon | Switching on reveals whoever is looking at you for 3 seconds; once every 15 seconds. |
+| **Scary Note** | Vigilance | Epic | Every gaze past the first adds 3% to the bonus. |
+| **Rubber Sheet** | Out Of Breath | Common | The charge comes off walls 50% harder. |
+| **Pepper Dust** | Out Of Breath | Uncommon | The blast leaves a cloud for 5 seconds; whatever walks in (once each) is Exhausted, same level, for half the blast's time. |
+| **Nail Polish** | Out Of Breath | Rare | Every target caught already Exhausted heals you 4 HP. |
+| **Spray Can** | Out Of Breath | Epic | A charge that came off a wall goes off twice as wide and deals 50% more damage to the already Exhausted. |
 
 ## Rituals
 

@@ -5,6 +5,7 @@ import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.perk.PerkGlow;
 import net.h3xpy.bloodbound.perk.impl.EnhancedPerception;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -61,6 +62,7 @@ public final class HuntersInstinctHandler {
             if (hunter.distanceToSqr(victim) > radius * radius) {
                 continue;
             }
+            PerkGlow.flash(hunter, ModPerks.HUNTERS_INSTINCT);
             if (AuraRevealHandler.reveal(hunter, victim, ModPerks.HUNTERS_INSTINCT_REVEAL_TICKS)
                     && victim instanceof ServerPlayer) {
                 ModAdvancements.grant(hunter, ModAdvancements.I_KNOW_THIS_GUY);

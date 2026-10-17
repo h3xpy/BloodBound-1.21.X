@@ -7,6 +7,7 @@ import net.h3xpy.bloodbound.advancement.AchievementTracker;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.mark.MarkManager;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.perk.PerkGlow;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -93,6 +94,8 @@ public final class CatchingUp {
         }
 
         long until = data.trailSpeedUntil();
+        // Lit while a trail is being run down.
+        PerkGlow.set(player, ModPerks.CATCHING_UP, gameTime < until);
         if (gameTime >= until) {
             return;
         }

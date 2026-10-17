@@ -3,6 +3,7 @@ package net.h3xpy.bloodbound.event;
 import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.perk.ModPerks;
+import net.h3xpy.bloodbound.perk.PerkGlow;
 import net.h3xpy.bloodbound.perk.impl.EnhancedPerception;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -48,6 +49,9 @@ public final class CallOfDeathHandler {
             if (AuraRevealHandler.reveal(killer, nearby, ModPerks.CALL_OF_DEATH_REVEAL_TICKS)) {
                 revealed++;
             }
+        }
+        if (revealed > 0) {
+            PerkGlow.flash(killer, ModPerks.CALL_OF_DEATH);
         }
         if (revealed >= I_KNOW_EVERYTHING_REVEALS) {
             ModAdvancements.grant(killer, ModAdvancements.I_KNOW_EVERYTHING);

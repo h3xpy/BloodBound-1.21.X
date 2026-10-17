@@ -35,6 +35,8 @@ public final class ClientOmniscience {
     /** Ore outlines, and container outlines. */
     private static final int COLOR_ORE = 0xFFE0C44C;
     private static final int COLOR_CONTAINER = 0xFF4CD6E0;
+    /** Spawners, in red: worth knowing about for a different reason. */
+    private static final int COLOR_SPAWNER = 0xFFE0463C;
 
     private static final float LINE_WIDTH = 2.0F;
     /** Boxes are grown a hair so they do not fight the block's own faces for pixels. */
@@ -152,7 +154,7 @@ public final class ClientOmniscience {
         all.addAll(ores);
         all.addAll(containers);
         for (int i = 0; i < all.size(); i++) {
-            box(builder, matrix, all.get(i), i < ores.size() ? COLOR_ORE : COLOR_CONTAINER);
+            box(builder, matrix, all.get(i), i < ores.size() ? COLOR_ORE : isSpawner(all.get(i)) ? COLOR_SPAWNER : COLOR_CONTAINER);
         }
         BufferUploader.drawWithShader(builder.buildOrThrow());
 
@@ -163,6 +165,13 @@ public final class ClientOmniscience {
     }
 
     /** The twelve edges of one block, as separate line segments. */
+    /** Spawners come in with the containers, and are told apart here by the block itself. */
+    private static boolean isSpawner(BlockPos pos) {
+        net.minecraft.client.multiplayer.ClientLevel level = Minecraft.getInstance().level;
+        return level != null && (level.getBlockState(pos).is(net.minecraft.world.level.block.Blocks.SPAWNER)
+                || level.getBlockState(pos).is(net.minecraft.world.level.block.Blocks.TRIAL_SPAWNER));
+    }
+
     private static void box(BufferBuilder builder, Matrix4f matrix, BlockPos pos, int color) {
         float x0 = (float) (pos.getX() - INFLATE);
         float y0 = (float) (pos.getY() - INFLATE);

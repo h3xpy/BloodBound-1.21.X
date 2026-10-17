@@ -1,15 +1,17 @@
 package net.h3xpy.bloodbound.perk.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import net.h3xpy.bloodbound.BloodBound;
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
+import net.h3xpy.bloodbound.event.AuraRevealHandler;
 import net.h3xpy.bloodbound.network.VigilancePayload;
+import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -43,7 +45,11 @@ public final class Vigilance {
     /** Players being watched, and until when the bonuses hold. */
     private static final Map<UUID, Long> WATCHED_UNTIL = new HashMap<>();
     /** Players the bonuses are applied to right now, and the client has been told about. */
-    private static final Set<UUID> APPLIED = new HashSet<>();
+    private static final Map<UUID, Double> APPLIED = new HashMap<>();
+    /** How many gazes were on each player at the last look, for Scary Note. */
+    private static final Map<UUID, Integer> GAZES = new HashMap<>();
+    /** Mirror Shard: when each player's shard is ready to give a watcher away again. */
+    private static final Map<UUID, Long> MIRROR_READY_AT = new HashMap<>();
 
     /** The client's own copy of the bonus, for digging speed and the icon. Only read on the client side. */
     private static float clientBonus;
@@ -58,49 +64,73 @@ public final class Vigilance {
 
     /** The bonus, as a fraction, while it is on; 0 otherwise. */
     public static double bonus(ServerPlayer player, PlayerPerkData data) {
-        int tier = data.getActiveTier(ModPerks.VIGILANCE);
-        if (tier <= 0 || !isActive(player)) {
-            return 0.0D;
-        }
-        return ModPerks.VIGILANCE.value(ModPerks.VIGILANCE_BONUS, tier) / 100.0D;
+        return data.getActiveTier(ModPerks.VIGILANCE) > 0 ? APPLIED.getOrDefault(player.getUUID(), 0.0D) : 0.0D;
     }
 
     /** Looks for gazes now and then, and keeps the speed and the client in step. Called once a tick per player. */
     public static void tick(ServerPlayer player, PlayerPerkData data, long gameTime) {
+        UUID id = player.getUUID();
         int tier = data.getActiveTier(ModPerks.VIGILANCE);
         // What was last applied, not worked out again from the clock: recomputed, "before" was
         // already off on the very tick it ran out, and the switch-off was never seen.
-        boolean before = APPLIED.contains(player.getUUID());
+        double before = APPLIED.getOrDefault(id, 0.0D);
+        List<LivingEntity> watchers = List.of();
         if (tier <= 0) {
-            WATCHED_UNTIL.remove(player.getUUID());
-        } else if (gameTime % ModPerks.VIGILANCE_CHECK_TICKS == 0L && isWatched(player)) {
-            WATCHED_UNTIL.put(player.getUUID(), gameTime + ModPerks.VIGILANCE_CHECK_TICKS
-                    + ModPerks.VIGILANCE_LINGER_TICKS);
+            WATCHED_UNTIL.remove(id);
+            GAZES.remove(id);
+        } else if (gameTime % ModPerks.VIGILANCE_CHECK_TICKS == 0L) {
+            watchers = watchers(player);
+            if (!watchers.isEmpty()) {
+                int linger = data.isAddonActive(ModAddons.CRACKED_MONOCLE)
+                        ? ModAddons.CRACKED_MONOCLE_LINGER_TICKS : ModPerks.VIGILANCE_LINGER_TICKS;
+                WATCHED_UNTIL.put(id, gameTime + ModPerks.VIGILANCE_CHECK_TICKS + linger);
+                GAZES.put(id, watchers.size());
+            }
         }
-        boolean now = isActive(player);
-        if (now != before || (now && !hasSpeed(player))) {
-            applySpeed(player, now ? ModPerks.VIGILANCE.value(ModPerks.VIGILANCE_BONUS, tier) / 100.0D : 0.0D);
+        boolean on = isActive(player);
+        double now = 0.0D;
+        if (on) {
+            now = ModPerks.VIGILANCE.value(ModPerks.VIGILANCE_BONUS, tier) / 100.0D;
+            // Scary Note: every gaze past the first is worth a little more.
+            if (data.isAddonActive(ModAddons.SCARY_NOTE)) {
+                now += ModAddons.SCARY_NOTE_PER_GAZE * Math.max(0, GAZES.getOrDefault(id, 1) - 1);
+            }
+        } else {
+            GAZES.remove(id);
+        }
+
+        // Mirror Shard: switching on gives away whoever did it.
+        if (before <= 0.0D && now > 0.0D && data.isAddonActive(ModAddons.MIRROR_SHARD)
+                && gameTime >= MIRROR_READY_AT.getOrDefault(id, 0L)) {
+            for (LivingEntity watcher : watchers) {
+                AuraRevealHandler.reveal(player, watcher, ModAddons.MIRROR_SHARD_REVEAL_TICKS);
+            }
+            MIRROR_READY_AT.put(id, gameTime + ModAddons.MIRROR_SHARD_COOLDOWN_TICKS);
+        }
+
+        if (now != before || (now > 0.0D && !hasSpeed(player))) {
+            applySpeed(player, now);
         }
         if (now != before) {
-            if (now) {
-                APPLIED.add(player.getUUID());
+            if (now > 0.0D) {
+                APPLIED.put(id, now);
             } else {
-                APPLIED.remove(player.getUUID());
+                APPLIED.remove(id);
             }
-            PacketDistributor.sendToPlayer(player, new VigilancePayload(
-                    now ? (float) (ModPerks.VIGILANCE.value(ModPerks.VIGILANCE_BONUS, tier) / 100.0D) : 0.0F));
+            PacketDistributor.sendToPlayer(player, new VigilancePayload((float) now));
         }
     }
 
-    /** Whether some player or creature nearby has its eyes on this one. */
-    private static boolean isWatched(ServerPlayer player) {
+    /** Every player or creature nearby with its eyes on this one. */
+    private static List<LivingEntity> watchers(ServerPlayer player) {
+        List<LivingEntity> found = new ArrayList<>();
         Vec3 target = player.getBoundingBox().getCenter();
         double playerRange = ModPerks.VIGILANCE_PLAYER_RANGE;
         for (ServerPlayer other : player.serverLevel().players()) {
             if (other != player && !other.isSpectator() && other.isAlive()
                     && other.distanceToSqr(player) <= playerRange * playerRange
                     && looksAt(other, player, target)) {
-                return true;
+                found.add(other);
             }
         }
         AABB area = player.getBoundingBox().inflate(ModPerks.VIGILANCE_MOB_RANGE);
@@ -109,10 +139,10 @@ public final class Vigilance {
             // player nearby, and counting that kept Vigilance on all the time.
             boolean hunting = mob.getTarget() == player && mob.hasLineOfSight(player);
             if (hunting || (mob instanceof Enemy && looksAt(mob, player, target))) {
-                return true;
+                found.add(mob);
             }
         }
-        return false;
+        return found;
     }
 
     /** A gaze straight at the target, with nothing in the way. */
@@ -184,7 +214,8 @@ public final class Vigilance {
         WATCHED_UNTIL.remove(player.getUUID());
         applySpeed(player, 0.0D);
         // The client keeps its own copy and would keep the icon lit through a death otherwise.
-        if (APPLIED.remove(player.getUUID()) && player.connection != null) {
+        GAZES.remove(player.getUUID());
+        if (APPLIED.remove(player.getUUID()) != null && player.connection != null) {
             PacketDistributor.sendToPlayer(player, new VigilancePayload(0.0F));
         }
     }

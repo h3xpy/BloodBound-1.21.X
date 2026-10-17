@@ -28,6 +28,8 @@ public final class ModAddons {
     /** Arrows fly flat, ignoring gravity. */
     public static final Addon GUNPOWDER = AddonRegistry.register(
             Addon.of("gunpowder", ModPerks.LONGSHOT, AddonRarity.RARE));
+    /** Odds a Gunpowder shot sounds like a heavy sniper. */
+    public static final float GUNPOWDER_SNIPER_CHANCE = 0.10F;
 
     /** Headshots multiply the whole damage, Longshot's distance bonus included. */
     public static final Addon POINT_BLANK = AddonRegistry.register(
@@ -1121,6 +1123,32 @@ public final class ModAddons {
     /** Absorption HP ceiling (three hearts). */
     public static final float GEL_ABSORPTION_MAX = 6.0F;
 
+    // --- Full Extraction ---
+
+    /** Better odds of a shard. */
+    public static final Addon GOLD_NUGGET = AddonRegistry.register(
+            Addon.of("gold_nugget", ModPerks.FULL_EXTRACTION, AddonRarity.COMMON));
+
+    /** Every shard brings one more of the ore. */
+    public static final Addon METAL_PLATE = AddonRegistry.register(
+            Addon.of("metal_plate", ModPerks.FULL_EXTRACTION, AddonRarity.RARE));
+
+    /** Mines the blocks like it in the 3x3x3 ahead. */
+    public static final Addon DRILL_HEAD = AddonRegistry.register(
+            Addon.of("drill_head", ModPerks.FULL_EXTRACTION, AddonRarity.EPIC));
+
+    /** A long shot at a hundred shards, likelier and smaller with every miss. */
+    public static final Addon GILDED_PICKAXE = AddonRegistry.register(
+            Addon.of("gilded_pickaxe", ModPerks.FULL_EXTRACTION, AddonRarity.UNSTABLE));
+
+    // --- Gold Nugget tuning ---
+    public static final double GOLD_NUGGET_CHANCE = 0.07D;
+
+    // --- Gilded Pickaxe tuning ---
+    public static final double GILDED_PICKAXE_CHANCE = 0.03D;
+    public static final double GILDED_PICKAXE_CHANCE_PER_MISS = 0.005D;
+    public static final int GILDED_PICKAXE_PRIZE = 100;
+
     // --- Tripwires ---
 
     /** Whatever trips it is left short of breath. */
@@ -1156,6 +1184,64 @@ public final class ModAddons {
     public static final int DETONATOR_STRENGTH_AMPLIFIER = 4;
     public static final int DETONATOR_WEAKNESS_AMPLIFIER = 1;
     public static final int DETONATOR_WEAKNESS_TICKS = 200;
+
+    // --- Vigilance ---
+
+    /** The bonuses outlast the gaze longer. */
+    public static final Addon CRACKED_MONOCLE = AddonRegistry.register(
+            Addon.of("cracked_monocle", ModPerks.VIGILANCE, AddonRarity.COMMON));
+
+    /** Whoever sets Vigilance off gives themselves away. */
+    public static final Addon MIRROR_SHARD = AddonRegistry.register(
+            Addon.of("mirror_shard", ModPerks.VIGILANCE, AddonRarity.UNCOMMON));
+
+    /** Every gaze past the first is worth more. */
+    public static final Addon SCARY_NOTE = AddonRegistry.register(
+            Addon.of("scary_note", ModPerks.VIGILANCE, AddonRarity.EPIC));
+
+    // --- Cracked Monocle tuning ---
+    public static final int CRACKED_MONOCLE_LINGER_TICKS = 60;
+
+    // --- Mirror Shard tuning ---
+    public static final int MIRROR_SHARD_REVEAL_TICKS = 60;
+    public static final int MIRROR_SHARD_COOLDOWN_TICKS = 300;
+
+    // --- Scary Note tuning ---
+    /** Bonus each gaze past the first adds, as a fraction. */
+    public static final double SCARY_NOTE_PER_GAZE = 0.03D;
+
+    // --- Out Of Breath ---
+
+    /** The charge comes off walls harder. */
+    public static final Addon RUBBER_SHEET = AddonRegistry.register(
+            Addon.of("rubber_sheet", ModPerks.OUT_OF_BREATH, AddonRarity.COMMON));
+
+    /** The blast leaves a cloud behind. */
+    public static final Addon PEPPER_DUST = AddonRegistry.register(
+            Addon.of("pepper_dust", ModPerks.OUT_OF_BREATH, AddonRarity.UNCOMMON));
+
+    /** Catching something already short of breath mends the thrower. */
+    public static final Addon NAIL_POLISH = AddonRegistry.register(
+            Addon.of("nail_polish", ModPerks.OUT_OF_BREATH, AddonRarity.RARE));
+
+    /** A charge that came off a wall goes off twice as wide. */
+    public static final Addon SPRAY_CAN = AddonRegistry.register(
+            Addon.of("spray_can", ModPerks.OUT_OF_BREATH, AddonRarity.EPIC));
+
+    // --- Rubber Sheet tuning ---
+    public static final double RUBBER_SHEET_BOUNCE = 1.5D;
+
+    // --- Pepper Dust tuning ---
+    public static final int PEPPER_DUST_TICKS = 100;
+    /** Share of the blast's own Exhausted time the cloud gives. */
+    public static final double PEPPER_DUST_DURATION = 0.5D;
+
+    // --- Nail Polish tuning ---
+    public static final float NAIL_POLISH_HEAL = 4.0F;
+
+    // --- Spray Can tuning ---
+    public static final double SPRAY_CAN_RADIUS = 2.0D;
+    public static final double SPRAY_CAN_DAMAGE = 1.5D;
 
     private ModAddons() {}
 
