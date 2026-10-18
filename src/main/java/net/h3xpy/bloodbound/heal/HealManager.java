@@ -27,26 +27,24 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.util.Mth;
 
 /**
  * The co-op healing ability, unlocked by perks such as Surgical Suture.
  * <p>
- * Look straight at a player or a creature within {@link #HEAL_RANGE} blocks and hold the heal key:
- * they mend at one point of health every {@link #TICKS_PER_POINT} ticks, both of you free to move.
+ * Face a player or a creature within {@link #HEAL_RANGE} blocks, inside a 45 degree cone, and hold
+ * the heal key: they mend at one point of health every {@link #TICKS_PER_POINT} ticks, both of you free to move.
  * Skill checks interrupt at random: land one for a bonus point, miss it and the target loses one
  * and the heal stalls. It is the one kind of healing that gets through Broken.
  */
 public final class HealManager {
 
     /** How far the healer can stand from the target. */
-    public static final double HEAL_RANGE = 6.0D;
+    public static final double HEAL_RANGE = 2.0D;
+    /** Half the width of the cone the healer works in: 45 degrees across. */
+    private static final double HEAL_CONE_HALF_ANGLE = 22.5D;
     /** How long the healer may look away from the target before the heal breaks. */
     private static final int LOOK_AWAY_TICKS = 10;
     /** Set while a co-op heal puts health in, so Broken lets it through. */
@@ -181,29 +179,58 @@ public final class HealManager {
         return PerkDataManager.get(healer).isAddonActive(ModAddons.PERFUSION) ? HEAL_RANGE * ModAddons.PERFUSION_RANGE : HEAL_RANGE;
     }
 
-    /** The injured player or creature under the healer's crosshair, within range and in sight. */
+    /**
+     * The injured player or creature the healer is facing: within reach and inside the cone, the one
+     * nearest the middle of it.
+     */
     @Nullable
     private static LivingEntity findTarget(ServerPlayer healer) {
-        LivingEntity looked = lookedAt(healer);
-        return looked != null && isValidTarget(looked) ? looked : null;
+        double range = healRange(healer);
+        LivingEntity best = null;
+        double bestAngle = Double.MAX_VALUE;
+        for (LivingEntity candidate : healer.level().getEntitiesOfClass(LivingEntity.class,
+                healer.getBoundingBox().inflate(range + 1.0D))) {
+            if (candidate == healer || candidate.isSpectator() || !isValidTarget(candidate) || !inReach(healer, candidate)) {
+                continue;
+            }
+            double angle = angleTo(healer, candidate);
+            if (angle < bestAngle) {
+                best = candidate;
+                bestAngle = angle;
+            }
+        }
+        return best;
     }
 
-    /** Whatever living thing the healer's crosshair rests on within range, walls stopping the look. */
-    @Nullable
-    private static LivingEntity lookedAt(ServerPlayer healer) {
-        Vec3 eyes = healer.getEyePosition();
-        double range = healRange(healer);
-        Vec3 end = eyes.add(healer.getLookAngle().scale(range));
-        BlockHitResult wall = healer.level().clip(new ClipContext(eyes, end, ClipContext.Block.COLLIDER,
-                ClipContext.Fluid.NONE, healer));
-        if (wall.getType() != HitResult.Type.MISS) {
-            end = wall.getLocation();
+    /**
+     * Whether the healer can work on this target: close enough (measured to the nearest point of
+     * it, so a big creature counts from its side, not its middle), in sight, and in front — inside
+     * the cone, or right under the crosshair.
+     */
+    private static boolean inReach(ServerPlayer healer, LivingEntity target) {
+        if (target.level() != healer.level()) {
+            return false;
         }
-        AABB sweep = healer.getBoundingBox().expandTowards(end.subtract(eyes)).inflate(1.0D);
-        EntityHitResult hit = ProjectileUtil.getEntityHitResult(healer, eyes, end, sweep,
-                entity -> entity instanceof LivingEntity && !entity.isSpectator() && entity != healer,
-                eyes.distanceToSqr(end));
-        return hit != null && hit.getEntity() instanceof LivingEntity living ? living : null;
+        Vec3 eyes = healer.getEyePosition();
+        AABB box = target.getBoundingBox();
+        double range = healRange(healer);
+        Vec3 nearest = new Vec3(Mth.clamp(eyes.x, box.minX, box.maxX), Mth.clamp(eyes.y, box.minY, box.maxY),
+                Mth.clamp(eyes.z, box.minZ, box.maxZ));
+        if (nearest.distanceToSqr(eyes) > range * range || !healer.hasLineOfSight(target)) {
+            return false;
+        }
+        boolean underCrosshair = box.clip(eyes, eyes.add(healer.getLookAngle().scale(range + 1.0D))).isPresent();
+        return underCrosshair || angleTo(healer, target) <= HEAL_CONE_HALF_ANGLE;
+    }
+
+    /** How far off the healer's look the target's middle is, in degrees. */
+    private static double angleTo(ServerPlayer healer, LivingEntity target) {
+        Vec3 toward = target.getBoundingBox().getCenter().subtract(healer.getEyePosition());
+        if (toward.lengthSqr() < 1.0E-6D) {
+            return 0.0D;
+        }
+        double dot = Mth.clamp(toward.normalize().dot(healer.getLookAngle()), -1.0D, 1.0D);
+        return Math.toDegrees(Math.acos(dot));
     }
 
     private static boolean isValidTarget(LivingEntity target) {
@@ -239,7 +266,7 @@ public final class HealManager {
                 : HOLDING.contains(healer.getUUID());
         boolean stillValid = healer.isAlive() && !target.isRemoved() && isValidTarget(target) && holdingKey
                 && (session.isSelfHeal() ? healer.isCrouching()
-                        : target.level() == healer.level() && target.distanceToSqr(healer) <= healRange(healer) * healRange(healer));
+                        : target.level() == healer.level());
         if (!stillValid) {
             stop(healer, "bloodbound.message.heal_interrupted");
             return;
@@ -251,7 +278,7 @@ public final class HealManager {
                 return;
             }
             session.rememberPositions();
-        } else if (session.lookedAway(lookedAt(healer) != target) > LOOK_AWAY_TICKS) {
+        } else if (session.lookedAway(!inReach(healer, target)) > LOOK_AWAY_TICKS) {
             // Both may move, but the healer has to keep their eyes on the patient.
             stop(healer, "bloodbound.message.heal_interrupted");
             return;

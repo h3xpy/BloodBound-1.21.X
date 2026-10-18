@@ -158,7 +158,7 @@ public final class Eavesdrop {
         List<Integer> moving = new ArrayList<>();
 
         for (LivingEntity entity : trap.occupants(level)) {
-            if (entity == owner || (entity instanceof ServerPlayer hidden
+            if (entity == owner || Undetectable.shields(owner, entity) || (entity instanceof ServerPlayer hidden
                     && UnderTheRadarHandler.blocksReveal(hidden))) {
                 continue;
             }

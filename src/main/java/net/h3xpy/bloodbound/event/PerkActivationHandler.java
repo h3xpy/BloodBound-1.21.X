@@ -43,6 +43,7 @@ import net.h3xpy.bloodbound.perk.impl.Tripwires;
 import net.h3xpy.bloodbound.perk.impl.SacrificialKnife;
 import net.h3xpy.bloodbound.perk.impl.Salvation;
 import net.h3xpy.bloodbound.perk.impl.Undersized;
+import net.h3xpy.bloodbound.perk.impl.Undetectable;
 import net.h3xpy.bloodbound.perk.impl.Tinkerer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
@@ -97,6 +98,7 @@ public final class PerkActivationHandler {
             Map.entry(ModPerks.FRAGNADE.id(), FragNade::activate),
             Map.entry(ModPerks.ICE_BLOCK.id(), IceBlock::activate),
             Map.entry(ModPerks.BLESSING_OF_LIFE.id(), BlessingOfLife::activate),
+            Map.entry(ModPerks.UNDETECTABLE.id(), Undetectable::activate),
             Map.entry(ModPerks.EAVESDROP.id(), Eavesdrop::activate),
             Map.entry(ModPerks.INEVITABLE_DEATH.id(), InevitableDeath::activate),
             Map.entry(ModPerks.SIN_OF_OBLIVIOUSNESS.id(), SinOfObliviousness::activate),
@@ -206,6 +208,8 @@ public final class PerkActivationHandler {
         } else if (perk.id().equals(ModPerks.BLESSING_OF_LIFE.id())) {
             // Laying a ritual is seconds of holding still with the key down.
             BlessingOfLife.setHolding(player, holding);
+        } else if (perk.id().equals(ModPerks.UNDETECTABLE.id())) {
+            Undetectable.setHolding(player, holding);
         } else if (perk.id().equals(ModPerks.EAVESDROP.id())) {
             Eavesdrop.setHolding(player, holding);
         } else if (perk.id().equals(ModPerks.INEVITABLE_DEATH.id())) {
