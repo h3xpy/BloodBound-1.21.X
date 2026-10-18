@@ -176,6 +176,11 @@ public final class HealManager {
                 SoundSource.PLAYERS, 0.6F, 0.9F);
     }
 
+    /** How far this healer reaches: further with Perfusion. */
+    private static double healRange(ServerPlayer healer) {
+        return PerkDataManager.get(healer).isAddonActive(ModAddons.PERFUSION) ? HEAL_RANGE * ModAddons.PERFUSION_RANGE : HEAL_RANGE;
+    }
+
     /** The injured player or creature under the healer's crosshair, within range and in sight. */
     @Nullable
     private static LivingEntity findTarget(ServerPlayer healer) {
@@ -187,7 +192,8 @@ public final class HealManager {
     @Nullable
     private static LivingEntity lookedAt(ServerPlayer healer) {
         Vec3 eyes = healer.getEyePosition();
-        Vec3 end = eyes.add(healer.getLookAngle().scale(HEAL_RANGE));
+        double range = healRange(healer);
+        Vec3 end = eyes.add(healer.getLookAngle().scale(range));
         BlockHitResult wall = healer.level().clip(new ClipContext(eyes, end, ClipContext.Block.COLLIDER,
                 ClipContext.Fluid.NONE, healer));
         if (wall.getType() != HitResult.Type.MISS) {
@@ -233,7 +239,7 @@ public final class HealManager {
                 : HOLDING.contains(healer.getUUID());
         boolean stillValid = healer.isAlive() && !target.isRemoved() && isValidTarget(target) && holdingKey
                 && (session.isSelfHeal() ? healer.isCrouching()
-                        : target.level() == healer.level() && target.distanceToSqr(healer) <= HEAL_RANGE * HEAL_RANGE);
+                        : target.level() == healer.level() && target.distanceToSqr(healer) <= healRange(healer) * healRange(healer));
         if (!stillValid) {
             stop(healer, "bloodbound.message.heal_interrupted");
             return;

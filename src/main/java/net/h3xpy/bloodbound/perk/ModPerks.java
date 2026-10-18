@@ -144,7 +144,7 @@ public final class ModPerks {
     public static final Perk BROKEN_MOVEMENT_DEVICE = PerkRegistry.register(Perk.builder("broken_movement_device")
             .type(PerkType.ACTIVE)
             .scaling(10, 12.5, 15)
-            .scaling(35, 30, 25)
+            .scaling(40, 30, 20)
             .cooldown(1)
             .build());
 
@@ -165,7 +165,7 @@ public final class ModPerks {
     public static final Perk ANTI_EXHAUSTION_SYRINGE = PerkRegistry.register(
             Perk.builder("anti_exhaustion_syringe")
                     .type(PerkType.ACTIVE)
-                    .scaling(80, 90, 100)
+                    .scaling(70, 80, 90)
                     .scaling(150, 130, 110)
                     .cooldown(1)
                     .build());
@@ -265,7 +265,7 @@ public final class ModPerks {
      */
     public static final Perk GUARDIAN_ANGEL = PerkRegistry.register(Perk.builder("guardian_angel")
             .type(PerkType.PASSIVE)
-            .scaling(60, 80, 100)
+            .scaling(40, 50, 60)
             .scaling(4, 8, 12)
             .scaling(8, 12, 16)
             .scaling(7, 6, 5)

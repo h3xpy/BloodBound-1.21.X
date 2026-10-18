@@ -1,13 +1,23 @@
 package net.h3xpy.bloodbound.perk.impl;
 
+import java.util.UUID;
+
+import javax.annotation.Nullable;
+
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
+import net.h3xpy.bloodbound.entity.RitualEntity;
+import net.h3xpy.bloodbound.event.AuraRevealHandler;
 import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.registry.ModEffects;
+import net.h3xpy.bloodbound.ritual.TrapRoster;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Enhanced Perception: everything the player reads auras with reaches further.
@@ -32,6 +42,36 @@ public final class EnhancedPerception {
             bonus += ModAddons.ADWARE_BONUS_BLOCKS;
         }
         return base + bonus;
+    }
+
+    /**
+     * Rootkit: a sweep for auras finds traps too — barbed wire, tripwires, Target Found wires, spring
+     * pads and Eavesdrop traps that are not the viewer's own — and lights them up for the same time.
+     * Called by every perk that sweeps an area for auras, with that area.
+     */
+    public static void revealTraps(ServerPlayer viewer, Vec3 centre, double radius, int ticks) {
+        if (!PerkDataManager.get(viewer).isAddonActive(ModAddons.ROOTKIT)) {
+            return;
+        }
+        AABB area = AABB.ofSize(centre, radius * 2.0D, radius * 2.0D, radius * 2.0D);
+        for (Entity entity : viewer.serverLevel().getEntitiesOfClass(Entity.class, area, EnhancedPerception::isTrap)) {
+            if (entity.distanceToSqr(centre) <= radius * radius && !viewer.getUUID().equals(ownerOf(entity))) {
+                AuraRevealHandler.revealMarker(viewer, entity, ticks);
+            }
+        }
+    }
+
+    private static boolean isTrap(Entity entity) {
+        return entity instanceof TrapRoster.Trap
+                || (entity instanceof RitualEntity ritual && ModPerks.EAVESDROP.id().equals(ritual.perkId()));
+    }
+
+    @Nullable
+    private static UUID ownerOf(Entity entity) {
+        if (entity instanceof TrapRoster.Trap trap) {
+            return trap.trapOwnerId();
+        }
+        return entity instanceof RitualEntity ritual ? ritual.ownerId() : null;
     }
 
     /** Spyware: an aura this viewer read stays lit a little longer. */
