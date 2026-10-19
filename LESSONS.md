@@ -158,3 +158,12 @@ not saved, so a reloaded arrow is at tick 0 too. Arrows lying in the ground were
 shots every time their chunk loaded: Gunpowder's sniper sound played with nobody shooting, Bank Shot
 could charge a bounce, and Gabriel's Bow cut the arrow's damage again. Check
 `event.loadedFromDisk()` in any handler meant for a projectile being fired.
+
+## Pulling a player
+
+### Steer a player along a path open-loop, not from where the server sees them
+Sacrificial Knife's pull set the target's velocity to "next point on the curve minus where they are
+now". For a mob that is exact. For a player, "where they are now" is what their client last reported,
+a tick or two old, so the server asked for two steps at once, the client overshot, and the next tick
+pulled it back: a visible zigzag. For players, send the curve's own step (point k minus point k-1)
+every tick and let the client carry it; only server-moved entities can be steered from their position.

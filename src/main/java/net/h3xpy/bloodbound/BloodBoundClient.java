@@ -31,6 +31,7 @@ import net.h3xpy.bloodbound.client.render.SanctumBubbleRenderer;
 import net.h3xpy.bloodbound.client.render.TargetFoundRenderer;
 import net.h3xpy.bloodbound.client.model.KnifeModel;
 import net.h3xpy.bloodbound.client.render.KnifeRenderer;
+import net.h3xpy.bloodbound.client.render.DecoyRenderer;
 import net.h3xpy.bloodbound.client.render.PentagramRenderer;
 import net.h3xpy.bloodbound.client.render.RiteRenderer;
 import net.h3xpy.bloodbound.client.render.TripwireRenderer;
@@ -107,6 +108,7 @@ public class BloodBoundClient {
         event.registerEntityRenderer(ModEntities.TARGET_FOUND.get(), TargetFoundRenderer::new);
         event.registerEntityRenderer(ModEntities.TRIPWIRE.get(), TripwireRenderer::new);
         event.registerEntityRenderer(ModEntities.KNIFE.get(), KnifeRenderer::new);
+        event.registerEntityRenderer(ModEntities.DECOY.get(), DecoyRenderer::new);
         event.registerEntityRenderer(ModEntities.PENTAGRAM.get(), PentagramRenderer::new);
         event.registerEntityRenderer(ModEntities.RITE.get(), RiteRenderer::new);
         event.registerEntityRenderer(ModEntities.RITUAL.get(), RitualRenderer::new);

@@ -67,6 +67,10 @@ public final class SpringPad {
         if (data.isOnCooldown(ModPerks.SPRING_PAD.id(), player.level().getGameTime())) {
             return;
         }
+        // Traps keep a clear block between them: refused before the seconds of setting up, not after.
+        if (!SETTING.containsKey(player.getUUID()) && TrapRoster.refuseCrowded(player)) {
+            return;
+        }
         SETTING.putIfAbsent(player.getUUID(), new Setup(tier, player.position()));
     }
 
@@ -117,6 +121,10 @@ public final class SpringPad {
     }
 
     private static void place(ServerPlayer player, PlayerPerkData data, int tier, long gameTime) {
+        // Someone may have laid a trap here while this one was being set up.
+        if (TrapRoster.refuseCrowded(player)) {
+            return;
+        }
         ServerLevel level = player.serverLevel();
         SpringPadEntity pad = new SpringPadEntity(level, player, tier);
         pad.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), 0.0F);

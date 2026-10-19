@@ -106,6 +106,12 @@ public class TripwireEntity extends Entity implements TrapRoster.Trap {
         this.tickCount = 0;
     }
 
+    /** Both posts count for the spacing between traps, the second once it is in. */
+    @Override
+    public java.util.List<Vec3> trapPoints() {
+        return hasEnd() ? java.util.List.of(position(), position().add(endOffset())) : java.util.List.of(position());
+    }
+
     /** The top of the first post, and of the second: the two ends of the wire. */
     public Vec3 startTop() {
         return position().add(0.0D, ModPerks.TRIPWIRE_POST_HEIGHT, 0.0D);

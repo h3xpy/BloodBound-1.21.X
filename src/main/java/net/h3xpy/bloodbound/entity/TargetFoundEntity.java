@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.h3xpy.bloodbound.data.PerkDataManager;
+import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.perk.impl.TargetFound;
 import net.h3xpy.bloodbound.registry.ModEntities;
@@ -43,6 +45,8 @@ public class TargetFoundEntity extends Entity implements TrapRoster.Trap {
     private boolean tripped;
     private int tier = 1;
     private long placedAt;
+    /** Crappy Toolbox: wires the owner may have out on top of the tier's, fixed when this one was laid. */
+    private int extraTraps;
 
     public TargetFoundEntity(EntityType<? extends TargetFoundEntity> type, Level level) {
         super(type, level);
@@ -54,6 +58,8 @@ public class TargetFoundEntity extends Entity implements TrapRoster.Trap {
         this.ownerId = owner.getUUID();
         this.tier = tier;
         this.placedAt = level.getGameTime();
+        this.extraTraps = PerkDataManager.get(owner).isAddonActive(ModAddons.CRAPPY_TOOLBOX)
+                ? ModAddons.CRAPPY_TOOLBOX_EXTRA_TRAPS : 0;
         applyTier();
     }
 
@@ -131,7 +137,7 @@ public class TargetFoundEntity extends Entity implements TrapRoster.Trap {
 
     @Override
     public int trapLimit() {
-        return ModPerks.TARGET_FOUND.intValue(ModPerks.TARGET_TRAPS, tier);
+        return ModPerks.TARGET_FOUND.intValue(ModPerks.TARGET_TRAPS, tier) + extraTraps;
     }
 
     /** A wire already tripped was only waiting on its owner's window; it does not come back. */
@@ -147,6 +153,7 @@ public class TargetFoundEntity extends Entity implements TrapRoster.Trap {
         tier = Math.max(1, tag.getInt("Tier"));
         placedAt = tag.getLong("PlacedAt");
         tripped = tag.getBoolean("Tripped");
+        extraTraps = tag.getInt("ExtraTraps");
         applyTier();
     }
 
@@ -158,5 +165,6 @@ public class TargetFoundEntity extends Entity implements TrapRoster.Trap {
         tag.putInt("Tier", tier);
         tag.putLong("PlacedAt", placedAt);
         tag.putBoolean("Tripped", tripped);
+        tag.putInt("ExtraTraps", extraTraps);
     }
 }

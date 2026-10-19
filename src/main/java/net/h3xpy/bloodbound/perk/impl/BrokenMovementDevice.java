@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.h3xpy.bloodbound.advancement.ModAdvancements;
 import net.h3xpy.bloodbound.data.PerkDataManager;
+import net.h3xpy.bloodbound.entity.DecoyEntity;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.network.RecallTimerPayload;
 import net.h3xpy.bloodbound.perk.ModAddons;
@@ -105,6 +106,11 @@ public final class BrokenMovementDevice {
                     Component.translatable("bloodbound.message.broken_device_undo_ready",
                             ModAddons.TOOL_C_UNDO_WINDOW_TICKS / 20).withStyle(ChatFormatting.AQUA),
                     true);
+        }
+
+        // Diagnostic Tool X: a stand-in stays behind, exactly as the player was, while they jump.
+        if (data.isAddonActive(ModAddons.DIAGNOSTIC_TOOL_X)) {
+            DecoyEntity.leaveBehind(player);
         }
 
         snapTo(player, data.recallX(), data.recallY(), data.recallZ(), data.recallYRot(), data.recallXRot());
