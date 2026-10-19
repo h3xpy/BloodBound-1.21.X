@@ -8,6 +8,7 @@ import net.h3xpy.bloodbound.effect.EffectDurations;
 import net.h3xpy.bloodbound.effect.MovementTracker;
 import net.h3xpy.bloodbound.network.AuraRevealPayload;
 import net.h3xpy.bloodbound.perk.impl.EnhancedPerception;
+import net.h3xpy.bloodbound.perk.impl.Undetectable;
 import net.h3xpy.bloodbound.registry.ModEffects;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -44,6 +45,10 @@ public final class AuraRevealHandler {
      * @return true when the reveal took
      */
     public static boolean reveal(ServerPlayer viewer, LivingEntity target, int durationTicks) {
+        // Inside, or looking into, somebody else's Undetectable: nothing to see.
+        if (Undetectable.shields(viewer, target)) {
+            return false;
+        }
         if (target instanceof ServerPlayer hidden && UnderTheRadarHandler.blocksReveal(hidden)) {
             return false;
         }
@@ -77,7 +82,7 @@ public final class AuraRevealHandler {
             return false;
         }
         for (ServerPlayer viewer : target.serverLevel().players()) {
-            if (viewer != target) {
+            if (viewer != target && !Undetectable.shields(viewer, target)) {
                 PacketDistributor.sendToPlayer(viewer, new AuraRevealPayload(target.getId(),
                         EnhancedPerception.revealTicks(viewer, durationTicks)));
             }
@@ -93,6 +98,9 @@ public final class AuraRevealHandler {
      * can carry, so the glow is sent straight to the one client and left to run its own clock out.
      */
     public static void revealMarker(ServerPlayer viewer, Entity marker, int ticks) {
+        if (Undetectable.shields(viewer, marker)) {
+            return;
+        }
         PacketDistributor.sendToPlayer(viewer, new AuraRevealPayload(marker.getId(),
                 EnhancedPerception.revealTicks(viewer, ticks)));
     }

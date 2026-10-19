@@ -1100,6 +1100,22 @@ public final class ModPerks {
             .cooldown(2)
             .build());
 
+    /**
+     * Hold still to lay a ritual inside which nobody but its owner reads auras, and nothing can have
+     * its aura read by anybody but its owner.
+     * <p>Scaling: [0] radius in blocks.
+     */
+    public static final Perk UNDETECTABLE = PerkRegistry.register(Perk.builder("undetectable")
+            .type(PerkType.ACTIVE)
+            .scaling(12, 20, 28)
+            .flatCooldown(180)
+            .build());
+
+    // --- Undetectable tuning ---
+    public static final int UNDETECTABLE_RADIUS = 0;
+    /** Seconds of standing still it takes to lay. */
+    public static final int UNDETECTABLE_SETUP_TICKS = 100;
+
     // --- Salvation tuning ---
     public static final int SALVATION_RADIUS = 0;
     public static final int SALVATION_BIND = 1;

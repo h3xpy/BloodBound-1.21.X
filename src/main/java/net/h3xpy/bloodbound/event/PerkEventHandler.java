@@ -56,6 +56,7 @@ import net.h3xpy.bloodbound.perk.impl.Fortified;
 import net.h3xpy.bloodbound.perk.impl.SacrificialKnife;
 import net.h3xpy.bloodbound.perk.impl.Salvation;
 import net.h3xpy.bloodbound.perk.impl.Undersized;
+import net.h3xpy.bloodbound.perk.impl.Undetectable;
 import net.h3xpy.bloodbound.perk.impl.TeamSpirit;
 import net.h3xpy.bloodbound.perk.impl.Tinkerer;
 import net.h3xpy.bloodbound.perk.impl.Wireless;
@@ -305,6 +306,7 @@ public final class PerkEventHandler {
         IceBlock.tick(player, data, gameTime);
         NothinToSee.tick(player, data, gameTime);
         BlessingOfLife.tick(player, data, gameTime);
+        Undetectable.tick(player, data, gameTime);
         Eavesdrop.tick(player, data, gameTime);
         InevitableDeath.tick(player, data, gameTime);
         SinOfObliviousness.tick(player, data, gameTime);

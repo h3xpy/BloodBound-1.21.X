@@ -118,7 +118,7 @@ public final class Omniscience {
         boolean ransomware = data.isAddonActive(ModAddons.RANSOMWARE);
         List<Integer> entities = new ArrayList<>();
         for (LivingEntity entity : player.serverLevel().getEntitiesOfClass(LivingEntity.class, box)) {
-            if (entity != player && entity.isAlive()
+            if (entity != player && entity.isAlive() && !Undetectable.shields(player, entity)
                     && !(entity instanceof ServerPlayer hidden && UnderTheRadarHandler.blocksReveal(hidden))) {
                 entities.add(entity.getId());
                 // Ransomware, as everywhere else: being seen is tiring. Omniscience never goes

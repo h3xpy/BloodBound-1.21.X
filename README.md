@@ -102,6 +102,7 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | **Reactive Compound** | Active | Hold the key **5/4.5/4** seconds, slowed as if drinking, with a melee weapon (sword, axe, trident, mace) in hand, unable to attack, to coat it — both arms show in first person, the blade swings flat and a vial is poured over it. Switching items loses the coat. Taking a blow from anything while coating spills the vial: the coating stops, with no cooldown. The next thing it hits takes **30/40/50%** more damage and 50% more knockback; a player also has every perk off for **10/12.5/15** seconds (their HUD icons grey out; traps already laid stay). Cooldown **45/40/35** seconds after the hit. |
 | **Boundless Soul** | Passive | Melee blows hurt you **30/25/20%** more; every other kind of damage (arrows, explosions, fire, falls, magic) hurts you **50/55/60%** less. The void and `/kill` are untouched. |
 | **Heart Of Gold** | Passive | **1/2/3** more hearts. |
+| **Undetectable** | Active | Hold the key 5 seconds still to lay a ritual of **12/20/28** blocks radius (soul flame: blessed when laid). Players other than you standing inside cannot reveal any aura, and nothing inside it — creature, player or trap — can have its aura revealed by anyone but you (Omniscience and Eavesdrop included). Cooldown 180 seconds. |
 | **Salvation** | Active | Hold the key 2 seconds still to draw a pentagram of **10/14/18** blocks radius on the ground. It is drawn over 2.5 seconds — outer circle, inner circle, then the star stroke by stroke, glowing crimson with a white-hot pen tip and embers rising — then charges and flares. Everything inside it then (within 4 blocks up or down), but you, is bound in chains for **6/8/10** seconds: a player cannot strike with a weapon (fists, and anything that is not a weapon, still hit), nor use, eat, place or shoot anything; a mob cannot hurt anything or shoot. Cooldown **40/35/30** seconds. |
 | **Sacrificial Knife** | Active | Throws a knife (a real model, a ritual dagger) with a slight drop. A hit leaves it stuck in the target, handle out and turning with it, for **6/7/8** damage (armour counts); the slot glows while it is. Kill the target and it bursts: you heal **4/5/6** HP and everything within **4/5/6** blocks takes as much. Or press the key again to tear the knife back: the target is hauled along an arc right up to you, whatever the distance, and stops in front of you; what is left of the cooldown is halved. A knife left in falls out after 20 seconds; one that hits a wall stays there for 2. Cooldown **40/36/32** seconds, 25% shorter on a miss. |
 | **Nothin' to See** | Active | Press the key to become wholly invisible for **12/17/22** seconds: no body, armour, held item or cape, no effect, running or landing particles, and, once you have been unseen for 3 seconds, every mob within 64 blocks drops you as a target and cannot take you as one again. The cooldown, **40/35/30** seconds, starts when you show again. Pressing the key while invisible ends it early and takes the time left off the cooldown, second for second. You cannot hurt anything while invisible (blows, shots and perk damage are all cancelled); being hit does not break it. The slot counts down the time left. |
@@ -205,8 +206,9 @@ you a check, and a doctored client gains nothing.
 
 ## Healing
 
-Any perk that grants healing — Surgical Suture, Caretaker or We Can Do This — unlocks it. Look
-straight at an injured player or creature within 6 blocks and hold the heal key: they recover 1 HP
+Any perk that grants healing — Surgical Suture, Caretaker or We Can Do This — unlocks it. Face an
+injured player or creature within 2 blocks (measured to its nearest side), inside a 45 degree cone in
+front of you, and hold the heal key: they recover 1 HP
 every 0.75 seconds — a full 20 HP heal in 15 seconds. Neither of you has to crouch or stand still.
 It is the only healing that gets through **Broken**. Every kind of mending in the mod runs at twice its
 written rate: co-op healing, Patch Up and dressing a Bleeding wound alike.
@@ -308,8 +310,8 @@ you already own and addons you do not.
 | **Adware** | Enhanced Perception | Common | Another 4 blocks of reach. |
 | **Spyware** | Enhanced Perception | Uncommon | Auras you reveal stay up 3 seconds longer; an Omniscience reveal holds 3 seconds after you move. |
 | **Ransomware** | Enhanced Perception | Epic | Anything whose aura you reveal is left Exhausted. |
-| **Rootkit** | Enhanced Perception | Rare | Sweeps for auras (Omniscience, Call Of Death, Soul Chain) also light up other players' traps in the same area: barbed wire, tripwires, Target Found wires, spring pads and Eavesdrop traps. |
-| **Perfusion** | Caretaker | Uncommon | Healing reaches 50% further: 9 blocks instead of 6. |
+| **Rootkit** | Enhanced Perception | Rare | Sweeps for auras (Omniscience, Call Of Death, Soul Chain) also light up other players' traps in the same area: barbed wire, tripwires, Target Found wires and spring pads (rituals, Eavesdrop included, are not traps). |
+| **Perfusion** | Caretaker | Uncommon | Healing reaches 50% further: 3 blocks instead of 2. |
 | **Torn Page** | Crime And Punishment | Rare | A parry made during the cooldown takes 20% off what is left of it. |
 | **Damned Soul** | Crime And Punishment | Epic | The flash is 2 seconds shorter, plus 0.25 s per point of damage the blow carried. |
 | **Weighing Scale** | Crime And Punishment | Unstable | Anything you Flash, by any means, is Broken for 10 seconds. |

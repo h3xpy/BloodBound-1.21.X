@@ -41,6 +41,7 @@ import net.h3xpy.bloodbound.perk.impl.Fortified;
 import net.h3xpy.bloodbound.perk.impl.SacrificialKnife;
 import net.h3xpy.bloodbound.perk.impl.Salvation;
 import net.h3xpy.bloodbound.perk.impl.Undersized;
+import net.h3xpy.bloodbound.perk.impl.Undetectable;
 import net.h3xpy.bloodbound.perk.impl.TeamSpirit;
 import net.h3xpy.bloodbound.perk.impl.Tinkerer;
 import net.h3xpy.bloodbound.perk.impl.Wireless;
@@ -110,6 +111,7 @@ public final class PlayerSyncHandler {
             IceBlock.release(player);
             // Traps and rituals stay behind: they are saved with the world and wait for the owner.
             BlessingOfLife.logout(player);
+            Undetectable.logout(player);
             Eavesdrop.logout(player);
             InevitableDeath.logout(player);
             SinOfObliviousness.logout(player);
@@ -143,6 +145,7 @@ public final class PlayerSyncHandler {
             IceBlock.release(player);
             NothinToSee.release(player);
             BlessingOfLife.clear(player);
+            Undetectable.clear(player);
             Eavesdrop.clear(player);
             InevitableDeath.clear(player);
             SinOfObliviousness.clear(player);

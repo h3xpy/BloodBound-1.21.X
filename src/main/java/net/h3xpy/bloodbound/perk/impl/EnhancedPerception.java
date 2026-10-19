@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 
 import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
-import net.h3xpy.bloodbound.entity.RitualEntity;
 import net.h3xpy.bloodbound.event.AuraRevealHandler;
 import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
@@ -45,8 +44,9 @@ public final class EnhancedPerception {
     }
 
     /**
-     * Rootkit: a sweep for auras finds traps too — barbed wire, tripwires, Target Found wires, spring
-     * pads and Eavesdrop traps that are not the viewer's own — and lights them up for the same time.
+     * Rootkit: a sweep for auras finds traps too — barbed wire, tripwires, Target Found wires and spring
+     * pads that are not the viewer's own — and lights them up for the same time. Rituals, Eavesdrop
+     * included, are not traps.
      * Called by every perk that sweeps an area for auras, with that area.
      */
     public static void revealTraps(ServerPlayer viewer, Vec3 centre, double radius, int ticks) {
@@ -62,16 +62,12 @@ public final class EnhancedPerception {
     }
 
     private static boolean isTrap(Entity entity) {
-        return entity instanceof TrapRoster.Trap
-                || (entity instanceof RitualEntity ritual && ModPerks.EAVESDROP.id().equals(ritual.perkId()));
+        return entity instanceof TrapRoster.Trap;
     }
 
     @Nullable
     private static UUID ownerOf(Entity entity) {
-        if (entity instanceof TrapRoster.Trap trap) {
-            return trap.trapOwnerId();
-        }
-        return entity instanceof RitualEntity ritual ? ritual.ownerId() : null;
+        return entity instanceof TrapRoster.Trap trap ? trap.trapOwnerId() : null;
     }
 
     /** Spyware: an aura this viewer read stays lit a little longer. */
