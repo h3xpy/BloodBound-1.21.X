@@ -66,6 +66,19 @@ public final class ModAddons {
     public static final Addon DIAGNOSTIC_TOOL_B = AddonRegistry.register(
             Addon.of("diagnostic_tool_b", ModPerks.BROKEN_MOVEMENT_DEVICE, AddonRarity.EPIC));
 
+    /** Jumping back leaves a stand-in of the player where they were, which goes up in smoke later. */
+    public static final Addon DIAGNOSTIC_TOOL_X = AddonRegistry.register(
+            Addon.of("diagnostic_tool_x", ModPerks.BROKEN_MOVEMENT_DEVICE, AddonRarity.UNSTABLE));
+    /** How long Diagnostic Tool X's stand-in stays: ten seconds. */
+    public static final int TOOL_X_DECOY_TICKS = 200;
+
+    // --- Target Found ---
+
+    /** Two more wires out at once, at every tier. */
+    public static final Addon CRAPPY_TOOLBOX = AddonRegistry.register(
+            Addon.of("crappy_toolbox", ModPerks.TARGET_FOUND, AddonRarity.UNCOMMON));
+    public static final int CRAPPY_TOOLBOX_EXTRA_TRAPS = 2;
+
     /** A little more durability back per landed check. */
     public static final Addon GRIP_WRENCH = AddonRegistry.register(
             Addon.of("grip_wrench", ModPerks.TINKERER, AddonRarity.COMMON));

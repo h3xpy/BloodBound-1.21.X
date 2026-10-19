@@ -593,7 +593,7 @@
   "bloodbound.message.target_found_arrived": "Vous avez rejoint le fil",
 
   "perk.bloodbound.target_found": "Target Found",
-  "perk.bloodbound.target_found.desc": "Maintenez la touche du slot pendant %1$s secondes sans bouger pour poser un fil, affiché à %2$s %% d'opacité. Vous pouvez en avoir %3$s posés ; un de plus supprime le plus ancien. Quand quelque chose le franchit alors que vous êtes à moins de 256 blocs, vous êtes averti et son aura vous est révélée, puis %5$s secondes plus tard une fenêtre de 4 secondes s'ouvre : appuyez sur la touche du slot pour être téléporté au fil. Le fil disparaît à la fermeture de la fenêtre, utilisée ou non. Plus loin, vous êtes seulement averti et le fil est détruit. Recharge %4$s secondes après la pose.",
+  "perk.bloodbound.target_found.desc": "Maintenez la touche du slot pendant %1$s secondes sans bouger pour poser un fil, affiché à %2$s %% d'opacité. Vous pouvez en avoir %3$s posés ; un de plus supprime le plus ancien. Quand quelque chose le franchit alors que vous êtes à moins de 256 blocs, vous êtes averti et son aura vous est révélée, puis %5$s secondes plus tard une fenêtre de 6 secondes s'ouvre : appuyez sur la touche du slot pour être téléporté au fil. Le fil disparaît à la fermeture de la fenêtre, utilisée ou non. Plus loin, vous êtes seulement averti et le fil est détruit. Recharge %4$s secondes après la pose.",
 
   "perk.bloodbound.under_the_radar": "Under The Radar",
   "perk.bloodbound.under_the_radar.desc": "Votre nametag est caché et tous les sons que vous produisez sont supprimés, sous-titres compris. La première fois que votre aura devrait être révélée, c'est bloqué, ainsi que tout le reste pendant les %1$s secondes suivantes ; le perk passe ensuite en recharge pendant %2$s secondes. Les mobs doivent aussi s'approcher %3$s %% plus près pour vous repérer.",
@@ -678,7 +678,13 @@
   "addon.bloodbound.ransomware": "Ransomware",
   "addon.bloodbound.ransomware.desc": "Tout ce dont vous révélez l'aura gagne Épuisé.",
   "addon.bloodbound.rootkit": "Rootkit",
-  "addon.bloodbound.rootkit.desc": "Les perks qui révèlent les auras dans une zone révèlent aussi les pièges des autres joueurs qui s'y trouvent.",
+  "addon.bloodbound.rootkit.desc": "Les perks qui révèlent les auras dans une zone révèlent aussi les pièges des autres joueurs qui s'y trouvent, y compris dans le cercle de votre Eavesdrop.",
+  "addon.bloodbound.diagnostic_tool_x": "Diagnostic Tool X",
+  "addon.bloodbound.diagnostic_tool_x.desc": "Revenir au point de retour laisse un double de vous là où vous étiez, jusqu'au skin et au pseudo. Il reste 10 secondes puis disparaît dans un nuage de fumée ; le moindre coup le trahit.",
+  "addon.bloodbound.crappy_toolbox": "Crappy Toolbox",
+  "addon.bloodbound.crappy_toolbox.desc": "Vous pouvez avoir 2 pièges de plus posés en même temps. Retirer l'addon enlève aussitôt les pièges en trop, les plus anciens d'abord.",
+  "entity.bloodbound.decoy": "Leurre",
+  "bloodbound.message.trap_too_close": "Trop près d'un autre piège : laissez au moins un bloc entre eux",
   "addon.bloodbound.perfusion": "Perfusion",
   "addon.bloodbound.perfusion.desc": "La portée du soin est augmentée de 50 %%.",
   "perk.bloodbound.undetectable": "Undetectable",

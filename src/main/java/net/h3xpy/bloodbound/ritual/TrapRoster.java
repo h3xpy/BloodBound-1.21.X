@@ -11,7 +11,14 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
@@ -47,7 +54,18 @@ public final class TrapRoster {
         default boolean isSpent() {
             return false;
         }
+
+        /** Where it stands, for the spacing rule. A tripwire stands at both of its posts. */
+        default List<Vec3> trapPoints() {
+            return List.of(((Entity) this).position());
+        }
     }
+
+    /**
+     * How far round a spot traps are looked for: as far as a tripwire's second post can be from its
+     * first, so one whose far post is the close one is still found.
+     */
+    private static final double SPACING_SEARCH = 24.0D;
 
     /** One trap that is out, and the entity standing for it while its chunk is loaded. */
     private static final class Entry {
@@ -122,6 +140,41 @@ public final class TrapRoster {
         return keep;
     }
 
+    /**
+     * Traps never stack and always keep a clear block between them: nothing may go in the block of
+     * another trap, whoever's and whatever kind, nor in any of the blocks touching it.
+     */
+    public static boolean tooClose(Level level, Vec3 spot) {
+        BlockPos block = BlockPos.containing(spot);
+        AABB around = new AABB(block).inflate(SPACING_SEARCH);
+        for (Entity entity : level.getEntitiesOfClass(Entity.class, around, candidate -> candidate instanceof Trap)) {
+            if (entity.isRemoved() || ((Trap) entity).isSpent()) {
+                continue;
+            }
+            for (Vec3 point : ((Trap) entity).trapPoints()) {
+                BlockPos other = BlockPos.containing(point);
+                if (Math.abs(other.getX() - block.getX()) <= 1 && Math.abs(other.getY() - block.getY()) <= 1
+                        && Math.abs(other.getZ() - block.getZ()) <= 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * The spacing rule, said to the player: true when where they stand is too close to a trap, and
+     * nothing should be laid.
+     */
+    public static boolean refuseCrowded(ServerPlayer player) {
+        if (!tooClose(player.level(), player.position())) {
+            return false;
+        }
+        player.displayClientMessage(Component.translatable("bloodbound.message.trap_too_close")
+                .withStyle(ChatFormatting.RED), true);
+        return true;
+    }
+
     /** How many traps of this kind the owner has out, loaded or not. */
     public static int count(String kind, UUID ownerId) {
         List<Entry> mine = roster(kind, ownerId);
@@ -140,6 +193,23 @@ public final class TrapRoster {
             }
         }
         return found;
+    }
+
+    /**
+     * Takes the owner's oldest traps of this kind away until no more than {@code limit} are left,
+     * wherever they are: what raised the limit (an addon) came off.
+     */
+    public static void trimTo(String kind, UUID ownerId, int limit) {
+        List<Entry> mine = roster(kind, ownerId);
+        prune(mine);
+        while (mine.size() > Math.max(0, limit)) {
+            Entry oldest = mine.remove(0);
+            if (oldest.entity != null && !oldest.entity.isRemoved()) {
+                oldest.entity.discard();
+            } else {
+                DISCARDED.add(oldest.id);
+            }
+        }
     }
 
     /** Takes every trap of this kind away from the owner, wherever it is: the perk came off. */

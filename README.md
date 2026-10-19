@@ -74,7 +74,7 @@ are written `tier1/tier2/tier3`, with the tier you own highlighted.
 | **Team Spirit** | Passive | Unlocks healing. One point of health earns the patient Haste **1/2/3** and Strength I for **60/70/80** seconds — but only within **16/20/24** blocks of you. Leave it and there are 3 seconds to come back before the boons are gone for good. |
 | **Beyond Vision** | Passive | Harmful effects on you are **80/85/90%** shorter, and whatever cast one has its aura revealed to you for as long as the effect was meant to last. You have 8 hearts instead of 10. |
 | **Healing Runes** | Active | Fire a slow rune that ignores gravity; the first living thing it touches is healed **3/4/5** HP. **5/6/7** runes, one back every **6/5.5/5** seconds. |
-| **Target Found** | Active | Hold the key **3/2.5/2** seconds without moving to lay a tripwire at **15/12/9%** opacity; up to **5/6/7** out, a new one takes the oldest. When something crosses one within 256 blocks of you, you are told and shown its aura, and after **5/4/3** seconds a 4 second window lets the key take you to the wire. The wire goes when the window does. Further away you only get the warning. Wires stay down through a logout or a restart, and wait, armed, while you are away. Cooldown **15/12/9** seconds. |
+| **Target Found** | Active | Hold the key **3/2.5/2** seconds without moving to lay a tripwire at **15/12/9%** opacity; up to **2/3/4** out, a new one takes the oldest. When something crosses one within 256 blocks of you, you are told and shown its aura, and after **3/2/1** seconds a 6 second window lets the key take you to the wire. The wire goes when the window does. Further away you only get the warning. Wires stay down through a logout or a restart, and wait, armed, while you are away. Cooldown **15/12/9** seconds. |
 | **Under The Radar** | Passive | Nametag hidden and every sound you make silenced, subtitles included. The first aura reveal against you is blocked, along with any other for **4/8/12** seconds; then a **40/30/20** second cooldown. Mobs have to come **50/65/80%** closer to notice you. |
 | **Final Blow** | Passive | See the marks of anything under **30/40/50%** health. Walking them leaves the owner Broken, lingering **6/8/10** seconds after you step off. Their marks vanish the moment they heal back over the line. |
 | **Full Extraction** | Passive | Ores drop smelted, with their rock, and a **20/30/40%** chance of a soul shard, rerolled after every success. Off with Silk Touch. |
@@ -252,6 +252,8 @@ you already own and addons you do not.
 | **Diagnostic Tool C** | Broken Movement Device | Uncommon | 4 seconds after returning, press again to take the return back — position and health both. Cooldown 10% longer. |
 | **Diagnostic Tool A** | Broken Movement Device | Rare | Speed V for 1 second then Speed I for the rest of the window, and no particles at all. Waste the window and you get Slowness III for 2 seconds. |
 | **Diagnostic Tool B** | Broken Movement Device | Epic | The return rewinds along the path you walked over 3 seconds, and only while you hold the key. Let go and you stop where the rewind had reached, perk on cooldown. |
+| **Diagnostic Tool X** | Broken Movement Device | Unstable | Jumping back to the return point leaves a stand-in where you were: your skin, armour, held items and cape, your name over its head under your team's rules. It stands for 10 seconds, then goes up in smoke; any hit blows it apart at once. |
+| **Crappy Toolbox** | Target Found | Uncommon | Two more wires out at once: **4/5/6**. Taking it off removes the extra wires at once, oldest first. |
 | **Grip Wrench** | Tinkerer | Common | Every landed check repairs a further 2% of durability. |
 | **Spring Clamp** | Tinkerer | Uncommon | The opening check is 50% wider, and every check after it starts from there. |
 | **Automatic Screwdriver** | Tinkerer | Epic | The checks never tighten below 40% of the opening one, and a miss costs no durability. |
@@ -310,7 +312,7 @@ you already own and addons you do not.
 | **Adware** | Enhanced Perception | Common | Another 4 blocks of reach. |
 | **Spyware** | Enhanced Perception | Uncommon | Auras you reveal stay up 3 seconds longer; an Omniscience reveal holds 3 seconds after you move. |
 | **Ransomware** | Enhanced Perception | Epic | Anything whose aura you reveal is left Exhausted. |
-| **Rootkit** | Enhanced Perception | Rare | Sweeps for auras (Omniscience, Call Of Death, Soul Chain) also light up other players' traps in the same area: barbed wire, tripwires, Target Found wires and spring pads (rituals, Eavesdrop included, are not traps). |
+| **Rootkit** | Enhanced Perception | Rare | Sweeps for auras (Omniscience, Call Of Death, Soul Chain, and your Eavesdrop's circle while it reports to you) also light up other players' traps in the same area: barbed wire, tripwires, Target Found wires and spring pads (rituals themselves are not traps). |
 | **Perfusion** | Caretaker | Uncommon | Healing reaches 50% further: 3 blocks instead of 2. |
 | **Torn Page** | Crime And Punishment | Rare | A parry made during the cooldown takes 20% off what is left of it. |
 | **Damned Soul** | Crime And Punishment | Epic | The flash is 2 seconds shorter, plus 0.25 s per point of damage the blow carried. |
@@ -398,6 +400,10 @@ saved with the world, so a restart does too. A ritual keeps working while its ow
 except for what needs them there: Eavesdrop has nobody to report to, and a Target Found wire just
 waits. Dying or unequipping the perk still takes them away. None of this costs anything while
 nobody is near: an unloaded chunk holds a ritual on disk, and it wakes up again when the chunk does.
+
+Traps (Barbed Wire, Target Found, TripWires posts, Spring Pad) never stack: a trap can only be laid
+with at least one clear block between it and any other trap, whoever's and whatever kind. Laying one
+too close is refused before the setup starts, and checked again when it would go down.
 
 A ritual is a marker entity drawing the `bloodbound:ritual` block model, which is why its aura can
 be revealed the way a creature's can: `RitualManager` owns them, `RitualSetup` owns the laying.

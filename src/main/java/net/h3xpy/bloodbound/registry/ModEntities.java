@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import net.h3xpy.bloodbound.BloodBound;
 import net.h3xpy.bloodbound.entity.BarbedWireEntity;
 import net.h3xpy.bloodbound.entity.ChainAnchorEntity;
+import net.h3xpy.bloodbound.entity.DecoyEntity;
 import net.h3xpy.bloodbound.entity.IceShellEntity;
 import net.h3xpy.bloodbound.entity.RitualEntity;
 import net.h3xpy.bloodbound.entity.SanctumBubbleEntity;
@@ -16,13 +17,25 @@ import net.h3xpy.bloodbound.entity.RiteEntity;
 import net.h3xpy.bloodbound.entity.TripwireEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class ModEntities {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
             DeferredRegister.create(Registries.ENTITY_TYPE, BloodBound.MODID);
+
+    /** Diagnostic Tool X's stand-in: a player's size and shape, for a few seconds. */
+    public static final Supplier<EntityType<DecoyEntity>> DECOY =
+            ENTITY_TYPES.register("decoy", () -> EntityType.Builder
+                    .<DecoyEntity>of(DecoyEntity::new, MobCategory.MISC)
+                    .sized(0.6F, 1.8F)
+                    .eyeHeight(1.62F)
+                    .clientTrackingRange(10)
+                    .noSummon()
+                    .build("decoy"));
 
     /** Barbed Wire's coil: flat, still, and only as wide as its own footprint. */
     public static final Supplier<EntityType<BarbedWireEntity>> BARBED_WIRE =
@@ -148,5 +161,11 @@ public final class ModEntities {
 
     public static void register(IEventBus modEventBus) {
         ENTITY_TYPES.register(modEventBus);
+        modEventBus.addListener(ModEntities::registerAttributes);
+    }
+
+    /** Living entities need their attributes registered: the decoy has a living thing's plain set. */
+    private static void registerAttributes(EntityAttributeCreationEvent event) {
+        event.put(DECOY.get(), LivingEntity.createLivingAttributes().build());
     }
 }

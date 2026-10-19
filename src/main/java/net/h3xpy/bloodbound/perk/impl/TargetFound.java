@@ -9,6 +9,7 @@ import net.h3xpy.bloodbound.data.PerkDataManager;
 import net.h3xpy.bloodbound.data.PlayerPerkData;
 import net.h3xpy.bloodbound.entity.TargetFoundEntity;
 import net.h3xpy.bloodbound.event.AuraRevealHandler;
+import net.h3xpy.bloodbound.perk.ModAddons;
 import net.h3xpy.bloodbound.perk.ModPerks;
 import net.h3xpy.bloodbound.ritual.TrapRoster;
 import net.minecraft.ChatFormatting;
@@ -86,6 +87,10 @@ public final class TargetFound {
         // A wire waiting on its owner makes the key mean "take me there", not "lay another".
         if (PENDING.containsKey(player.getUUID())
                 || data.isOnCooldown(ModPerks.TARGET_FOUND.id(), player.level().getGameTime())) {
+            return;
+        }
+        // Traps keep a clear block between them: refused before the seconds of setting up, not after.
+        if (!SETTING.containsKey(player.getUUID()) && TrapRoster.refuseCrowded(player)) {
             return;
         }
         SETTING.putIfAbsent(player.getUUID(), new Setup(tier, player.position()));
@@ -185,8 +190,20 @@ public final class TargetFound {
             return;
         }
 
+        // The limit is the one that holds right now: taking Crappy Toolbox off takes the wires it
+        // allowed away at once, the oldest first.
+        if (gameTime % 20L == 0L) {
+            TrapRoster.trimTo(TargetFoundEntity.KIND, player.getUUID(), wireLimit(data, data.getActiveTier(ModPerks.TARGET_FOUND)));
+        }
+
         tickWindow(player, gameTime);
         tickSetup(player, data, gameTime);
+    }
+
+    /** How many wires the owner may have out: the tier's count, and Crappy Toolbox's on top. */
+    public static int wireLimit(PlayerPerkData data, int tier) {
+        return ModPerks.TARGET_FOUND.intValue(ModPerks.TARGET_TRAPS, tier)
+                + (data.isAddonActive(ModAddons.CRAPPY_TOOLBOX) ? ModAddons.CRAPPY_TOOLBOX_EXTRA_TRAPS : 0);
     }
 
     private static void tickWindow(ServerPlayer player, long gameTime) {
@@ -249,6 +266,10 @@ public final class TargetFound {
     }
 
     private static void place(ServerPlayer player, PlayerPerkData data, int tier, long gameTime) {
+        // Someone may have laid a trap here while this one was being set up.
+        if (TrapRoster.refuseCrowded(player)) {
+            return;
+        }
         ServerLevel level = player.serverLevel();
         TargetFoundEntity wire = new TargetFoundEntity(level, player, tier);
         wire.moveTo(player.getX(), player.getY(), player.getZ(), 0.0F, 0.0F);

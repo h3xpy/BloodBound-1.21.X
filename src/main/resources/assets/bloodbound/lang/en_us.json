@@ -593,7 +593,7 @@
   "bloodbound.message.target_found_arrived": "You followed the tripwire",
 
   "perk.bloodbound.target_found": "Target Found",
-  "perk.bloodbound.target_found.desc": "Hold the slot key for %1$s seconds without moving to lay a tripwire, drawn at %2$s%% opacity. You may have %3$s out at once; one more takes the oldest. When something crosses one while you are within 256 blocks, you are told who and shown their aura, and %5$s seconds later a 4 second window opens: press the slot key to be taken to the wire. The wire is gone once the window closes, used or not. Further away, you only get the warning and the wire is spent. Cooldown %4$s seconds after laying one.",
+  "perk.bloodbound.target_found.desc": "Hold the slot key for %1$s seconds without moving to lay a tripwire, drawn at %2$s%% opacity. You may have %3$s out at once; one more takes the oldest. When something crosses one while you are within 256 blocks, you are told who and shown their aura, and %5$s seconds later a 6 second window opens: press the slot key to be taken to the wire. The wire is gone once the window closes, used or not. Further away, you only get the warning and the wire is spent. Cooldown %4$s seconds after laying one.",
 
   "perk.bloodbound.under_the_radar": "Under The Radar",
   "perk.bloodbound.under_the_radar.desc": "Your nametag is hidden and every sound you make is silenced, subtitles included. The first time something would reveal your aura it is blocked, and so is everything else for the next %1$s seconds; then the perk is on cooldown for %2$s seconds. Mobs also have to come %3$s%% closer to notice you.",
@@ -678,7 +678,13 @@
   "addon.bloodbound.ransomware": "Ransomware",
   "addon.bloodbound.ransomware.desc": "Anything whose aura you reveal is left Exhausted.",
   "addon.bloodbound.rootkit": "Rootkit",
-  "addon.bloodbound.rootkit.desc": "Perks that reveal auras in an area also reveal other players' traps there.",
+  "addon.bloodbound.rootkit.desc": "Perks that reveal auras in an area also reveal other players' traps there, your Eavesdrop's circle included.",
+  "addon.bloodbound.diagnostic_tool_x": "Diagnostic Tool X",
+  "addon.bloodbound.diagnostic_tool_x.desc": "Jumping back to the return point leaves a stand-in of you where you were, down to your skin and your name. It stands for 10 seconds, then vanishes in a puff of smoke; any hit gives it away.",
+  "addon.bloodbound.crappy_toolbox": "Crappy Toolbox",
+  "addon.bloodbound.crappy_toolbox.desc": "You may have 2 more wires out at once. Taking it off removes the extra wires at once, oldest first.",
+  "entity.bloodbound.decoy": "Decoy",
+  "bloodbound.message.trap_too_close": "Too close to another trap: leave a clear block between them",
   "addon.bloodbound.perfusion": "Perfusion",
   "addon.bloodbound.perfusion.desc": "Healing reaches 50%% further.",
   "perk.bloodbound.undetectable": "Undetectable",

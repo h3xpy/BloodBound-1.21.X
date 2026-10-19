@@ -188,10 +188,19 @@ public final class SacrificialKnife {
                 target.setDeltaMovement(Vec3.ZERO);
                 iterator.remove();
             } else {
-                // Exactly the step to the next point: a change of speed, never a teleport, so a
-                // player's own client carries it out smoothly.
+                // A change of speed, never a teleport, so a player's own client carries it out.
                 Vec3 next = pullPoint(pull, owner, pull.step / (double) pull.ticks);
-                target.setDeltaMovement(next.subtract(target.position()));
+                if (target instanceof ServerPlayer) {
+                    // A player is moved by their own client, and where the server sees them is a tick
+                    // or two old. Steering from that stale spot asked for two steps at once, the
+                    // client overshot, the next step pulled it back: a jerky zigzag. Handing over the
+                    // curve's own step instead is the same every tick, whatever the lag.
+                    Vec3 previous = pullPoint(pull, owner, (pull.step - 1) / (double) pull.ticks);
+                    target.setDeltaMovement(next.subtract(previous));
+                } else {
+                    // The server moves everything else itself, so it can steer from where it really is.
+                    target.setDeltaMovement(next.subtract(target.position()));
+                }
             }
             target.hurtMarked = true;
             target.fallDistance = 0.0F;

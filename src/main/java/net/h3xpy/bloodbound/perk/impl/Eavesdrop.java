@@ -50,6 +50,8 @@ public final class Eavesdrop {
 
     /** How often the chests around a ritual are looked for again. */
     private static final int CHEST_SCAN_INTERVAL = 100;
+    /** Rootkit: how long past the next sweep a heard trap stays lit, so the outline never flickers. */
+    private static final int ROOTKIT_LINGER_TICKS = 10;
 
     private Eavesdrop() {}
 
@@ -197,6 +199,11 @@ public final class Eavesdrop {
                 }
             }
         }
+
+        // Rootkit: the ritual hears the other players' traps in its circle too, for as long as the
+        // next sweep, so they stay lit while it keeps listening.
+        EnhancedPerception.revealTraps(owner, trap.position(), trap.radius(),
+                ModPerks.EAVESDROP_SWEEP_INTERVAL + ROOTKIT_LINGER_TICKS);
 
         REPORTING.add(owner.getUUID());
         PacketDistributor.sendToPlayer(owner, new OmnisciencePayload(

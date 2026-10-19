@@ -92,6 +92,10 @@ public final class Tripwires {
         if (data.isOnCooldown(ModPerks.TRIPWIRES.id(), player.level().getGameTime())) {
             return;
         }
+        // Traps keep a clear block between them: refused before the seconds of setting up, not after.
+        if (!SETTING.containsKey(player.getUUID()) && TrapRoster.refuseCrowded(player)) {
+            return;
+        }
         SETTING.putIfAbsent(player.getUUID(), new Setup(tier, player.position()));
     }
 
@@ -103,6 +107,9 @@ public final class Tripwires {
     // --- planting ---
 
     private static void plantFirst(ServerPlayer player, int tier) {
+        if (TrapRoster.refuseCrowded(player)) {
+            return;
+        }
         ServerLevel level = player.serverLevel();
         TripwireEntity post = new TripwireEntity(level, player, tier);
         post.moveTo(player.getX(), player.getY(), player.getZ(), 0.0F, 0.0F);
@@ -115,6 +122,9 @@ public final class Tripwires {
     }
 
     private static void plantSecond(ServerPlayer player, PlayerPerkData data, TripwireEntity lone, int tier) {
+        if (TrapRoster.refuseCrowded(player)) {
+            return;
+        }
         if (!canPlant(player, lone, tier)) {
             player.displayClientMessage(Component.translatable("bloodbound.message.tripwires_invalid")
                     .withStyle(ChatFormatting.RED), true);

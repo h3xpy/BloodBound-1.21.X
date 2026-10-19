@@ -67,6 +67,10 @@ public final class BarbedWire {
         }
         // Only ever started, never restarted: a second report of the key being down must not throw
         // away the seconds already spent.
+        // Traps keep a clear block between them: refused before the seconds of setting up, not after.
+        if (!SETTING.containsKey(player.getUUID()) && TrapRoster.refuseCrowded(player)) {
+            return;
+        }
         SETTING.putIfAbsent(player.getUUID(), new Setup(tier, player.position()));
     }
 
@@ -134,6 +138,10 @@ public final class BarbedWire {
     }
 
     private static void place(ServerPlayer player, PlayerPerkData data, int tier, long gameTime) {
+        // Someone may have laid a trap here while this one was being set up.
+        if (TrapRoster.refuseCrowded(player)) {
+            return;
+        }
         ServerLevel level = player.serverLevel();
         BarbedWireEntity wire = new BarbedWireEntity(level, player, tier);
         wire.moveTo(player.getX(), player.getY(), player.getZ(), 0.0F, 0.0F);

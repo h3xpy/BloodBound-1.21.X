@@ -551,9 +551,9 @@ public final class ModPerks {
             .type(PerkType.ACTIVE)
             .scaling(3, 2.5, 2)
             .scaling(15, 12, 9)
-            .scaling(5, 6, 7)
+            .scaling(2, 3, 4)
             .scaling(15, 12, 9)
-            .scaling(5, 4, 3)
+            .scaling(3, 2, 1)
             .cooldown(3)
             .build());
 
@@ -779,7 +779,7 @@ public final class ModPerks {
 
     /** How close the owner has to be for a trip to be worth following, and the window to follow in. */
     public static final double TARGET_RANGE = 256.0D;
-    public static final int TARGET_WINDOW_TICKS = 80;
+    public static final int TARGET_WINDOW_TICKS = 120;
     /** The wire's footprint, in blocks either side. */
     public static final double TARGET_TRAP_RADIUS = 0.6D;
 
