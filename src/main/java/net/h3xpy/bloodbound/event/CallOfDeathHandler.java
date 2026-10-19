@@ -39,6 +39,7 @@ public final class CallOfDeathHandler {
                 ModPerks.CALL_OF_DEATH.value(ModPerks.CALL_OF_DEATH_RADIUS, tier));
         double radiusSq = radius * radius;
         AABB box = AABB.ofSize(dead.position(), radius * 2, radius * 2, radius * 2);
+        EnhancedPerception.revealTraps(killer, dead.position(), radius, ModPerks.CALL_OF_DEATH_REVEAL_TICKS);
         int revealed = 0;
 
         for (LivingEntity nearby : killer.serverLevel().getEntitiesOfClass(LivingEntity.class, box)) {

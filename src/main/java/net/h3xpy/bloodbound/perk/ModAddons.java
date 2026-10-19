@@ -505,6 +505,19 @@ public final class ModAddons {
     public static final Addon RANSOMWARE = AddonRegistry.register(
             Addon.of("ransomware", ModPerks.ENHANCED_PERCEPTION, AddonRarity.EPIC));
 
+    /** Sweeps for auras find traps too. */
+    public static final Addon ROOTKIT = AddonRegistry.register(
+            Addon.of("rootkit", ModPerks.ENHANCED_PERCEPTION, AddonRarity.RARE));
+
+    // --- Caretaker ---
+
+    /** Heals from further away. */
+    public static final Addon PERFUSION = AddonRegistry.register(
+            Addon.of("perfusion", ModPerks.CARETAKER, AddonRarity.UNCOMMON));
+
+    // --- Perfusion tuning ---
+    public static final double PERFUSION_RANGE = 1.5D;
+
     // --- Crime And Punishment ---
 
     /** Blows parried during the wait bring the next punishment closer. */

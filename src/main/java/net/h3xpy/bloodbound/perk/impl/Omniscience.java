@@ -113,6 +113,7 @@ public final class Omniscience {
         List<BlockPos> ores = new ArrayList<>();
         List<BlockPos> containers = new ArrayList<>();
         scanBlocks(player, tier, radius, ores, containers);
+        EnhancedPerception.revealTraps(player, player.position(), radius, ModPerks.OMNISCIENCE_REFRESH_TICKS + 10);
 
         boolean ransomware = data.isAddonActive(ModAddons.RANSOMWARE);
         List<Integer> entities = new ArrayList<>();
